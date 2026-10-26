@@ -1,0 +1,169 @@
+@media (max-width: 980px) {
+  .site-header { height: 78px; padding-inline: 22px; }
+  .site-header > .brand { position: relative; z-index: 2; }
+
+  .menu-button {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    place-content: center;
+    gap: 7px;
+  }
+
+  .menu-button span { display: block; width: 24px; height: 1px; background: var(--color-wine); }
+
+  .primary-navigation {
+    position: fixed;
+    z-index: 1;
+    inset: 0;
+    display: flex;
+    padding: 112px 36px 56px;
+    background: var(--color-paper);
+    flex-direction: column;
+    justify-content: center;
+    gap: 0;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-12px);
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .primary-navigation--open { opacity: 1; pointer-events: auto; transform: none; }
+  .primary-navigation a {
+    width: min(100%, 310px);
+    padding: 18px 8px;
+    border-bottom: 1px solid var(--color-line);
+    color: var(--color-wine);
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: 0.16em;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  .primary-navigation__featured {
+    margin-top: 24px;
+    padding: 17px 24px !important;
+    border: 0 !important;
+    border-radius: 999px;
+    background: var(--color-wine);
+    color: #fff9ed !important;
+  }
+
+  .hero-section { height: auto; min-height: 0; padding-top: 135px; grid-template-columns: 1fr; text-align: center; }
+  .hero-section__copy { margin-inline: auto; }
+  .eyebrow, .hero-section__actions, .hero-section__note { justify-content: center; }
+  .hero-portrait { min-height: 650px; margin-top: 10px; }
+  .mandala-rings { width: min(86vw, 560px); }
+  .scroll-cue { display: none; }
+
+  .section-heading, .guru-section, .teachings-section { grid-template-columns: 1fr; }
+  .section-heading { gap: 30px; }
+  .journey-card { grid-template-columns: 50px 1fr 30px; }
+  .journey-card p { grid-column: 2 / 4; }
+  .guru-section__image-column { order: 2; }
+  .guru-section__copy { margin-inline: auto; text-align: center; }
+  .guru-name-card { justify-content: center; text-align: left; }
+  .teachings-section__intro { margin-inline: auto; text-align: center; }
+  .teachings-section__intro p:last-child { margin-inline: auto; }
+  .teaching-orbit { width: min(100%, 620px); margin: 20px auto 0; }
+
+  .full-journey-section__layout { grid-template-columns: 1fr; gap: 50px; }
+  .chapter-index { position: static; max-height: none; }
+  .chapter-index ol { display: grid; grid-template-columns: repeat(2, 1fr); column-gap: 28px; }
+}
+
+@media (max-width: 620px) {
+  .section-padding { padding-inline: 20px; }
+  .brand__text strong { font-size: 19px; }
+  .hero-section { padding-inline: 20px; }
+  .hero-section h1 { font-size: clamp(52px, 16vw, 76px); }
+  .hero-section__intro { font-size: 16px; }
+  .hero-section__actions { gap: 24px; flex-direction: column; }
+  .hero-section__note { margin-top: 42px; }
+  .hero-portrait { min-height: 520px; }
+  .portrait-arch { width: 260px; height: 430px; }
+  .portrait-caption { max-width: 300px; font-size: 11px; }
+
+  .quote-section::before, .quote-section::after { display: none; }
+  .section-heading { margin-bottom: 50px; }
+  .section-heading h2, .purpose-section h2 { font-size: 46px; }
+  .journey-card { padding: 28px 0; grid-template-columns: 38px 1fr; gap: 12px; }
+  .journey-card p { grid-column: 2; }
+  .journey-card__symbol { display: none; }
+
+  .guru-section__copy h2, .teachings-section__intro h2 { font-size: 52px; }
+  .guru-section__lead { font-size: 18px; }
+  .guru-portrait { width: min(100%, 300px); height: auto; aspect-ratio: 300 / 470; padding: 20px; }
+  .guru-portrait__halo { width: 300px; height: 300px; }
+  .guru-portrait__blessing { right: -4px; width: 60px; height: 60px; }
+  .guru-name-card { align-items: flex-start; }
+  .guru-name-card strong { overflow-wrap: anywhere; }
+
+  .full-journey-section__header { margin-bottom: 70px; }
+  .full-journey-section__header h2 { font-size: 52px; }
+  .full-journey-section__header > p:last-child { font-size: 16px; }
+  .chapter-index > span { margin-bottom: 26px; font-size: 11px; }
+  .chapter-index ol { grid-template-columns: 1fr; }
+  .chapter-index a {
+    padding: 20px 0;
+    color: var(--color-wine);
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.35;
+    grid-template-columns: 44px minmax(0, 1fr);
+  }
+  .chapter-index a span { padding-top: 3px; font-size: 12px; }
+  .chapter { padding: 56px 0; }
+  .chapter h3 { font-size: 40px; }
+  .chapter__body p { font-size: 16px; line-height: 1.8; }
+  .chapter:last-child .chapter__body p:last-child { font-size: 26px; }
+
+  .teaching-orbit { display: grid; min-height: 0; border: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .teaching-orbit::before, .teaching-orbit::after { display: none; }
+  .teaching-orbit__center { position: static; width: 116px; height: 116px; margin: 0 auto 20px; grid-column: 1 / -1; transform: none; }
+  .teaching-orbit__item { position: static; width: auto; min-height: 112px; padding: 14px; }
+  .teaching-orbit__item strong { font-size: 18px; }
+
+  .site-footer { grid-template-columns: 1fr; gap: 22px; text-align: center; }
+  .site-footer__brand, .site-footer__copyright { justify-self: center; }
+}
+
+@media (max-width: 360px) {
+  .site-header { padding-inline: 14px; }
+  .site-header .lotus-mark--small { width: 36px; }
+  .site-header .brand { gap: 8px; }
+  .brand__text strong { font-size: 18px; }
+  .brand__text small { font-size: 7px; letter-spacing: 0.18em; }
+  .menu-button { width: 40px; height: 40px; }
+  .primary-navigation { padding-inline: 22px; }
+  .primary-navigation a { font-size: 14px; }
+  .hero-section h1 { font-size: clamp(46px, 15vw, 58px); }
+  .section-heading h2, .purpose-section h2 { font-size: 41px; }
+  .guru-section__copy h2, .teachings-section__intro h2 { font-size: 46px; }
+  .full-journey-section__header h2 { font-size: 46px; }
+  .chapter-index a { font-size: 16px; grid-template-columns: 40px minmax(0, 1fr); }
+  .chapter h3 { font-size: 36px; }
+  .teaching-orbit { grid-template-columns: 1fr; }
+}
+
+@media (max-height: 620px) and (max-width: 980px) {
+  .primary-navigation { padding-block: 88px 28px; justify-content: flex-start; }
+  .primary-navigation a { padding-block: 13px; }
+  .primary-navigation__featured { margin-top: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .mandala-rings span:nth-child(2), .places-ticker__track { animation: none; }
+  * { transition-duration: 0.01ms !important; }
+}

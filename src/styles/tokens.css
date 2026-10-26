@@ -1,0 +1,18 @@
+:root {
+  --color-ink: #2c1814;
+  --color-wine: #4f1823;
+  --color-wine-deep: #351018;
+  --color-saffron: #c9772e;
+  --color-gold: #d9a665;
+  --color-cream: #f5eedf;
+  --color-paper: #fbf7ed;
+  --color-muted: #76655b;
+  --color-line: rgba(79, 24, 35, 0.15);
+  --font-display: 'Italiana', Georgia, serif;
+  --font-brand: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'DM Sans', 'Avenir Next', sans-serif;
+  --font-serif: Georgia, 'Times New Roman', serif;
+  --page-gutter: clamp(24px, 8vw, 130px);
+  --section-space: clamp(90px, 10vw, 160px);
+  --transition-fast: 250ms ease;
+}
