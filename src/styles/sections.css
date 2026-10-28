@@ -74,8 +74,19 @@
 
 .yogi-encounter-section { background: var(--color-cream); }
 .yogi-encounter-section__layout { display: grid; width: min(100%, 1240px); margin-inline: auto; grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr); gap: clamp(40px, 7vw, 110px); align-items: center; }
-.yogi-encounter-section__photo { margin: 0; overflow: hidden; background: var(--color-paper); }
-.yogi-encounter-section__photo img { width: 100%; aspect-ratio: 1570 / 1600; object-fit: cover; object-position: center top; }
+.yogi-encounter-carousel { min-width: 0; }
+.yogi-encounter-carousel__viewport { position: relative; overflow: hidden; aspect-ratio: 1570 / 1600; background: #e8e1d5; touch-action: pan-y; }
+.yogi-encounter-carousel__track { position: absolute; inset: 0; display: flex; width: 100%; height: 100%; transition: transform 650ms ease-in-out; }
+.yogi-encounter-carousel__slide { flex: 0 0 100%; width: 100%; height: 100%; margin: 0; }
+.yogi-encounter-carousel__slide img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.yogi-encounter-carousel__controls { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 14px; }
+.yogi-encounter-carousel__controls > button { display: grid; width: 42px; height: 42px; place-items: center; border: 1px solid var(--color-line); border-radius: 50%; background: transparent; color: var(--color-wine); font-size: 24px; cursor: pointer; }
+.yogi-encounter-carousel__controls > button:hover, .yogi-encounter-carousel__controls > button:focus-visible { border-color: var(--color-wine); background: rgba(221, 153, 52, 0.1); }
+.yogi-encounter-carousel__controls > button:disabled { opacity: 0.55; cursor: default; }
+.yogi-encounter-carousel__dots { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.yogi-encounter-carousel__dots button { width: 9px; height: 9px; padding: 0; border: 0; border-radius: 999px; background: #d7b997; cursor: pointer; transition: width 250ms ease, background-color 250ms ease; }
+.yogi-encounter-carousel__dots button.is-active { width: 26px; background: var(--color-wine); }
+.yogi-encounter-carousel__dots button:focus-visible { outline: 2px solid var(--color-wine); outline-offset: 4px; }
 .yogi-encounter-section__words { padding-block: 26px; }
 .yogi-encounter-section__words .section-kicker { margin-bottom: 24px; }
 .yogi-encounter-section__words h2 { max-width: 580px; margin: 0; color: var(--color-wine); font-family: var(--font-display); font-size: clamp(48px, 5vw, 74px); font-weight: 400; line-height: 1.04; letter-spacing: -0.035em; text-wrap: balance; }
