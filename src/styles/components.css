@@ -120,7 +120,7 @@
   position: fixed;
   z-index: 45;
   right: max(22px, env(safe-area-inset-right));
-  bottom: max(22px, env(safe-area-inset-bottom));
+  bottom: max(72px, calc(env(safe-area-inset-bottom) + 60px));
   display: grid;
   width: 58px;
   height: 58px;

@@ -49,6 +49,7 @@ export function ContributionSection() {
         <div className="contribution-section__grid">
           {contributions.map((contribution) => (
             <article className="contribution-card" key={contribution.id}>
+              <blockquote>{contribution.quote}</blockquote>
               <div className="contribution-card__media">
                 {contribution.mediaType === 'image' && (
                   <img src={contribution.src} alt={t('contribution.mediaAlt')} loading="lazy" />
@@ -57,7 +58,6 @@ export function ContributionSection() {
                   <video src={contribution.src} controls preload="metadata" playsInline aria-label={t('contribution.mediaAlt')} />
                 )}
               </div>
-              <blockquote>{contribution.quote}</blockquote>
             </article>
           ))}
         </div>
