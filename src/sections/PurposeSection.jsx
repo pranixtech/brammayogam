@@ -1,5 +1,5 @@
 import { MainLogo } from '../components/common/MainLogo'
-import { useLanguage } from '../i18n/LanguageContext'
+import { useLanguage } from '../i18n/useLanguage'
 
 export function PurposeSection() {
   const { t } = useLanguage()

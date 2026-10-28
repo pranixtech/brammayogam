@@ -12,6 +12,12 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+body[data-language='ta'] { letter-spacing: 0; }
+body[data-language='ta'] h1,
+body[data-language='ta'] h2,
+body[data-language='ta'] h3,
+body[data-language='ta'] .section-kicker { letter-spacing: 0; }
+
 body.menu-open { overflow: hidden; }
 
 img {

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { submitRegistration } from '../services/submissionsApi'
-import { useLanguage } from '../i18n/LanguageContext'
+import { useLanguage } from '../i18n/useLanguage'
 
 const EMPTY_FORM = { fullName: '', email: '', phone: '', country: '', message: '', consent: false }
 

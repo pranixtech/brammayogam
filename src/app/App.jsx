@@ -10,7 +10,7 @@ import { PhotosPage } from '../pages/PhotosPage'
 import { RegistrationPage } from '../pages/RegistrationPage'
 import { VideosPage } from '../pages/VideosPage'
 import { YogamPage } from '../pages/YogamPage'
-import { useLanguage } from '../i18n/LanguageContext'
+import { useLanguage } from '../i18n/useLanguage'
 
 const PAGE_TITLE_KEYS = {
   '/class': 'class', '/registration': 'registration', '/feedback': 'feedback', '/deeksha': 'deeksha',

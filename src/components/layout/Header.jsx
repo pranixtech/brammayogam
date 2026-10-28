@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Brand } from '../common/Brand'
 import { NAVIGATION_ITEMS } from '../../data/siteContent'
 import { useScrollThreshold } from '../../hooks/useScrollThreshold'
-import { useLanguage } from '../../i18n/LanguageContext'
+import { useLanguage } from '../../i18n/useLanguage'
 
 const NAVIGATION_KEYS = {
   '/#journey': 'journey', '/#spiritual-journey': 'bio', '/#guru': 'guru', '/#teachings': 'teachings',

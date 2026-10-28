@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { getGalleryPhotos, subscribeToGalleryUpdates } from '../services/galleryApi'
-import { useLanguage } from '../i18n/LanguageContext'
+import { useLanguage } from '../i18n/useLanguage'
 
 const PHOTO_CATEGORIES = [
   {

@@ -1,5 +1,4 @@
-import { SITE_NAME } from '../../data/siteContent'
-import { useLanguage } from '../../i18n/LanguageContext'
+import { useLanguage } from '../../i18n/useLanguage'
 import { MainLogo } from './MainLogo'
 
 export function Brand({ className = '', onClick }) {
@@ -13,7 +12,7 @@ export function Brand({ className = '', onClick }) {
     >
       <MainLogo className="brand__logo" />
       <span className="brand__text">
-        <strong>{SITE_NAME}</strong>
+        <strong>{t('brand.name')}</strong>
         <small>{t('brand.tagline')}</small>
       </span>
     </a>

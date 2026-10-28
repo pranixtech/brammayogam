@@ -255,6 +255,8 @@
 }
 
 @media (max-width: 430px) {
+  body[data-language='ta'] .brand__text strong { font-size: 15px; }
+  body[data-language='ta'] .brand__text small { font-size: 6px; }
   .admin-dashboard__account { align-items: flex-start; flex-direction: column; }
   .admin-dashboard__account .admin-button { width: 100%; }
   .admin-photo-grid { grid-template-columns: 1fr; }

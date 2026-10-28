@@ -16,3 +16,10 @@
   --section-space: clamp(90px, 10vw, 160px);
   --transition-fast: 250ms ease;
 }
+
+body[data-language='ta'] {
+  --font-display: 'Noto Serif Tamil', Georgia, serif;
+  --font-brand: 'Noto Serif Tamil', Georgia, serif;
+  --font-body: 'Noto Serif Tamil', 'Manrope', sans-serif;
+  --font-serif: 'Noto Serif Tamil', 'Lora', serif;
+}

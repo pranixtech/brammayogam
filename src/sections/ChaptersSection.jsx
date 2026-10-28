@@ -1,4 +1,4 @@
-import { useLanguage } from '../i18n/LanguageContext'
+import { useLanguage } from '../i18n/useLanguage'
 import { getJourneyChapters } from '../i18n/siteContent'
 
 export function ChaptersSection() {

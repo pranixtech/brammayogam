@@ -53,6 +53,7 @@
   cursor: pointer;
 }
 .primary-navigation .language-toggle__option:hover { color: var(--color-wine); }
+.primary-navigation .language-toggle__option[lang='ta'] { font-family: 'Noto Serif Tamil', Georgia, serif; }
 .primary-navigation .language-toggle__option.is-active {
   background: var(--color-wine);
   color: #fffaf1;

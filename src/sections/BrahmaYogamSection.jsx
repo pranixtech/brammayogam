@@ -1,4 +1,4 @@
-import { useLanguage } from '../i18n/LanguageContext'
+import { useLanguage } from '../i18n/useLanguage'
 
 const ENERGIES_TAMIL = [
   {
@@ -131,7 +131,6 @@ export function BrahmaYogamSection() {
       <header className="brahma-yogam-section__hero">
         <p className="section-kicker">{copy.kicker}</p>
         <h1 id="brahma-yogam-title">{copy.title}</h1>
-        <p className="brahma-yogam-section__english-title" lang={language === 'ta' ? 'en' : 'ta'}>{copy.subtitle}</p>
         <div className="brahma-yogam-section__intro">
           {copy.intro.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
         </div>
@@ -148,7 +147,7 @@ export function BrahmaYogamSection() {
             <li className="brahma-energy-card" key={title}>
               <span className="brahma-energy-card__number">{String(index + 1).padStart(2, '0')}</span>
               <div>
-                <h3>{title} {english && <small lang="en">{english}</small>}</h3>
+                <h3>{title} {language === 'en' && english && <small lang="en">{english}</small>}</h3>
                 <p>{description}</p>
               </div>
             </li>

@@ -1,6 +1,6 @@
 import { VideoGallery } from '../components/gallery/VideoGallery'
 import { useHomeVideos } from '../hooks/useHomeVideos'
-import { useLanguage } from '../i18n/LanguageContext'
+import { useLanguage } from '../i18n/useLanguage'
 
 export function HomeVideosSection() {
   const { videos, isLoading, loadError } = useHomeVideos()

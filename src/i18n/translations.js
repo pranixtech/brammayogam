@@ -1,6 +1,6 @@
 export const TRANSLATIONS = {
   en: {
-    brand: { tagline: 'The inward path', home: 'Brahmam Foundation home' },
+    brand: { name: 'Brahmam Foundation', tagline: 'The inward path', home: 'Brahmam Foundation home' },
     language: { label: 'Choose site language', english: 'English', tamil: 'தமிழ்' },
     navigation: {
       label: 'Main navigation', open: 'Open navigation', close: 'Close navigation',
@@ -71,7 +71,7 @@ export const TRANSLATIONS = {
     slider: { gallery: 'Spiritual image gallery', portraits: 'Spiritual portraits', alts: ['Illustration of Siva Prabhakara Siddha Yogi seated in meditation', 'Archival photograph of the yogi seated indoors', 'Photograph of the yogi seated with hands joined in prayer'] },
   },
   ta: {
-    brand: { tagline: 'அகப்பயணத்தின் பாதை', home: 'பிரம்மம் அறக்கட்டளை முகப்பு' },
+    brand: { name: 'பிரம்மம் அறக்கட்டளை', tagline: 'அகப்பயணத்தின் பாதை', home: 'பிரம்மம் அறக்கட்டளை முகப்பு' },
     language: { label: 'தள மொழியைத் தேர்ந்தெடுக்கவும்', english: 'English', tamil: 'தமிழ்' },
     navigation: {
       label: 'முதன்மை வழிசெலுத்தல்', open: 'வழிசெலுத்தலைத் திறக்கவும்', close: 'வழிசெலுத்தலை மூடவும்',

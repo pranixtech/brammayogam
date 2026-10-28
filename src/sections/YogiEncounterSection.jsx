@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import yogiEncounterImage from '../assets/yogi-encounter.jpeg'
 import indoorGatheringImage from '../assets/yogi-encounter/gathering-indoors.jpeg'
 import forestGatheringImage from '../assets/yogi-encounter/gathering-forest.jpeg'
-import { useLanguage } from '../i18n/LanguageContext'
+import { useLanguage } from '../i18n/useLanguage'
 
 const SLIDES = [
   {

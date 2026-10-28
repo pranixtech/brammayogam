@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import siddharIllustration from '../assets/slider/siddhar-illustration.jpeg'
 import yogiArchivalPortrait from '../assets/slider/yogi-archival-portrait.jpeg'
 import yogiPrayer from '../assets/slider/yogi-prayer.jpeg'
-import { useLanguage } from '../i18n/LanguageContext'
+import { useLanguage } from '../i18n/useLanguage'
 
 const SLIDES = [
   {
@@ -43,7 +43,7 @@ export function ImageSliderSection() {
         aria-label={t('slider.portraits')}
       >
         <div className="image-slider__viewport">
-          {SLIDES.map(({ src, alt }, index) => (
+          {SLIDES.map(({ src }, index) => (
             <figure
               className={`image-slider__slide${index === activeSlide ? ' image-slider__slide--active' : ''}`}
               aria-hidden={index !== activeSlide}

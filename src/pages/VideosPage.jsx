@@ -1,6 +1,6 @@
 import { VideoGallery } from '../components/gallery/VideoGallery'
 import { useVideos } from '../hooks/useVideos'
-import { useLanguage } from '../i18n/LanguageContext'
+import { useLanguage } from '../i18n/useLanguage'
 
 export function VideosPage() {
   const { videos, isLoading, loadError } = useVideos()

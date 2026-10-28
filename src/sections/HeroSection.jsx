@@ -1,5 +1,5 @@
 import meditationImage from '../assets/meditation-home.jpeg'
-import { useLanguage } from '../i18n/LanguageContext'
+import { useLanguage } from '../i18n/useLanguage'
 
 export function HeroSection() {
   const { t } = useLanguage()

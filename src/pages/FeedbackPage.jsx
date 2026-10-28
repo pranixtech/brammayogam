@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { submitFeedback } from '../services/submissionsApi'
-import { useLanguage } from '../i18n/LanguageContext'
+import { useLanguage } from '../i18n/useLanguage'
 
 const EMPTY_FORM = { fullName: '', email: '', rating: '', message: '' }
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { useLanguage } from '../../i18n/LanguageContext'
+import { useLanguage } from '../../i18n/useLanguage'
 
-export function VideoGallery({ videos, ariaLabel = 'YouTube video gallery' }) {
+export function VideoGallery({ videos, ariaLabel }) {
   const [activeVideo, setActiveVideo] = useState(null)
   const { t } = useLanguage()
 
@@ -23,7 +23,7 @@ export function VideoGallery({ videos, ariaLabel = 'YouTube video gallery' }) {
 
   return (
     <>
-      <div className="video-gallery-grid" aria-label={ariaLabel}>
+      <div className="video-gallery-grid" aria-label={ariaLabel ?? t('videos.galleryLabel')}>
         {videos.map((video) => (
           <article className="video-gallery-card" key={video.id}>
             <button type="button" onClick={() => setActiveVideo(video)} aria-label={`${t('videos.play')} ${video.title}`}>

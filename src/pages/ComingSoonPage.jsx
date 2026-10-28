@@ -1,5 +1,5 @@
 import { MainLogo } from '../components/common/MainLogo'
-import { useLanguage } from '../i18n/LanguageContext'
+import { useLanguage } from '../i18n/useLanguage'
 
 export function ComingSoonPage({ titleKey, action }) {
   const { language, t } = useLanguage()

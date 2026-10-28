@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getActivities, subscribeToActivities } from '../services/activitiesApi'
-import { useLanguage } from '../i18n/LanguageContext'
+import { useLanguage } from '../i18n/useLanguage'
 
 export function UpcomingActivitiesSection() {
   const { t } = useLanguage()
