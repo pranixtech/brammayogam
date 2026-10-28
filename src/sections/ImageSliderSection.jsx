@@ -1,15 +1,20 @@
 import { useEffect, useState } from 'react'
-import guruImage from '../assets/slider-guru.png'
-import siddharImage from '../assets/slider-siddhar.jpeg'
+import siddharIllustration from '../assets/slider/siddhar-illustration.jpeg'
+import yogiArchivalPortrait from '../assets/slider/yogi-archival-portrait.jpeg'
+import yogiPrayer from '../assets/slider/yogi-prayer.jpeg'
 
 const SLIDES = [
   {
-    src: guruImage,
-    alt: 'Guru Brahmashri Harish seated in meditation with a radiant halo',
+    src: siddharIllustration,
+    alt: 'Illustration of Siva Prabhakara Siddha Yogi seated in meditation',
   },
   {
-    src: siddharImage,
-    alt: 'A Siddhar seated in meditation with a radiant halo',
+    src: yogiArchivalPortrait,
+    alt: 'Archival photograph of the yogi seated indoors',
+  },
+  {
+    src: yogiPrayer,
+    alt: 'Photograph of the yogi seated with hands joined in prayer',
   },
 ]
 
