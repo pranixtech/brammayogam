@@ -1,4 +1,4 @@
-import meditationImage from '../assets/meditation-sunrise.png'
+import meditationImage from '../assets/meditation-home.jpeg'
 
 export function HeroSection() {
   return (
@@ -7,7 +7,7 @@ export function HeroSection() {
         <img
           className="meditation-hero__image"
           src={meditationImage}
-          alt="Guru Brahmashri Harish meditating in a sunrise mountain valley"
+          alt="Guru Brahmashri Harish meditating before a mountain range"
         />
       </figure>
 
