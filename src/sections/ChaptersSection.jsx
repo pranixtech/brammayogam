@@ -1,19 +1,15 @@
-import {
-  FULL_JOURNEY_CHAPTERS,
-  FULL_JOURNEY_INTRO,
-} from '../data/siteContent'
+import { FULL_JOURNEY_CHAPTERS } from '../data/siteContent'
 
-export function FullJourneySection() {
+export function ChaptersSection() {
   return (
     <section
       className="full-journey-section section-padding"
-      id="full-story"
-      aria-labelledby="full-journey-title"
+      id="chapters"
+      aria-labelledby="chapters-title"
     >
       <header className="full-journey-section__header">
-        <p className="section-kicker">In his own words</p>
-        <h2 id="full-journey-title">Spiritual Journey<br /><em>The Search for Wisdom</em></h2>
-        <p>{FULL_JOURNEY_INTRO}</p>
+        <p className="section-kicker">The complete journey</p>
+        <h2 id="chapters-title">Chapters</h2>
       </header>
 
       <div className="full-journey-section__layout">

@@ -1,15 +1,15 @@
-import { LotusMark } from './LotusMark'
 import { SITE_NAME } from '../../data/siteContent'
+import { MainLogo } from './MainLogo'
 
 export function Brand({ className = '', onClick }) {
   return (
     <a
       className={`brand ${className}`.trim()}
-      href="#home"
+      href="/#home"
       onClick={onClick}
       aria-label={`${SITE_NAME} home`}
     >
-      <LotusMark size="small" />
+      <MainLogo className="brand__logo" />
       <span className="brand__text">
         <strong>{SITE_NAME}</strong>
         <small>the inward path</small>

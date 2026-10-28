@@ -37,8 +37,7 @@ button { font: inherit; -webkit-tap-highlight-color: transparent; }
 .site-shell { overflow: hidden; }
 .section-padding { padding: var(--section-space) var(--page-gutter); }
 
-.section-kicker,
-.eyebrow {
+.section-kicker {
   margin: 0 0 28px;
   color: var(--color-saffron);
   font-size: 11px;

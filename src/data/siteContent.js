@@ -1,53 +1,25 @@
-export const SITE_NAME = 'Brahma Yogam'
-
-export const GURU_NAME =
-  'Brahmaguru Bhagavan Brahmananda Sri Sivaprabakara Siddha Yogi Swamigal'
+export const SITE_NAME = 'Brahmam Foundation'
 
 export const NAVIGATION_ITEMS = [
-  { label: 'The journey', href: '#journey' },
-  { label: 'Full story', href: '#full-story' },
-  { label: 'The Guru', href: '#guru' },
-  { label: 'Teachings', href: '#teachings' },
-  { label: 'Our purpose', href: '#purpose', featured: true },
-]
-
-export const JOURNEY_STAGES = [
+  { label: 'The journey', href: '/#journey' },
+  { label: 'Full story', href: '/#full-story' },
+  { label: 'Chapters', href: '/#chapters' },
+  { label: 'The Guru', href: '/#guru' },
+  { label: 'Teachings', href: '/#teachings' },
+  { label: 'யோகம்', href: '/yogam', lang: 'ta' },
+  { label: 'Class', href: '/class' },
+  { label: 'Registration Form', href: '/registration' },
+  { label: 'Feedback', href: '/feedback' },
+  { label: 'Deeksha', href: '/deeksha' },
+  { label: 'Book', href: '/book' },
   {
-    id: '01',
-    title: 'The inner question',
-    description:
-      'Life’s setbacks, encounters and unanswered questions opened a deeper search: Who are we beneath the mind? What is meditation? What power rests quietly within a human being?',
+    label: 'Gallery',
+    children: [
+      { label: 'Photos', href: '/photos' },
+      { label: 'Videos', href: '/videos' },
+    ],
   },
-  {
-    id: '02',
-    title: 'Meditation & transformation',
-    description:
-      'Long periods of meditation revealed how thoughts and desires shape human life—and how awareness can lead beyond them toward a quieter, steadier inner space.',
-  },
-  {
-    id: '03',
-    title: 'Sacred landscapes',
-    description:
-      'Kashi, Tiruvannamalai, Velliangiri, Kolli Hills, Kerala, Pothigai and many Jeeva Samadhis became living classrooms for contemplation and spiritual inquiry.',
-  },
-  {
-    id: '04',
-    title: 'Surrender at Kashi',
-    description:
-      'At Harishchandra Ghat, loss, hunger and helplessness broke open the ego. An unexpected act of grace revealed the dignity of feeding every living being—Jeevakarunya.',
-  },
-  {
-    id: '05',
-    title: 'The arrival of the Guru',
-    description:
-      'Near a Jeeva Samadhi in Omallur, an unknown elder appeared in meditation and imparted the practice of Brahma Yoga. His presence transformed the direction of the journey.',
-  },
-  {
-    id: '06',
-    title: 'A continuing search',
-    description:
-      'The inquiry now embraces Kundalini Shakti, yogic practice, Siddhar wisdom and the subtle relationship between body, mind, life force and soul.',
-  },
+  { label: 'Our purpose', href: '/#purpose', featured: true },
 ]
 
 export const SACRED_PLACES = [
@@ -94,7 +66,7 @@ export const FULL_JOURNEY_CHAPTERS = [
     id: 'sacred-places',
     title: 'Sacred Places and Spiritual Experiences',
     paragraphs: [
-      'As part of my spiritual search, I travelled to various sacred places. Hundreds of Jeeva Samadhis of Siddhars, Kashi (Uttar Pradesh), Kerala, Kailasakona (Andhra Pradesh), Talakona (Andhra Pradesh), Kalahasti (Andhra Pradesh), Palani, Pothigai Hills, Kolli Hills, Agasthiyar Falls, Velliangiri Hills (Coimbatore), Mantralayam, Tiruvannamalai, Chidambaram, and Tirupattur are among the many places that hold a unique place in my spiritual journey. Each place brought a different kind of thought and spiritual search within me. In particular, Kashi, Kerala, and Tiruvannamalai became important places connected with my deep meditation experiences.',
+      'As part of my spiritual search, I travelled to various sacred places. Hundreds of Jeeva Samadhis of Siddhars, Kashi (Uttar Pradesh), Ganeshpuri (Mumbai), Kerala, Kailasakona (Andhra Pradesh), Talakona (Andhra Pradesh), Kalahasti (Andhra Pradesh), Palani, Pothigai Hills, Kolli Hills, Agasthiyar Falls, Velliangiri Hills (Coimbatore), Mantralayam, Tiruvannamalai, Chidambaram, and Tirupattur are among the many places that hold a unique place in my spiritual journey. Each place brought a different kind of thought and spiritual search within me. In particular, Kashi, Kerala, and Tiruvannamalai became important places connected with my deep meditation experiences.',
     ],
   },
   {
@@ -148,7 +120,7 @@ export const FULL_JOURNEY_CHAPTERS = [
       'As we climbed the mountain, the silence that prevailed there deeply attracted us. It felt as though only the two of us, Kalabhairava, and the vast open surroundings existed there. There was no other human presence anywhere. Tired from climbing the mountain, my friend and I sat near the Jeeva Samadhi there and began meditation practice. After about an hour, I slowly opened my eyes. The moment I opened my eyes, I was shocked. Sitting before me was an elderly man wearing a white dhoti, with long hair and a long beard. When I saw him, I became very frightened. I had a feeling that I had seen him somewhere before.',
       'He looked at me and said, “My son, it seems you have been searching for a long time!” Then, near my ear, he taught me how to practice Brahma Yoga. I continued doing the practice he had taught me. At that time, I felt that I had entered another state of experience beyond bodily sensations. It was a profound experience unlike anything I had experienced before.',
       'After some time, I slowly opened my eyes with fear and amazement. The elderly man who had been sitting before me was no longer there. I could not see the Kalabhairava whom I had felt had come with us either. My friend and I searched around, but they could not be seen anywhere. Later, when we moved aside the curtain of the locked Jeeva Samadhi there, I saw a photograph placed inside the Samadhi. The moment I saw that photograph, my entire body was filled with goosebumps. I melted in a great flood of bliss.',
-      'When I had stretched out my hand for food at Harishchandra Ghat in Kashi, I developed a deep feeling that the person who had helped me and the person who had now taught me the Brahma Yoga practice near my ear were one and the same. I realized that he was my Guru. He was the Mahasiddhar, Brahmaguru Bhagavan Brahmananda Sri Sivaprabakara Siddha Yogi Swamigal, revered as one who lived for 723 years. That moment became an unforgettable spiritual turning point in my life. From that day onward, my spiritual journey began moving towards a new dimension.',
+      'When I had stretched out my hand for food at Harishchandra Ghat in Kashi, I developed a deep feeling that the person who had helped me and the person who had now taught me the Brahma Yoga practice near my ear were one and the same. I realized that he was my Guru. That moment became an unforgettable spiritual turning point in my life. From that day onward, my spiritual journey began moving towards a new dimension.',
     ],
   },
   {
