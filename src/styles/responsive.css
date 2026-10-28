@@ -168,6 +168,8 @@
   .meditation-hero { padding: 108px 0 80px; }
   .meditation-hero__portrait { height: clamp(260px, 70vw, 340px); }
   .meditation-letter { margin-top: 30px; padding-inline: 28px; }
+  .meditation-socials { margin-top: 32px; gap: 13px; }
+  .meditation-socials__link { width: 44px; height: 44px; }
   .home-videos-section__header { margin-bottom: 32px; }
   .home-videos-section__header h2 { font-size: 46px; }
   .home-videos-section .video-gallery-grid { grid-template-columns: 1fr; }

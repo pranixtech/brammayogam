@@ -10,7 +10,7 @@ export const TRANSLATIONS = {
     },
     hero: {
       imageAlt: 'Guru Brahmashri Harish meditating before a mountain range', reflection: 'A spiritual reflection',
-      quote: 'Wherever darkness prevails, God reveals Himself as the light.', author: '— Guru Brahmashri Harish',
+      quote: 'Wherever darkness prevails, God reveals Himself as the light.', author: '— Guru Brahmashri Harish', socialLabel: 'Follow Brahmam Foundation',
     },
     activities: {
       error: 'Upcoming activities are temporarily unavailable.', kicker: 'What is ahead', title: 'Upcoming', titleEmphasis: 'Activities',
@@ -81,7 +81,7 @@ export const TRANSLATIONS = {
     },
     hero: {
       imageAlt: 'மலைத்தொடரின் முன் தியானத்தில் குரு பிரம்மஸ்ரீ ஹரீஷ்', reflection: 'ஆன்மீகச் சிந்தனை',
-      quote: 'இருள் சூழும் இடமெல்லாம், இறைவன் ஒளியாகத் தன்னை வெளிப்படுத்துகிறான்.', author: '— குரு பிரம்மஸ்ரீ ஹரீஷ்',
+      quote: 'இருள் சூழும் இடமெல்லாம், இறைவன் ஒளியாகத் தன்னை வெளிப்படுத்துகிறான்.', author: '— குரு பிரம்மஸ்ரீ ஹரீஷ்', socialLabel: 'பிரம்மம் அறக்கட்டளையைப் பின்தொடரவும்',
     },
     activities: {
       error: 'வரவிருக்கும் நிகழ்வுகள் தற்போது கிடைக்கவில்லை.', kicker: 'அடுத்து வருபவை', title: 'வரவிருக்கும்', titleEmphasis: 'நிகழ்வுகள்',
