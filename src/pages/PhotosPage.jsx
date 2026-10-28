@@ -1,32 +1,34 @@
 import { useEffect, useMemo, useState } from 'react'
 import { getGalleryPhotos, subscribeToGalleryUpdates } from '../services/galleryApi'
+import { useLanguage } from '../i18n/LanguageContext'
 
 const PHOTO_CATEGORIES = [
   {
     id: 'guru',
-    label: 'Guru',
-    description: 'Moments of guidance and spiritual presence.',
+    labelKey: 'guru',
+    descriptionKey: 'guruDescription',
   },
   {
     id: 'online-classes',
-    label: 'Online Classes',
-    description: 'Shared learning and online spiritual practice.',
+    labelKey: 'onlineClasses',
+    descriptionKey: 'onlineClassesDescription',
   },
   {
     id: 'annathanam',
-    label: 'Annathanam',
-    description: 'Service through food, care and compassion.',
+    labelKey: 'annathanam',
+    descriptionKey: 'annathanamDescription',
   },
   {
     id: 'others',
-    label: 'Others',
-    description: 'Gatherings, journeys and community moments.',
+    labelKey: 'others',
+    descriptionKey: 'othersDescription',
   },
 ]
 
 const PHOTOS_PER_PAGE = 12
 
 export function PhotosPage() {
+  const { t } = useLanguage()
   const [activeCategoryId, setActiveCategoryId] = useState(PHOTO_CATEGORIES[0].id)
   const [uploadedPhotos, setUploadedPhotos] = useState([])
   const [isLoading, setIsLoading] = useState(true)
@@ -60,7 +62,7 @@ export function PhotosPage() {
         .catch((error) => {
           if (error.name !== 'AbortError') {
             setUploadedPhotos([])
-            setLoadError('Photos are temporarily unavailable. Please try again shortly.')
+            setLoadError('unavailable')
           }
         })
         .finally(() => {
@@ -110,13 +112,13 @@ export function PhotosPage() {
   return (
     <section className="photos-page section-padding" aria-labelledby="photos-title">
       <header className="photos-page__header">
-        <p className="section-kicker">Moments along the path</p>
-        <h1 id="photos-title">Photo <em>gallery.</em></h1>
-        <p>Explore moments from the Brahmam Foundation journey through spiritual practice, learning and service.</p>
+        <p className="section-kicker">{t('photos.kicker')}</p>
+        <h1 id="photos-title">{t('photos.title')} <em>{t('photos.titleEmphasis')}</em></h1>
+        <p>{t('photos.description')}</p>
       </header>
 
-      <div className="photo-tabs" role="tablist" aria-label="Photo categories">
-        {PHOTO_CATEGORIES.map(({ id, label }) => {
+      <div className="photo-tabs" role="tablist" aria-label={t('photos.categories')}>
+        {PHOTO_CATEGORIES.map(({ id, labelKey }) => {
           const isActive = id === activeCategoryId
 
           return (
@@ -137,7 +139,7 @@ export function PhotosPage() {
                 setActiveCategoryId(id)
               }}
             >
-              {label}
+              {t(`photos.category.${labelKey}`)}
             </button>
           )
         })}
@@ -150,22 +152,22 @@ export function PhotosPage() {
         aria-labelledby={`photo-tab-${activeCategory.id}`}
       >
         <div className="photo-panel__heading">
-          <p className="section-kicker">Selected collection</p>
-          <h2>{activeCategory.label}</h2>
-          <p>{activeCategory.description}</p>
+          <p className="section-kicker">{t('photos.selected')}</p>
+          <h2>{t(`photos.category.${activeCategory.labelKey}`)}</h2>
+          <p>{t(`photos.category.${activeCategory.descriptionKey}`)}</p>
         </div>
 
-        {loadError && <p className="photo-panel__notice" role="status">{loadError}</p>}
+        {loadError && <p className="photo-panel__notice" role="status">{t('photos.unavailable')}</p>}
 
         {visiblePhotos.length > 0 ? (
           <>
-            <div className="photo-gallery-grid" aria-label={`${activeCategory.label} photo gallery`}>
+            <div className="photo-gallery-grid" aria-label={`${t(`photos.category.${activeCategory.labelKey}`)} ${t('photos.gallery')}`}>
               {paginatedPhotos.map((photo) => (
                 <figure className="photo-gallery-card" key={photo.id}>
                   <button
                     className="photo-gallery-card__button"
                     type="button"
-                    aria-label={`Preview ${photo.alt}`}
+                    aria-label={`${t('photos.preview')} ${photo.alt}`}
                     onClick={() => setPreviewPhoto(photo)}
                   >
                     <img src={photo.src} alt={photo.alt} loading="lazy" />
@@ -175,14 +177,14 @@ export function PhotosPage() {
             </div>
 
             {totalPages > 1 && (
-              <nav className="photo-pagination" aria-label={`${activeCategory.label} gallery pages`}>
+              <nav className="photo-pagination" aria-label={`${t(`photos.category.${activeCategory.labelKey}`)} ${t('photos.pages')}`}>
                 <button
                   className="photo-pagination__direction"
                   type="button"
                   disabled={currentPage === 1}
                   onClick={() => changePage(currentPage - 1)}
                 >
-                  <span aria-hidden="true">←</span> Previous
+                  <span aria-hidden="true">←</span> {t('photos.previous')}
                 </button>
 
                 <div className="photo-pagination__pages">
@@ -190,7 +192,7 @@ export function PhotosPage() {
                     <button
                       className={pageNumber === currentPage ? 'is-active' : undefined}
                       type="button"
-                      aria-label={`Go to page ${pageNumber}`}
+                      aria-label={`${t('photos.goToPage')} ${pageNumber}`}
                       aria-current={pageNumber === currentPage ? 'page' : undefined}
                       key={pageNumber}
                       onClick={() => changePage(pageNumber)}
@@ -206,19 +208,19 @@ export function PhotosPage() {
                   disabled={currentPage === totalPages}
                   onClick={() => changePage(currentPage + 1)}
                 >
-                  Next <span aria-hidden="true">→</span>
+                  {t('photos.next')} <span aria-hidden="true">→</span>
                 </button>
               </nav>
             )}
           </>
         ) : isLoading ? (
-          <p className="photo-panel__loading">Loading photos…</p>
+          <p className="photo-panel__loading">{t('photos.loading')}</p>
         ) : (
-          <div className="photo-placeholder-grid" aria-label={`${activeCategory.label} photos coming soon`}>
+          <div className="photo-placeholder-grid" aria-label={`${t(`photos.category.${activeCategory.labelKey}`)} ${t('photos.comingSoon')}`}>
             {Array.from({ length: 6 }, (_, index) => (
               <div className="photo-placeholder" key={`${activeCategory.id}-${index}`}>
                 <span aria-hidden="true">✦</span>
-                <p>Photo coming soon</p>
+                <p>{t('photos.comingSoon')}</p>
               </div>
             ))}
           </div>
@@ -230,7 +232,7 @@ export function PhotosPage() {
           className="photo-modal"
           role="dialog"
           aria-modal="true"
-          aria-label="Photo preview"
+          aria-label={t('photos.previewDialog')}
           onClick={(event) => {
             if (event.target === event.currentTarget) setPreviewPhoto(null)
           }}
@@ -239,7 +241,7 @@ export function PhotosPage() {
             <button
               className="photo-modal__close"
               type="button"
-              aria-label="Close photo preview"
+              aria-label={t('photos.closePreview')}
               autoFocus
               onClick={() => setPreviewPhoto(null)}
             >

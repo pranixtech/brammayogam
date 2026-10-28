@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import siddharIllustration from '../assets/slider/siddhar-illustration.jpeg'
 import yogiArchivalPortrait from '../assets/slider/yogi-archival-portrait.jpeg'
 import yogiPrayer from '../assets/slider/yogi-prayer.jpeg'
+import { useLanguage } from '../i18n/LanguageContext'
 
 const SLIDES = [
   {
@@ -20,6 +21,8 @@ const SLIDES = [
 
 export function ImageSliderSection() {
   const [activeSlide, setActiveSlide] = useState(0)
+  const { t } = useLanguage()
+  const localizedAlts = t('slider.alts')
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -32,12 +35,12 @@ export function ImageSliderSection() {
   }, [])
 
   return (
-    <section className="image-slider-section section-padding" id="full-story" aria-label="Spiritual image gallery">
+    <section className="image-slider-section section-padding" id="full-story" aria-label={t('slider.gallery')}>
       <div
         className="image-slider"
         role="region"
         aria-roledescription="carousel"
-        aria-label="Spiritual portraits"
+        aria-label={t('slider.portraits')}
       >
         <div className="image-slider__viewport">
           {SLIDES.map(({ src, alt }, index) => (
@@ -46,7 +49,7 @@ export function ImageSliderSection() {
               aria-hidden={index !== activeSlide}
               key={src}
             >
-              <img src={src} alt={index === activeSlide ? alt : ''} loading="lazy" />
+              <img src={src} alt={index === activeSlide ? localizedAlts[index] : ''} loading="lazy" />
             </figure>
           ))}
         </div>

@@ -52,6 +52,23 @@
   }
 
   .primary-navigation--open { opacity: 1; pointer-events: auto; transform: none; }
+  .primary-navigation .language-toggle {
+    width: min(100%, 360px);
+    min-height: 54px;
+    margin: 2px 0 18px;
+    padding: 5px;
+    background: rgba(221, 153, 52, 0.07);
+  }
+  .primary-navigation .language-toggle__option {
+    width: auto;
+    min-height: 42px;
+    padding: 0 22px;
+    border: 0;
+    font-size: 12px;
+    flex: 1 1 0;
+  }
+  .primary-navigation .language-toggle__option[lang='ta'] { font-size: 14px; }
+  .language-toggle__mark { font-size: 9px; }
   .primary-navigation a {
     width: min(100%, 360px);
     padding: 17px 8px;

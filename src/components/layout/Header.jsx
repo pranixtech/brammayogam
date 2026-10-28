@@ -2,10 +2,18 @@ import { useEffect, useRef, useState } from 'react'
 import { Brand } from '../common/Brand'
 import { NAVIGATION_ITEMS } from '../../data/siteContent'
 import { useScrollThreshold } from '../../hooks/useScrollThreshold'
+import { useLanguage } from '../../i18n/LanguageContext'
+
+const NAVIGATION_KEYS = {
+  '/#journey': 'journey', '/#spiritual-journey': 'bio', '/#guru': 'guru', '/#teachings': 'teachings',
+  '/yogam': 'yogam', '/class': 'class', '/registration': 'registration', '/feedback': 'feedback',
+  '/deeksha': 'deeksha', '/book': 'book', '/photos': 'photos', '/videos': 'videos', '/#purpose': 'purpose',
+}
 
 export function Header({ forceSolid = false }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const navigationRef = useRef(null)
+  const { language, setLanguage, t } = useLanguage()
   const isScrolled = useScrollThreshold()
   const closeMenu = () => {
     setIsMenuOpen(false)
@@ -42,7 +50,7 @@ export function Header({ forceSolid = false }) {
       <button
         className={`menu-button${isMenuOpen ? ' menu-button--open' : ''}`}
         type="button"
-        aria-label={isMenuOpen ? 'Close navigation' : 'Open navigation'}
+        aria-label={t(isMenuOpen ? 'navigation.close' : 'navigation.open')}
         aria-controls="primary-navigation"
         aria-expanded={isMenuOpen}
         onClick={() => setIsMenuOpen((currentValue) => !currentValue)}
@@ -55,19 +63,41 @@ export function Header({ forceSolid = false }) {
         ref={navigationRef}
         id="primary-navigation"
         className={`primary-navigation${isMenuOpen ? ' primary-navigation--open' : ''}`}
-        aria-label="Main navigation"
+        aria-label={t('navigation.label')}
       >
+        <div className="language-toggle" role="group" aria-label={t('language.label')}>
+          <button
+            className={`language-toggle__option${language === 'en' ? ' is-active' : ''}`}
+            type="button"
+            lang="en"
+            aria-pressed={language === 'en'}
+            onClick={() => setLanguage('en')}
+          >
+            {t('language.english')}
+          </button>
+          <span className="language-toggle__mark" aria-hidden="true">✦</span>
+          <button
+            className={`language-toggle__option${language === 'ta' ? ' is-active' : ''}`}
+            type="button"
+            lang="ta"
+            aria-pressed={language === 'ta'}
+            onClick={() => setLanguage('ta')}
+          >
+            {t('language.tamil')}
+          </button>
+        </div>
+
         {NAVIGATION_ITEMS.map(({ label, href, lang, featured, children }) => (
           children ? (
             <details className="navigation-dropdown" key={label}>
               <summary>
-                {label}
+                {t('navigation.gallery')}
                 <span aria-hidden="true">⌄</span>
               </summary>
               <div className="navigation-dropdown__menu">
                 {children.map((child) => (
                   <a href={child.href} key={child.href} onClick={closeMenu}>
-                    {child.label}
+                    {t(`navigation.${NAVIGATION_KEYS[child.href]}`)}
                   </a>
                 ))}
               </div>
@@ -80,7 +110,7 @@ export function Header({ forceSolid = false }) {
               lang={lang}
               onClick={closeMenu}
             >
-              {label}
+              {t(`navigation.${NAVIGATION_KEYS[href]}`) || label}
             </a>
           )
         ))}

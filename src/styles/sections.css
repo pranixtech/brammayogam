@@ -113,8 +113,7 @@
   position: relative;
   height: min(112vw, 740px);
   overflow: hidden;
-  border: 1px solid rgba(221, 153, 52, 0.28);
-  background: linear-gradient(145deg, #e6f4e9, #86c6e9);
+  background: transparent;
   box-shadow: 0 30px 90px rgba(70, 45, 28, 0.12);
 }
 
@@ -137,7 +136,7 @@
 .image-slider__slide img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .full-journey-section { background: var(--color-paper); }
@@ -152,9 +151,9 @@
   margin: 0;
   color: var(--color-wine);
   font-family: var(--font-display);
-  font-size: clamp(56px, 7vw, 106px);
+  font-size: clamp(48px, 5.5vw, 84px);
   font-weight: 400;
-  line-height: 0.96;
+  line-height: 1.08;
   letter-spacing: -0.04em;
 }
 

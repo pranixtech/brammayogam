@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { AdminVideoManager } from '../components/admin/AdminVideoManager'
+import { AdminActivitiesManager } from '../components/admin/AdminActivitiesManager'
 import { AdminSubmissionsPanel } from '../components/admin/AdminSubmissionsPanel'
 import { MainLogo } from '../components/common/MainLogo'
 import {
@@ -197,6 +198,14 @@ function AdminDashboard({ admin, onLogout }) {
           </button>
           <button
             type="button"
+            className={activeManager === 'activities' ? 'is-active' : ''}
+            aria-pressed={activeManager === 'activities'}
+            onClick={() => setActiveManager('activities')}
+          >
+            Upcoming Activities
+          </button>
+          <button
+            type="button"
             className={activeManager === 'registrations' ? 'is-active' : ''}
             aria-pressed={activeManager === 'registrations'}
             onClick={() => setActiveManager('registrations')}
@@ -327,6 +336,8 @@ function AdminDashboard({ admin, onLogout }) {
             deleteConfirmation="Remove this video from the homepage?"
           />
         )}
+
+        {activeManager === 'activities' && <AdminActivitiesManager />}
 
         {activeManager === 'registrations' && <AdminSubmissionsPanel kind="registrations" />}
         {activeManager === 'feedback' && <AdminSubmissionsPanel kind="feedback" />}

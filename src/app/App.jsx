@@ -10,26 +10,22 @@ import { PhotosPage } from '../pages/PhotosPage'
 import { RegistrationPage } from '../pages/RegistrationPage'
 import { VideosPage } from '../pages/VideosPage'
 import { YogamPage } from '../pages/YogamPage'
+import { useLanguage } from '../i18n/LanguageContext'
 
-const PAGE_TITLES = {
-  '/': 'Brahmam Foundation | The Inward Path',
-  '/class': 'Class | Brahmam Foundation',
-  '/registration': 'Online Class Registration | Brahmam Foundation',
-  '/feedback': 'Feedback | Brahmam Foundation',
-  '/deeksha': 'Deeksha | Brahmam Foundation',
-  '/book': 'Book | Brahmam Foundation',
-  '/photos': 'Photos | Brahmam Foundation',
-  '/videos': 'Videos | Brahmam Foundation',
-  '/yogam': 'யோகம் | Brahmam Foundation',
-  '/admin': 'Admin | Brahmam Foundation',
+const PAGE_TITLE_KEYS = {
+  '/class': 'class', '/registration': 'registration', '/feedback': 'feedback', '/deeksha': 'deeksha',
+  '/book': 'book', '/photos': 'photos', '/videos': 'videos', '/yogam': 'yogam',
 }
 
 export default function App() {
   const { hash, pathname } = useLocation()
+  const { language, t } = useLanguage()
   const isAdminPage = pathname === '/admin'
 
   useEffect(() => {
-    document.title = PAGE_TITLES[pathname] ?? PAGE_TITLES['/']
+    if (isAdminPage) document.title = 'Admin | Brahmam Foundation'
+    else if (pathname === '/') document.title = language === 'ta' ? 'பிரம்மம் அறக்கட்டளை | அகப்பயணத்தின் பாதை' : 'Brahmam Foundation | The Inward Path'
+    else document.title = `${t(`navigation.${PAGE_TITLE_KEYS[pathname]}`)} | ${language === 'ta' ? 'பிரம்மம் அறக்கட்டளை' : 'Brahmam Foundation'}`
 
     if (hash) {
       window.requestAnimationFrame(() => {
@@ -39,7 +35,7 @@ export default function App() {
     }
 
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
-  }, [hash, pathname])
+  }, [hash, isAdminPage, language, pathname, t])
 
   return (
     <div className="site-shell">
@@ -47,11 +43,11 @@ export default function App() {
       <main>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/class" element={<ComingSoonPage title="Class" action={{ href: '/registration', label: 'Register for online classes' }} />} />
+          <Route path="/class" element={<ComingSoonPage titleKey="class" action={{ href: '/registration', labelKey: 'comingSoon.register' }} />} />
           <Route path="/registration" element={<RegistrationPage />} />
           <Route path="/feedback" element={<FeedbackPage />} />
-          <Route path="/deeksha" element={<ComingSoonPage title="Deeksha" />} />
-          <Route path="/book" element={<ComingSoonPage title="Book" />} />
+          <Route path="/deeksha" element={<ComingSoonPage titleKey="deeksha" />} />
+          <Route path="/book" element={<ComingSoonPage titleKey="book" />} />
           <Route path="/photos" element={<PhotosPage />} />
           <Route path="/videos" element={<VideosPage />} />
           <Route path="/yogam" element={<YogamPage />} />

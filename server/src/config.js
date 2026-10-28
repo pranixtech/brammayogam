@@ -18,6 +18,7 @@ export const config = {
   cookieSecure: process.env.COOKIE_SECURE === 'true',
   uploadDirectory: process.env.UPLOAD_DIR ?? path.join(serverRoot, 'uploads'),
   maxUploadBytes: numberFromEnvironment('MAX_UPLOAD_BYTES', 10 * 1024 * 1024),
+  maxActivityUploadBytes: numberFromEnvironment('MAX_ACTIVITY_UPLOAD_BYTES', 100 * 1024 * 1024),
 }
 
 export function assertProductionConfiguration() {

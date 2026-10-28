@@ -43,7 +43,7 @@ docker compose up --build
 
 Always use the Docker website URL above for the admin. Port `4000` is also exposed so the Vite development server can proxy admin requests while running `npm run dev`.
 
-PostgreSQL data, including class registrations and feedback, and uploaded gallery images are stored in named Docker volumes. Uploaded JPG, PNG and WebP images are normalized to WebP and limited to 10 MB each. Admin inboxes show 20 submissions per page; public submissions are rate limited.
+PostgreSQL data, including class registrations and feedback, and uploaded media are stored in named Docker volumes. Gallery JPG, PNG and WebP images are normalized to WebP and limited to 10 MB each. The admin's Upcoming Activities tab accepts JPG, PNG, WebP, MP4 and WebM files up to 100 MB each. The homepage section remains hidden until its first activity is uploaded. Activity images are normalized to WebP, while activity videos are stored as local files. Admin inboxes show 20 submissions per page; public submissions are rate limited.
 
 ## Production deployment
 

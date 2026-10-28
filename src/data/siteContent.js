@@ -2,11 +2,10 @@ export const SITE_NAME = 'Brahmam Foundation'
 
 export const NAVIGATION_ITEMS = [
   { label: 'The journey', href: '/#journey' },
-  { label: 'Full story', href: '/#full-story' },
-  { label: 'Chapters', href: '/#chapters' },
+  { label: 'Bio', href: '/#spiritual-journey' },
   { label: 'The Guru', href: '/#guru' },
   { label: 'Teachings', href: '/#teachings' },
-  { label: 'யோகம்', href: '/yogam', lang: 'ta' },
+  { label: 'Bramma Yogam', href: '/yogam' },
   { label: 'Class', href: '/class' },
   { label: 'Registration Form', href: '/registration' },
   { label: 'Feedback', href: '/feedback' },

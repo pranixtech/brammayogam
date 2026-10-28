@@ -7,12 +7,14 @@ import { JourneySection } from '../sections/JourneySection'
 import { PlacesTicker } from '../sections/PlacesTicker'
 import { PurposeSection } from '../sections/PurposeSection'
 import { TeachingsSection } from '../sections/TeachingsSection'
+import { UpcomingActivitiesSection } from '../sections/UpcomingActivitiesSection'
 import { YogiEncounterSection } from '../sections/YogiEncounterSection'
 
 export function HomePage() {
   return (
     <>
       <HeroSection />
+      <UpcomingActivitiesSection />
       <HomeVideosSection />
       <JourneySection />
       <GuruSection />

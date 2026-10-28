@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
+import { useLanguage } from '../../i18n/LanguageContext'
 
 export function VideoGallery({ videos, ariaLabel = 'YouTube video gallery' }) {
   const [activeVideo, setActiveVideo] = useState(null)
+  const { t } = useLanguage()
 
   useEffect(() => {
     if (!activeVideo) return undefined
@@ -24,7 +26,7 @@ export function VideoGallery({ videos, ariaLabel = 'YouTube video gallery' }) {
       <div className="video-gallery-grid" aria-label={ariaLabel}>
         {videos.map((video) => (
           <article className="video-gallery-card" key={video.id}>
-            <button type="button" onClick={() => setActiveVideo(video)} aria-label={`Play ${video.title}`}>
+            <button type="button" onClick={() => setActiveVideo(video)} aria-label={`${t('videos.play')} ${video.title}`}>
               <span className="video-gallery-card__image">
                 <img src={video.thumbnail} alt="" loading="lazy" />
                 <span className="video-gallery-card__play" aria-hidden="true">▶</span>
@@ -44,7 +46,7 @@ export function VideoGallery({ videos, ariaLabel = 'YouTube video gallery' }) {
             aria-label={activeVideo.title}
             onMouseDown={(event) => event.stopPropagation()}
           >
-            <button className="video-modal__close" type="button" aria-label="Close video" onClick={() => setActiveVideo(null)}>×</button>
+            <button className="video-modal__close" type="button" aria-label={t('videos.close')} onClick={() => setActiveVideo(null)}>×</button>
             <div className="video-modal__frame">
               <iframe
                 src={`${activeVideo.embedUrl}?autoplay=1&rel=0`}

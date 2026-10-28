@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import yogiEncounterImage from '../assets/yogi-encounter.jpeg'
 import indoorGatheringImage from '../assets/yogi-encounter/gathering-indoors.jpeg'
 import forestGatheringImage from '../assets/yogi-encounter/gathering-forest.jpeg'
+import { useLanguage } from '../i18n/LanguageContext'
 
 const SLIDES = [
   {
@@ -21,6 +22,8 @@ const SLIDES = [
 const LOOPED_SLIDES = [SLIDES[SLIDES.length - 1], ...SLIDES, SLIDES[0]]
 
 export function YogiEncounterSection() {
+  const { t } = useLanguage()
+  const localizedAlts = t('yogi.alts')
   const [slidePosition, setSlidePosition] = useState(1)
   const [animate, setAnimate] = useState(true)
   const [isMoving, setIsMoving] = useState(false)
@@ -95,7 +98,7 @@ export function YogiEncounterSection() {
   return (
     <section className="yogi-encounter-section section-padding" aria-labelledby="yogi-encounter-title">
       <div className="yogi-encounter-section__layout">
-        <div className="yogi-encounter-carousel" role="region" aria-roledescription="carousel" aria-label="In the company of yogis">
+        <div className="yogi-encounter-carousel" role="region" aria-roledescription="carousel" aria-label={t('yogi.carousel')}>
           <div className="yogi-encounter-carousel__viewport" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
             <div
               className="yogi-encounter-carousel__track"
@@ -104,35 +107,35 @@ export function YogiEncounterSection() {
             >
               {LOOPED_SLIDES.map((slide, index) => (
                 <figure className="yogi-encounter-carousel__slide" key={`${slide.src}-${index}`} aria-hidden={index !== slidePosition}>
-                  <img src={slide.src} alt={index === slidePosition ? slide.alt : ''} loading="lazy" />
+                  <img src={slide.src} alt={index === slidePosition ? localizedAlts[(index - 1 + SLIDES.length) % SLIDES.length] : ''} loading="lazy" />
                 </figure>
               ))}
             </div>
           </div>
           <div className="yogi-encounter-carousel__controls">
-            <button type="button" onClick={() => moveSlide(-1)} disabled={isMoving} aria-label="Previous yogi photo">←</button>
-            <div className="yogi-encounter-carousel__dots" aria-label="Choose a yogi photo">
+            <button type="button" onClick={() => moveSlide(-1)} disabled={isMoving} aria-label={t('yogi.previous')}>←</button>
+            <div className="yogi-encounter-carousel__dots" aria-label={t('yogi.choose')}>
               {SLIDES.map((slide, index) => (
                 <button
                   type="button"
                   key={slide.src}
                   className={index === activeIndex ? 'is-active' : ''}
-                  aria-label={`Show photo ${index + 1} of ${SLIDES.length}`}
+                  aria-label={`${t('yogi.show')} ${index + 1} ${t('yogi.of')} ${SLIDES.length}`}
                   aria-current={index === activeIndex ? 'true' : undefined}
                   onClick={() => selectSlide(index)}
                   disabled={isMoving}
                 />
               ))}
             </div>
-            <button type="button" onClick={() => moveSlide(1)} disabled={isMoving} aria-label="Next yogi photo">→</button>
+            <button type="button" onClick={() => moveSlide(1)} disabled={isMoving} aria-label={t('yogi.next')}>→</button>
           </div>
         </div>
 
         <div className="yogi-encounter-section__words">
-          <p className="section-kicker">In the company of a yogi</p>
-          <h2 id="yogi-encounter-title">A moment of quiet wisdom.</h2>
+          <p className="section-kicker">{t('yogi.kicker')}</p>
+          <h2 id="yogi-encounter-title">{t('yogi.title')}</h2>
           <blockquote>
-            “In the presence of a yogi, silence becomes a teaching—and the inward journey finds its way.”
+            {t('yogi.quote')}
           </blockquote>
         </div>
       </div>

@@ -1,0 +1,45 @@
+.upcoming-activities {
+  background: var(--color-paper);
+}
+
+.upcoming-activities__inner { max-width: 1240px; margin-inline: auto; }
+.upcoming-activities__header { max-width: 760px; margin-bottom: clamp(32px, 4vw, 54px); }
+.upcoming-activities__header h2 { margin: 0; color: var(--color-wine); font-family: var(--font-display); font-size: clamp(46px, 6vw, 76px); font-weight: 400; line-height: 1.04; letter-spacing: -0.035em; }
+.upcoming-activities__header > p:last-child { margin: 20px 0 0; color: var(--color-muted); font-family: var(--font-serif); font-size: clamp(16px, 1.5vw, 20px); line-height: 1.6; }
+.upcoming-activities__notice { margin: 0 0 20px; color: #8b2f1e; }
+.upcoming-activities__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 2vw, 28px); }
+.upcoming-activity { min-width: 0; overflow: hidden; border: 1px solid var(--color-line); background: #fffdf8; box-shadow: 0 14px 38px rgba(73, 42, 24, 0.06); }
+.upcoming-activity__media { display: grid; aspect-ratio: 4 / 3; overflow: hidden; background: #eee3d0; place-items: center; }
+.upcoming-activity__media img, .upcoming-activity__media video { display: block; width: 100%; height: 100%; object-fit: cover; }
+.upcoming-activity__media video { background: #211c1a; }
+.upcoming-activity__copy { min-height: 150px; padding: clamp(20px, 2.5vw, 30px); }
+.upcoming-activity__copy .section-kicker { font-size: 10px; }
+.upcoming-activity__copy h3 { margin: 14px 0 0; color: var(--color-ink); font-family: var(--font-display); font-size: clamp(24px, 2.5vw, 34px); font-weight: 400; line-height: 1.15; overflow-wrap: anywhere; }
+.upcoming-activity__copy p { margin: 14px 0 0; color: var(--color-muted); font-family: var(--font-serif); font-size: 15px; line-height: 1.55; white-space: pre-line; overflow-wrap: anywhere; }
+
+.admin-activities__fields { display: grid; grid-template-columns: 1fr 1.4fr 1fr; gap: 16px; margin-bottom: 24px; align-items: start; }
+.admin-activities__field { display: grid; gap: 10px; color: var(--color-ink); font-size: 12px; font-weight: 700; letter-spacing: 0.04em; }
+.admin-activities__field small { color: var(--color-muted); font-weight: 500; letter-spacing: 0; }
+.admin-activities__field input, .admin-activities__field textarea { width: 100%; min-width: 0; padding: 12px 14px; border: 1px solid rgba(120, 91, 63, 0.27); border-radius: 3px; background: #fff; color: var(--color-ink); font: 15px var(--font-body); }
+.admin-activities__field input:focus-visible, .admin-activities__field textarea:focus-visible { outline: 2px solid var(--color-wine); outline-offset: 2px; }
+.admin-activities__file input { font-size: 12px; }
+.admin-activities__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.admin-activities__card { min-width: 0; overflow: hidden; border: 1px solid var(--color-line); background: #fffdf8; }
+.admin-activities__preview { aspect-ratio: 4 / 3; background: #eee3d0; }
+.admin-activities__preview img, .admin-activities__preview video { display: block; width: 100%; height: 100%; object-fit: cover; }
+.admin-activities__card-copy { display: flex; padding: 16px; gap: 14px; justify-content: space-between; align-items: start; }
+.admin-activities__card-copy strong { color: var(--color-ink); font-family: var(--font-serif); font-size: 15px; overflow-wrap: anywhere; }
+.admin-activities__card-copy p { margin: 8px 0 0; color: var(--color-muted); font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; }
+.admin-activities__card-copy button { padding: 4px; border: 0; background: transparent; color: #a43d2c; cursor: pointer; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+
+@media (max-width: 900px) {
+  .upcoming-activities__grid, .admin-activities__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .admin-activities__fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .admin-activities__file { grid-column: 1 / -1; }
+}
+
+@media (max-width: 640px) {
+  .upcoming-activities__grid, .admin-activities__grid, .admin-activities__fields { grid-template-columns: 1fr; }
+  .admin-activities__file { grid-column: auto; }
+  .upcoming-activity__copy { min-height: 0; }
+}
