@@ -1,5 +1,5 @@
 import { ChaptersSection } from '../sections/ChaptersSection'
-import { GuruSection } from '../sections/GuruSection'
+import { ContributionSection } from '../sections/ContributionSection'
 import { HeroSection } from '../sections/HeroSection'
 import { HomeVideosSection } from '../sections/HomeVideosSection'
 import { ImageSliderSection } from '../sections/ImageSliderSection'
@@ -17,7 +17,7 @@ export function HomePage() {
       <UpcomingActivitiesSection />
       <HomeVideosSection />
       <JourneySection />
-      <GuruSection />
+      <ContributionSection />
       <YogiEncounterSection />
       <PlacesTicker />
       <ImageSliderSection />

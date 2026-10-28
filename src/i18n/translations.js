@@ -4,7 +4,7 @@ export const TRANSLATIONS = {
     language: { label: 'Choose site language', english: 'English', tamil: 'தமிழ்' },
     navigation: {
       label: 'Main navigation', open: 'Open navigation', close: 'Close navigation',
-      journey: 'The journey', bio: 'Bio', guru: 'The Guru', teachings: 'Teachings', yogam: 'Bramma Yogam',
+      journey: 'The journey', bio: 'Bio', contribution: 'Contribution', teachings: 'Teachings', yogam: 'Bramma Yogam',
       class: 'Class', registration: 'Registration Form', feedback: 'Feedback', deeksha: 'Deeksha', book: 'Book',
       gallery: 'Gallery', photos: 'Photos', videos: 'Videos', purpose: 'Our purpose',
     },
@@ -28,10 +28,10 @@ export const TRANSLATIONS = {
       title: 'Brahma Yogam – A Spiritual Journey Embraced by Millions of Souls Worldwide!',
       description: 'With over 10,000 practitioners in Malaysia alone, people across Singapore, India, USA, Dubai, Russia, the UK, Sri Lanka, Australia, and beyond are embracing Brahma Yoga Deeksha and its spiritual practices under the sacred guidance of Guru Brahmananda Sri Sivaprabakara Siddha Yogi Swamigal, revered as a Brahma Siddhar who lived for 723 years, experiencing spiritual awakening and profound divine experiences.',
     },
-    guru: {
-      kicker: 'Grace found the seeker', titleTop: 'The arrival', titleBottom: 'of the Guru',
-      lead: 'On a silent mountainside in Omallur, an elderly yogi appeared before a seeker in meditation and whispered the practice of Brahma Yoga into his ear.',
-      body: 'When the meditation ended, the elder was gone. Behind the curtain of the locked Jeeva Samadhi was his photograph—the same presence the seeker felt had offered help during his hour of need in Kashi. In that recognition, teacher and path became one.',
+    contribution: {
+      kicker: 'Compassion in action', title: 'Annathanam',
+      description: 'Sharing food with care is a sacred expression of service and compassion.',
+      mediaAlt: 'Brahmam Foundation Annathanam contribution',
     },
     yogi: {
       carousel: 'In the company of yogis', previous: 'Previous yogi photo', next: 'Next yogi photo', choose: 'Choose a yogi photo', show: 'Show photo', of: 'of',
@@ -50,6 +50,7 @@ export const TRANSLATIONS = {
       action: 'Return to stillness',
     },
     footer: { quote: 'Knowing oneself is the beginning of wisdom.' },
+    whatsapp: { label: 'Chat with Brahmam Foundation on WhatsApp' },
     photos: {
       kicker: 'Moments along the path', title: 'Photo', titleEmphasis: 'gallery.', description: 'Explore moments from the Brahmam Foundation journey through spiritual practice, learning and service.',
       categories: 'Photo categories', selected: 'Selected collection', unavailable: 'Photos are temporarily unavailable. Please try again shortly.', loading: 'Loading photos…',
@@ -75,7 +76,7 @@ export const TRANSLATIONS = {
     language: { label: 'தள மொழியைத் தேர்ந்தெடுக்கவும்', english: 'English', tamil: 'தமிழ்' },
     navigation: {
       label: 'முதன்மை வழிசெலுத்தல்', open: 'வழிசெலுத்தலைத் திறக்கவும்', close: 'வழிசெலுத்தலை மூடவும்',
-      journey: 'ஆன்மீகப் பயணம்', bio: 'வாழ்க்கை வரலாறு', guru: 'குரு', teachings: 'போதனைகள்', yogam: 'பிரம்ம யோகம்',
+      journey: 'ஆன்மீகப் பயணம்', bio: 'வாழ்க்கை வரலாறு', contribution: 'பங்களிப்பு', teachings: 'போதனைகள்', yogam: 'பிரம்ம யோகம்',
       class: 'வகுப்புகள்', registration: 'பதிவு படிவம்', feedback: 'கருத்து', deeksha: 'தீட்சை', book: 'நூல்',
       gallery: 'காட்சியகம்', photos: 'புகைப்படங்கள்', videos: 'காணொளிகள்', purpose: 'எங்கள் நோக்கம்',
     },
@@ -99,10 +100,10 @@ export const TRANSLATIONS = {
       title: 'பிரம்ம யோகம் – உலகெங்கும் இலட்சக்கணக்கான ஆன்மாக்கள் ஏற்றுக்கொண்ட ஆன்மீகப் பயணம்!',
       description: 'மலேசியாவில் மட்டும் 10,000-க்கும் மேற்பட்ட பயிற்சியாளர்களுடன், சிங்கப்பூர், இந்தியா, அமெரிக்கா, துபாய், ரஷ்யா, இங்கிலாந்து, இலங்கை, ஆஸ்திரேலியா மற்றும் பல நாடுகளைச் சேர்ந்தவர்கள், 723 ஆண்டுகள் வாழ்ந்த பிரம்ம சித்தராகப் போற்றப்படும் குரு பிரம்மானந்த ஸ்ரீ சிவபிரபாகர சித்த யோகி சுவாமிகளின் புனித வழிகாட்டுதலில் பிரம்ம யோக தீட்சையையும் அதன் ஆன்மீகப் பயிற்சிகளையும் ஏற்றுக்கொள்கிறார்கள்.',
     },
-    guru: {
-      kicker: 'தேடுபவரைக் கண்டடைந்த அருள்', titleTop: 'குருவின்', titleBottom: 'வருகை',
-      lead: 'ஓமல்லூரின் அமைதியான மலைச்சரிவில், தியானத்தில் இருந்த தேடுபவரின் முன் ஒரு முதிய யோகி தோன்றி, பிரம்ம யோகப் பயிற்சியை அவரது காதருகே உபதேசித்தார்.',
-      body: 'தியானம் முடிந்தபோது அந்த முதியவர் மறைந்திருந்தார். பூட்டப்பட்ட ஜீவசமாதியின் திரைக்குப் பின்னால் அவரது புகைப்படம் இருந்தது—காசியில் துன்ப நேரத்தில் உதவியதாகத் தேடுபவர் உணர்ந்த அதே இருப்பு. அந்த உணர்வில் குருவும் பாதையும் ஒன்றாயின.',
+    contribution: {
+      kicker: 'செயலில் கருணை', title: 'அன்னதானம்',
+      description: 'அன்புடன் உணவைப் பகிர்வது சேவையும் கருணையும் வெளிப்படும் புனிதச் செயலாகும்.',
+      mediaAlt: 'பிரம்மம் அறக்கட்டளையின் அன்னதானப் பங்களிப்பு',
     },
     yogi: {
       carousel: 'யோகிகளின் சந்நிதியில்', previous: 'முந்தைய யோகி புகைப்படம்', next: 'அடுத்த யோகி புகைப்படம்', choose: 'யோகி புகைப்படத்தைத் தேர்ந்தெடுக்கவும்', show: 'புகைப்படத்தைக் காண்க', of: '/',
@@ -121,6 +122,7 @@ export const TRANSLATIONS = {
       action: 'அமைதிக்குத் திரும்புங்கள்',
     },
     footer: { quote: 'தன்னை அறிவதே ஞானத்தின் தொடக்கம்.' },
+    whatsapp: { label: 'பிரம்மம் அறக்கட்டளையுடன் வாட்ஸ்அப்பில் உரையாடவும்' },
     photos: {
       kicker: 'பாதையின் தருணங்கள்', title: 'புகைப்படக்', titleEmphasis: 'காட்சியகம்', description: 'ஆன்மீகப் பயிற்சி, கற்றல் மற்றும் சேவையின் வழியே பிரம்மம் அறக்கட்டளையின் பயணத் தருணங்களைக் காணுங்கள்.',
       categories: 'புகைப்பட வகைகள்', selected: 'தேர்ந்தெடுக்கப்பட்ட தொகுப்பு', unavailable: 'புகைப்படங்கள் தற்போது கிடைக்கவில்லை. சிறிது நேரத்தில் மீண்டும் முயலவும்.', loading: 'புகைப்படங்கள் ஏற்றப்படுகின்றன…',

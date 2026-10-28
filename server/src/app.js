@@ -12,6 +12,7 @@ import { config } from './config.js'
 import { pool } from './db.js'
 import { ADMIN_COOKIE_NAME, authenticateAdmin } from './middleware/authenticateAdmin.js'
 import { activitiesRouter } from './routes/activities.js'
+import { contributionsRouter } from './routes/contributions.js'
 import { submissionsRouter } from './routes/submissions.js'
 
 const allowedMimeTypes = new Set(['image/jpeg', 'image/png', 'image/webp'])
@@ -103,6 +104,7 @@ export async function createApp() {
   app.use(cookieParser())
   app.use('/uploads', express.static(config.uploadDirectory, { immutable: true, maxAge: '30d', fallthrough: false }))
   app.use('/api', activitiesRouter)
+  app.use('/api', contributionsRouter)
   app.use('/api', submissionsRouter)
 
   app.get('/api/health', async (_request, response, next) => {

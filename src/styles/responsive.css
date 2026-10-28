@@ -143,9 +143,8 @@
 
 @media (max-width: 980px) {
 
-  .section-heading, .guru-section, .teachings-section { grid-template-columns: 1fr; }
+  .section-heading, .teachings-section { grid-template-columns: 1fr; }
   .section-heading { gap: 30px; }
-  .guru-section__copy { margin-inline: auto; text-align: center; }
   .yogi-encounter-section__layout { max-width: 690px; grid-template-columns: 1fr; gap: 42px; }
   .yogi-encounter-section__words { padding-block: 0; }
   .teachings-section__intro { margin-inline: auto; text-align: center; }
@@ -177,8 +176,7 @@
   .section-heading { margin-bottom: 50px; }
   .section-heading h2, .purpose-section h2 { font-size: 46px; }
 
-  .guru-section__copy h2, .teachings-section__intro h2 { font-size: 52px; }
-  .guru-section__lead { font-size: 18px; }
+  .teachings-section__intro h2 { font-size: 52px; }
   .yogi-encounter-section__layout { gap: 32px; }
   .yogi-encounter-section__words h2 { font-size: clamp(42px, 11vw, 58px); }
   .yogi-encounter-section__words blockquote { margin-top: 28px; font-size: 19px; }
@@ -254,6 +252,13 @@
 
   .site-footer { grid-template-columns: 1fr; gap: 22px; text-align: center; }
   .site-footer__brand, .site-footer__copyright { justify-self: center; }
+  .whatsapp-fab {
+    right: max(16px, env(safe-area-inset-right));
+    bottom: max(16px, env(safe-area-inset-bottom));
+    width: 52px;
+    height: 52px;
+  }
+  .whatsapp-fab svg { width: 30px; height: 30px; }
 }
 
 @media (max-width: 430px) {
@@ -275,7 +280,7 @@
   .primary-navigation { padding-inline: 22px; }
   .primary-navigation a { font-size: 14px; }
   .section-heading h2, .purpose-section h2 { font-size: 41px; }
-  .guru-section__copy h2, .teachings-section__intro h2 { font-size: 46px; }
+  .teachings-section__intro h2 { font-size: 46px; }
   .full-journey-section__header h2 { font-size: 46px; }
   .chapter-index a { font-size: 16px; grid-template-columns: 40px minmax(0, 1fr); }
   .chapter h3 { font-size: 36px; }
@@ -290,6 +295,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .mandala-rings span:nth-child(2), .places-ticker__track { animation: none; }
+  .mandala-rings span:nth-child(2), .places-ticker__track, .whatsapp-fab::before { animation: none; }
   * { transition-duration: 0.01ms !important; }
 }

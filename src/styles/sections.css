@@ -92,11 +92,7 @@
 .journey-section__content h2 { margin: 0; color: #fff; font-family: var(--font-display); font-size: clamp(38px, 5.3vw, 72px); font-weight: 400; line-height: 1.08; text-wrap: balance; }
 .journey-section__content p { max-width: 900px; margin: clamp(28px, 4vw, 48px) auto 0; color: #f0e7dd; font-family: var(--font-serif); font-size: clamp(17px, 1.65vw, 21px); line-height: 1.8; }
 
-.guru-section { display: grid; background: var(--color-paper); grid-template-columns: minmax(0, 900px); align-items: center; justify-content: center; text-align: center; }
-.guru-section__copy { max-width: 900px; margin-inline: auto; }
-.guru-section__copy h2, .teachings-section__intro h2 { margin: 0; color: var(--color-wine); font-family: var(--font-display); font-size: clamp(58px, 6vw, 90px); font-weight: 400; line-height: 0.98; letter-spacing: -0.035em; }
-.guru-section__lead { margin-top: 38px; color: var(--color-wine); font-family: var(--font-serif); font-size: 21px; line-height: 1.7; }
-.guru-section__copy > p:not(.section-kicker):not(.guru-section__lead) { color: var(--color-muted); font-family: var(--font-serif); font-size: 16px; line-height: 1.8; }
+.teachings-section__intro h2 { margin: 0; color: var(--color-wine); font-family: var(--font-display); font-size: clamp(58px, 6vw, 90px); font-weight: 400; line-height: 0.98; letter-spacing: -0.035em; }
 
 .yogi-encounter-section { background: var(--color-cream); }
 .yogi-encounter-section__layout { display: grid; width: min(100%, 1240px); margin-inline: auto; grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr); gap: clamp(40px, 7vw, 110px); align-items: center; }

@@ -71,6 +71,19 @@ export async function initializeDatabase() {
     CREATE INDEX IF NOT EXISTS upcoming_activities_created_idx
       ON upcoming_activities (created_at DESC, id DESC);
 
+    CREATE TABLE IF NOT EXISTS annathanam_contributions (
+      id BIGSERIAL PRIMARY KEY,
+      quote TEXT NOT NULL,
+      media_type TEXT NOT NULL CHECK (media_type IN ('image', 'video')),
+      file_name TEXT NOT NULL UNIQUE,
+      original_name TEXT NOT NULL,
+      file_size BIGINT NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    CREATE INDEX IF NOT EXISTS annathanam_contributions_created_idx
+      ON annathanam_contributions (created_at ASC, id ASC);
+
     CREATE TABLE IF NOT EXISTS class_registrations (
       id BIGSERIAL PRIMARY KEY,
       full_name TEXT NOT NULL,

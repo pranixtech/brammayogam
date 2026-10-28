@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { Footer } from '../components/layout/Footer'
 import { Header } from '../components/layout/Header'
+import { WhatsAppButton } from '../components/common/WhatsAppButton'
 import { ComingSoonPage } from '../pages/ComingSoonPage'
 import { AdminPage } from '../pages/AdminPage'
 import { FeedbackPage } from '../pages/FeedbackPage'
@@ -56,6 +57,7 @@ export default function App() {
         </Routes>
       </main>
       {!isAdminPage && <Footer />}
+      {!isAdminPage && <WhatsAppButton />}
     </div>
   )
 }

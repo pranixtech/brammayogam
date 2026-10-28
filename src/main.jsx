@@ -9,6 +9,7 @@ import './styles/base.css'
 import './styles/components.css'
 import './styles/sections.css'
 import './styles/activities.css'
+import './styles/contributions.css'
 import './styles/forms.css'
 import './styles/responsive.css'
 
