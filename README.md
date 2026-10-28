@@ -45,6 +45,16 @@ Always use the Docker website URL above for the admin. Port `4000` is also expos
 
 PostgreSQL data, including class registrations and feedback, and uploaded gallery images are stored in named Docker volumes. Uploaded JPG, PNG and WebP images are normalized to WebP and limited to 10 MB each. Admin inboxes show 20 submissions per page; public submissions are rate limited.
 
+## Production deployment
+
+Pushes to `main` automatically deploy through `.github/workflows/deploy-production.yml`.
+The workflow uses a repository secret for an SSH key restricted to the root-owned
+`deploy/production-deploy.sh` command on the VPS. That command verifies the
+requested commit is the current `main` tip, saves a PostgreSQL backup in
+`/root/bramma-yogam-backups`, synchronizes source files, rebuilds Docker
+services, and checks the API health endpoint. The production `.env`, database
+volume, and uploaded photos remain on the VPS.
+
 ## Quality checks
 
 ```bash
