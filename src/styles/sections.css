@@ -158,7 +158,7 @@
 .image-slider__slide img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .full-journey-section { background: var(--color-paper); }
