@@ -69,11 +69,12 @@ router.post('/registrations', submissionLimiter, async (request, response, next)
   const fullName = textField(request.body?.fullName, 120)
   const email = textField(request.body?.email, 254)?.toLowerCase()
   const phone = textField(request.body?.phone, 30)
-  const country = textField(request.body?.country, 80)
+  const city = textField(request.body?.city, 80)
+  const country = String(request.body?.country ?? '').trim().toUpperCase()
   const message = textField(request.body?.message ?? '', 100)
   const requestedClassId = request.body?.classId ? Number(request.body.classId) : null
 
-  if (!fullName || !email || !phone || !country || !message) {
+  if (!fullName || !email || !phone || !city || !message || !/^[A-Z]{2}$/.test(country)) {
     return response.status(400).json({ message: 'Complete the required fields and keep the purpose under 100 characters.' })
   }
   if (!validEmail(email)) return response.status(400).json({ message: 'Enter a valid email address.' })
@@ -93,9 +94,9 @@ router.post('/registrations', submissionLimiter, async (request, response, next)
       classTitle = classResult.rows[0].title
     }
     await pool.query(
-      `INSERT INTO class_registrations (full_name, email, phone, country, message, class_id, class_title)
-       VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-      [fullName, email, phone, country, message, requestedClassId, classTitle],
+      `INSERT INTO class_registrations (full_name, email, phone, city, country, message, class_id, class_title)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+      [fullName, email, phone, city, country, message, requestedClassId, classTitle],
     )
     return response.status(201).json({ message: 'Registration received. We will contact you about online classes.' })
   } catch (error) {
@@ -123,7 +124,7 @@ router.get('/admin/registrations', authenticateAdmin, async (request, response, 
   try {
     const result = await listSubmissions(
       'class_registrations',
-      'id, full_name AS "fullName", email, phone, country, message, class_id AS "classId", class_title AS "classTitle", created_at AS "createdAt"',
+      'id, full_name AS "fullName", email, phone, city, country, message, class_id AS "classId", class_title AS "classTitle", created_at AS "createdAt"',
       page,
     )
     response.set('Cache-Control', 'no-store')

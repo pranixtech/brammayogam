@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { getCountryName } from '../../data/countries'
 import { getAdminRegistrations } from '../../services/submissionsApi'
 
 const PANELS = {
@@ -85,7 +86,8 @@ export function AdminSubmissionsPanel({ kind }) {
               <dl>
                 <div><dt>Email</dt><dd><a href={`mailto:${item.email}`}>{item.email}</a></dd></div>
                 <div><dt>Phone / WhatsApp</dt><dd><a href={`tel:${item.phone.replace(/[^\d+]/g, '')}`}>{item.phone}</a></dd></div>
-                <div><dt>City / Country</dt><dd>{item.country}</dd></div>
+                <div><dt>City</dt><dd>{item.city || '—'}</dd></div>
+                <div><dt>Country</dt><dd>{getCountryName(item.country)}</dd></div>
                 <div><dt>Selected class</dt><dd>{item.classTitle || 'General enquiry'}</dd></div>
               </dl>
               {item.message && (

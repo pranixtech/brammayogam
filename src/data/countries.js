@@ -29,3 +29,12 @@ export function getCountryOptions(language) {
       return first.label.localeCompare(second.label, language)
     })
 }
+
+export function getCountryName(code, language = 'en') {
+  if (!/^[A-Z]{2}$/.test(String(code))) return code
+  try {
+    return new Intl.DisplayNames([language], { type: 'region' }).of(code) ?? code
+  } catch {
+    return code
+  }
+}

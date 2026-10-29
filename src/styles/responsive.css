@@ -262,7 +262,7 @@
   .site-footer__brand, .site-footer__copyright { justify-self: center; }
   .whatsapp-fab {
     right: max(16px, env(safe-area-inset-right));
-    bottom: max(64px, calc(env(safe-area-inset-bottom) + 54px));
+    bottom: calc(env(safe-area-inset-bottom) + 2.5in);
     width: 52px;
     height: 52px;
   }

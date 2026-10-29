@@ -120,6 +120,7 @@ export async function initializeDatabase() {
       full_name TEXT NOT NULL,
       email TEXT NOT NULL,
       phone TEXT NOT NULL,
+      city TEXT NOT NULL DEFAULT '',
       country TEXT NOT NULL,
       message TEXT NOT NULL DEFAULT '',
       consent_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -131,6 +132,7 @@ export async function initializeDatabase() {
 
     ALTER TABLE class_registrations ADD COLUMN IF NOT EXISTS class_id BIGINT;
     ALTER TABLE class_registrations ADD COLUMN IF NOT EXISTS class_title TEXT NOT NULL DEFAULT '';
+    ALTER TABLE class_registrations ADD COLUMN IF NOT EXISTS city TEXT NOT NULL DEFAULT '';
 
     CREATE TABLE IF NOT EXISTS visitor_feedback (
       id BIGSERIAL PRIMARY KEY,

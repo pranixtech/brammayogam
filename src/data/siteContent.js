@@ -5,7 +5,7 @@ export const NAVIGATION_ITEMS = [
   { label: 'Bio', href: '/bio' },
   { label: 'Contribution', href: '/#contribution' },
   { label: 'Teachings', href: '/#teachings' },
-  { label: 'Bramma Yogam', href: '/yogam' },
+  { label: 'Brahma Yogam', href: '/yogam' },
   { label: 'Class', href: '/class' },
   { label: 'Registration Form', href: '/registration' },
   { label: 'Feedback', href: '/feedback' },

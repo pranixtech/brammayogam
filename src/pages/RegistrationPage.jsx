@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { getCountryOptions } from '../data/countries'
 import { submitRegistration } from '../services/submissionsApi'
 import { getUpcomingClasses, subscribeToUpcomingClasses } from '../services/classesApi'
 import { useLanguage } from '../i18n/useLanguage'
 
-const EMPTY_FORM = { fullName: '', email: '', phone: '', country: '', message: '', classId: '', consent: false }
+const EMPTY_FORM = { fullName: '', email: '', phone: '', city: '', country: '', message: '', classId: '', consent: false }
 
 export function RegistrationPage() {
   const { language, t } = useLanguage()
@@ -14,6 +15,7 @@ export function RegistrationPage() {
   const [classesError, setClassesError] = useState('')
   const [showSuccess, setShowSuccess] = useState(false)
   const [previewClass, setPreviewClass] = useState(null)
+  const countryOptions = useMemo(() => getCountryOptions(language), [language])
 
   useEffect(() => {
     let controller
@@ -141,8 +143,15 @@ export function RegistrationPage() {
               <input name="phone" type="tel" value={form.phone} maxLength="30" autoComplete="tel" required onChange={updateField} />
             </label>
             <label>
-              <span>{t('forms.cityCountry')}</span>
-              <input name="country" value={form.country} maxLength="80" autoComplete="country-name" required onChange={updateField} />
+              <span>{t('forms.city')}</span>
+              <input name="city" value={form.city} maxLength="80" autoComplete="address-level2" required onChange={updateField} />
+            </label>
+            <label>
+              <span>{t('forms.country')}</span>
+              <select name="country" value={form.country} autoComplete="country" required onChange={updateField}>
+                <option value="">{t('forms.selectCountry')}</option>
+                {countryOptions.map(({ code, label }) => <option value={code} key={code}>{label}</option>)}
+              </select>
             </label>
             <label className="submission-form__full">
               <span>{t('forms.joiningPurpose')}</span>

@@ -4,7 +4,7 @@ export const TRANSLATIONS = {
     language: { label: 'Choose site language', english: 'English', tamil: 'தமிழ்' },
     navigation: {
       label: 'Main navigation', open: 'Open navigation', close: 'Close navigation',
-      journey: 'The journey', bio: 'Bio', contribution: 'Contribution', teachings: 'Teachings', yogam: 'Bramma Yogam',
+      journey: 'The journey', bio: 'Bio', contribution: 'Contribution', teachings: 'Teachings', yogam: 'Brahma Yogam',
       class: 'Class', registration: 'Upcoming Classes', feedback: 'Feedback', deeksha: 'Deeksha', book: 'Book',
       gallery: 'Gallery', photos: 'Photos', videos: 'Videos', purpose: 'Our purpose',
     },
@@ -32,6 +32,9 @@ export const TRANSLATIONS = {
       kicker: 'Compassion in action', title: 'Annathanam',
       description: 'Sharing food with care is a sacred expression of service and compassion.',
       mediaAlt: 'Brahmam Foundation Annathanam contribution',
+    },
+    classesPromo: {
+      kicker: 'Upcoming classes', title: 'Choose your next practice.', description: 'Explore our upcoming online classes and reserve your place.', carousel: 'Upcoming class advertisements', previous: 'Previous class', next: 'Next class', choose: 'Choose a class advertisement', show: 'Show class', register: 'Register now',
     },
     payment: {
       kicker: 'Contribute securely', title: 'Support Annathanam', description: 'Your contribution helps serve nourishing meals with care and compassion.',
@@ -69,7 +72,7 @@ export const TRANSLATIONS = {
       },
     },
     forms: {
-      required: 'Fields marked with * are required.', optional: 'optional', fullName: 'Full name *', email: 'Email address', phone: 'Phone / WhatsApp *', cityCountry: 'City / Country *', joiningPurpose: 'What is your purpose for joining this class? *',
+      required: 'Fields marked with * are required.', optional: 'optional', fullName: 'Full name *', email: 'Email address', phone: 'Phone / WhatsApp *', city: 'City *', country: 'Country *', selectCountry: 'Select your country', cityCountry: 'City / Country *', joiningPurpose: 'What is your purpose for joining this class? *',
       registrationKicker: 'Online classes', registrationTitle: 'Begin your practice with us.', registrationIntro: 'Choose an upcoming class and share your details. Our team will contact you with the next steps.', upcomingClasses: 'Upcoming classes', selectClass: 'Select class', swipeClasses: 'Swipe to explore and select a class category.', previewClass: 'Preview', classPreview: 'Class preview', selectThisClass: 'Select class', selectedClass: 'Selected', closePreview: 'Close class preview', classesEmpty: 'Upcoming classes will appear here after they are added by the admin.', classesError: 'Upcoming classes are temporarily unavailable.', chooseClassError: 'Please select a class before submitting.', registrationForm: 'Registration form', consent: 'I agree to be contacted about online classes using the details above.', sendingRegistration: 'Sending registration…', submitRegistration: 'Submit registration', registrationSuccess: 'Your registration has been received. Our team will contact you soon.', thankYou: 'Thank you', contactShortly: 'Our team will contact you shortly.', close: 'Close',
       feedbackKicker: 'Community experiences', feedbackTitle: 'Words from our community.', feedbackIntro: 'Read experiences and reflections shared by members of the Brahmam Foundation community.', feedbackLoading: 'Loading feedback…', feedbackEmpty: 'No feedback has been published yet.', feedbackError: 'Feedback is temporarily unavailable. Please try again shortly.', feedbackForm: 'Feedback form', feedbackNote: 'Your message is shared with the Brahmam Foundation admin team.', yourName: 'Your name *', rating: 'Rating', chooseRating: 'Choose a rating', excellent: 'Excellent', good: 'Good', okay: 'Okay', better: 'Could be better', improvement: 'Needs improvement', yourFeedback: 'Your feedback *', sendingFeedback: 'Sending feedback…', sendFeedback: 'Send feedback', feedbackSuccess: 'Thank you. Your feedback has been received.',
       submitError: 'Unable to submit the form. Please check your details and try again.',
@@ -111,6 +114,9 @@ export const TRANSLATIONS = {
       description: 'அன்புடன் உணவைப் பகிர்வது, சேவையையும் கருணையையும் வெளிப்படுத்தும் புனிதச் செயலாகும்.',
       mediaAlt: 'பிரம்மம் அறக்கட்டளையின் அன்னதானப் பங்களிப்பு',
     },
+    classesPromo: {
+      kicker: 'வரவிருக்கும் வகுப்புகள்', title: 'உங்கள் அடுத்த பயிற்சியைத் தேர்ந்தெடுக்கவும்.', description: 'வரவிருக்கும் இணையவழி வகுப்புகளைப் பார்த்து உங்கள் இடத்தைப் பதிவு செய்யுங்கள்.', carousel: 'வரவிருக்கும் வகுப்பு அறிவிப்புகள்', previous: 'முந்தைய வகுப்பு', next: 'அடுத்த வகுப்பு', choose: 'வகுப்பு அறிவிப்பைத் தேர்ந்தெடுக்கவும்', show: 'வகுப்பைக் காட்டவும்', register: 'இப்போதே பதிவு செய்யுங்கள்',
+    },
     payment: {
       kicker: 'பாதுகாப்பாகப் பங்களியுங்கள்', title: 'அன்னதானத்திற்கு உதவுங்கள்', description: 'உங்கள் பங்களிப்பு, அன்புடனும் அக்கறையுடனும் உணவு வழங்க உதவுகிறது.',
       donate: 'நன்கொடை வழங்குங்கள்', close: 'நன்கொடைப் படிவத்தை மூடவும்',
@@ -147,7 +153,7 @@ export const TRANSLATIONS = {
       },
     },
     forms: {
-      required: '* குறியீடு உள்ள புலங்கள் கட்டாயமானவை.', optional: 'விருப்பமானது', fullName: 'முழுப் பெயர் *', email: 'மின்னஞ்சல் முகவரி', phone: 'தொலைபேசி / வாட்ஸ்அப் *', cityCountry: 'நகரம் / நாடு *', joiningPurpose: 'இந்த வகுப்பில் சேர்வதற்கான உங்கள் நோக்கம் என்ன? *',
+      required: '* குறியீடு உள்ள புலங்கள் கட்டாயமானவை.', optional: 'விருப்பமானது', fullName: 'முழுப் பெயர் *', email: 'மின்னஞ்சல் முகவரி', phone: 'தொலைபேசி / வாட்ஸ்அப் *', city: 'நகரம் *', country: 'நாடு *', selectCountry: 'உங்கள் நாட்டைத் தேர்ந்தெடுக்கவும்', cityCountry: 'நகரம் / நாடு *', joiningPurpose: 'இந்த வகுப்பில் சேர்வதற்கான உங்கள் நோக்கம் என்ன? *',
       registrationKicker: 'இணையவழி வகுப்புகள்', registrationTitle: 'எங்களுடன் உங்கள் பயிற்சியைத் தொடங்குங்கள்.', registrationIntro: 'வரவிருக்கும் வகுப்பைத் தேர்ந்தெடுத்து உங்கள் விவரங்களைப் பகிருங்கள். அடுத்தகட்ட நடைமுறைகள் குறித்து எங்கள் குழு உங்களைத் தொடர்புகொள்ளும்.', upcomingClasses: 'வரவிருக்கும் வகுப்புகள்', selectClass: 'வகுப்பைத் தேர்ந்தெடுக்கவும்', swipeClasses: 'வகுப்பு வகைகளைப் பார்த்துத் தேர்ந்தெடுக்க இடது அல்லது வலது பக்கம் நகர்த்தவும்.', previewClass: 'முன்னோட்டம்', classPreview: 'வகுப்பு முன்னோட்டம்', selectThisClass: 'வகுப்பைத் தேர்ந்தெடுக்கவும்', selectedClass: 'தேர்ந்தெடுக்கப்பட்டது', closePreview: 'வகுப்பு முன்னோட்டத்தை மூடவும்', classesEmpty: 'நிர்வாகப் பகுதியில் சேர்க்கப்பட்ட பிறகு வரவிருக்கும் வகுப்புகள் இங்கே தோன்றும்.', classesError: 'வரவிருக்கும் வகுப்புகள் தற்போது கிடைக்கவில்லை.', chooseClassError: 'சமர்ப்பிப்பதற்கு முன் ஒரு வகுப்பைத் தேர்ந்தெடுக்கவும்.', registrationForm: 'பதிவுப் படிவம்', consent: 'மேலே அளித்த விவரங்களைப் பயன்படுத்தி, இணையவழி வகுப்புகள் குறித்து என்னைத் தொடர்புகொள்ளச் சம்மதிக்கிறேன்.', sendingRegistration: 'பதிவு அனுப்பப்படுகிறது…', submitRegistration: 'பதிவைச் சமர்ப்பிக்கவும்', registrationSuccess: 'உங்கள் பதிவு பெறப்பட்டுள்ளது. எங்கள் குழு விரைவில் உங்களைத் தொடர்புகொள்ளும்.', thankYou: 'நன்றி', contactShortly: 'எங்கள் குழு விரைவில் உங்களைத் தொடர்புகொள்ளும்.', close: 'மூடவும்',
       feedbackKicker: 'சமூகத்தின் அனுபவங்கள்', feedbackTitle: 'நம் சமூகத்தின் கருத்துகள்', feedbackIntro: 'பிரம்மம் அறக்கட்டளை சமூக உறுப்பினர்கள் பகிர்ந்த அனுபவங்களையும் எண்ணங்களையும் படியுங்கள்.', feedbackLoading: 'கருத்துகள் ஏற்றப்படுகின்றன…', feedbackEmpty: 'கருத்துகள் எதுவும் இதுவரை வெளியிடப்படவில்லை.', feedbackError: 'கருத்துகள் தற்போது கிடைக்கவில்லை. சிறிது நேரத்தில் மீண்டும் முயலவும்.', feedbackForm: 'கருத்துப் படிவம்', feedbackNote: 'உங்கள் செய்தி பிரம்மம் அறக்கட்டளையின் நிர்வாகக் குழுவுடன் பகிரப்படும்.', yourName: 'உங்கள் பெயர் *', rating: 'மதிப்பீடு', chooseRating: 'மதிப்பீட்டைத் தேர்ந்தெடுக்கவும்', excellent: 'மிகச் சிறப்பு', good: 'நன்று', okay: 'சரி', better: 'மேம்படுத்தலாம்', improvement: 'மேம்பாடு தேவை', yourFeedback: 'உங்கள் கருத்து *', sendingFeedback: 'கருத்து அனுப்பப்படுகிறது…', sendFeedback: 'கருத்தை அனுப்பவும்', feedbackSuccess: 'நன்றி. உங்கள் கருத்து பெறப்பட்டுள்ளது.',
       submitError: 'படிவத்தைச் சமர்ப்பிக்க முடியவில்லை. உங்கள் விவரங்களைச் சரிபார்த்து மீண்டும் முயலவும்.',
