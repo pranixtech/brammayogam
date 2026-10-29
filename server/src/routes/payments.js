@@ -75,6 +75,7 @@ router.post('/payments/orders', createPaymentLimiter, async (request, response, 
   const amount = Number(request.body?.amount)
   const donorName = String(request.body?.name ?? '').trim().replace(/\s+/g, ' ').slice(0, 100)
   const donorPhone = cleanPhone(request.body?.phone)
+  const donorCountry = String(request.body?.country ?? '').trim().toUpperCase()
   const donorEmail = cleanEmail(request.body?.email)
 
   const amountInPaise = amount * 100
@@ -83,6 +84,7 @@ router.post('/payments/orders', createPaymentLimiter, async (request, response, 
   }
   if (donorName.length < 2) return response.status(400).json({ message: 'Enter your full name.' })
   if (!donorPhone) return response.status(400).json({ message: 'Enter a valid phone number with country code.' })
+  if (!/^[A-Z]{2}$/.test(donorCountry)) return response.status(400).json({ message: 'Select your country.' })
   if (donorEmail === null) return response.status(400).json({ message: 'Enter a valid email address.' })
 
   const orderId = `annathanam_${Date.now()}_${crypto.randomBytes(5).toString('hex')}`
@@ -93,9 +95,9 @@ router.post('/payments/orders', createPaymentLimiter, async (request, response, 
   try {
     await pool.query(
       `INSERT INTO annathanam_payments
-       (order_id, amount, currency, donor_name, donor_email, donor_phone, status)
-       VALUES ($1, $2, 'INR', $3, $4, $5, 'CREATED')`,
-      [orderId, amount.toFixed(2), donorName, donorEmail, donorPhone],
+       (order_id, amount, currency, donor_name, donor_email, donor_phone, donor_country, status)
+       VALUES ($1, $2, 'INR', $3, $4, $5, $6, 'CREATED')`,
+      [orderId, amount.toFixed(2), donorName, donorEmail, donorPhone, donorCountry],
     )
 
     const order = await cashfreeRequest('/orders', {

@@ -27,7 +27,7 @@
 .primary-navigation { display: flex; align-items: center; gap: clamp(14px, 1.8vw, 30px); }
 .primary-navigation a { color: #56443b; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-decoration: none; text-transform: uppercase; transition: color var(--transition-fast); }
 .primary-navigation a:hover { color: var(--color-saffron); }
-.primary-navigation a[lang='ta'] { font-family: 'Noto Serif Tamil', Georgia, serif; letter-spacing: 0.03em; }
+.primary-navigation a[lang='ta'] { font-family: var(--font-body); letter-spacing: 0.03em; }
 .language-toggle {
   display: inline-flex;
   min-height: 38px;
@@ -53,7 +53,7 @@
   cursor: pointer;
 }
 .primary-navigation .language-toggle__option:hover { color: var(--color-wine); }
-.primary-navigation .language-toggle__option[lang='ta'] { font-family: 'Noto Serif Tamil', Georgia, serif; }
+.primary-navigation .language-toggle__option[lang='ta'] { font-family: var(--font-body); }
 .primary-navigation .language-toggle__option.is-active {
   background: var(--color-wine);
   color: #fffaf1;

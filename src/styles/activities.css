@@ -32,14 +32,28 @@
 .admin-activities__card-copy p { margin: 8px 0 0; color: var(--color-muted); font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; }
 .admin-activities__card-copy button { padding: 4px; border: 0; background: transparent; color: #a43d2c; cursor: pointer; font-size: 11px; font-weight: 700; text-transform: uppercase; }
 
+.admin-classes__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.admin-classes__card { overflow: hidden; border: 1px solid var(--color-line); background: #fffdf8; }
+.admin-classes__card img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+.admin-classes__card > div { display: flex; min-height: 64px; padding: 14px 16px; align-items: center; justify-content: space-between; gap: 12px; }
+.admin-classes__card strong { color: var(--color-ink); font-size: 14px; line-height: 1.4; }
+.admin-classes__card button { padding: 7px 10px; border: 1px solid rgba(164, 61, 44, 0.28); border-radius: 3px; background: transparent; color: #a43d2c; cursor: pointer; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+.admin-class-preview { display: grid; max-width: 520px; margin: 0 0 22px; overflow: hidden; border: 1px solid var(--color-line); border-radius: 4px; background: #f7efe2; }
+.admin-class-preview img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+.admin-class-preview figcaption { display: flex; padding: 12px 14px; align-items: center; justify-content: space-between; gap: 12px; }
+.admin-class-preview strong { color: var(--color-ink); font-size: 12px; }
+.admin-class-preview span { color: var(--color-muted); font-size: 11px; overflow-wrap: anywhere; text-align: right; }
+
 @media (max-width: 900px) {
-  .upcoming-activities__grid, .admin-activities__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .upcoming-activities__grid, .admin-activities__grid, .admin-classes__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .admin-activities__fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .admin-activities__file { grid-column: 1 / -1; }
 }
 
 @media (max-width: 640px) {
-  .upcoming-activities__grid, .admin-activities__grid, .admin-activities__fields { grid-template-columns: 1fr; }
+  .upcoming-activities__grid, .admin-activities__grid, .admin-activities__fields, .admin-classes__grid { grid-template-columns: 1fr; }
   .admin-activities__file { grid-column: auto; }
   .upcoming-activity__copy { min-height: 0; }
+  .admin-class-preview figcaption { align-items: flex-start; flex-direction: column; }
+  .admin-class-preview span { text-align: left; }
 }

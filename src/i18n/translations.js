@@ -5,7 +5,7 @@ export const TRANSLATIONS = {
     navigation: {
       label: 'Main navigation', open: 'Open navigation', close: 'Close navigation',
       journey: 'The journey', bio: 'Bio', contribution: 'Contribution', teachings: 'Teachings', yogam: 'Bramma Yogam',
-      class: 'Class', registration: 'Registration Form', feedback: 'Feedback', deeksha: 'Deeksha', book: 'Book',
+      class: 'Class', registration: 'Upcoming Classes', feedback: 'Feedback', deeksha: 'Deeksha', book: 'Book',
       gallery: 'Gallery', photos: 'Photos', videos: 'Videos', purpose: 'Our purpose',
     },
     hero: {
@@ -25,8 +25,8 @@ export const TRANSLATIONS = {
       play: 'Play', close: 'Close video',
     },
     journey: {
-      title: 'Brahma Yogam – A Spiritual Journey Embraced by Millions of Souls Worldwide!',
-      description: 'With over 10,000 practitioners in Malaysia alone, people across Singapore, India, USA, Dubai, Russia, the UK, Sri Lanka, Australia, and beyond are embracing Brahma Yoga Deeksha and its spiritual practices under the sacred guidance of Guru Brahmananda Sri Sivaprabakara Siddha Yogi Swamigal, revered as a Brahma Siddhar who lived for 723 years, experiencing spiritual awakening and profound divine experiences.',
+      title: 'Brahma Yoga – A Spiritual Journey Embraced by Millions of Souls Worldwide!',
+      description: 'Over 10,000 seekers in Malaysia alone have received Brahma Yoga Deeksha and benefited from its practices. Across India, Sri Lanka, Singapore, the USA, Dubai, Russia, the UK, France, Australia, and beyond, many continue to embrace the Brahma Yoga Deeksha and teachings of Guru Brahmananda Sri Sivaprabakara Siddha Yogi Swamigal, revered as a Brahma Siddhar who lived for 723 years, experiencing spiritual awakening and divine experiences.',
     },
     contribution: {
       kicker: 'Compassion in action', title: 'Annathanam',
@@ -36,7 +36,7 @@ export const TRANSLATIONS = {
     payment: {
       kicker: 'Contribute securely', title: 'Support Annathanam', description: 'Your contribution helps serve nourishing meals with care and compassion.',
       donate: 'Donate', close: 'Close donation form',
-      amount: 'Contribution amount *', name: 'Full name *', phone: 'Phone number *', email: 'Email address', pay: 'Continue to secure payment', processing: 'Please wait…', secure: 'Secure checkout powered by Cashfree. UPI, cards, net banking and supported wallets are available.',
+      amount: 'Contribution amount *', name: 'Full name *', phone: 'Phone number *', country: 'Country *', selectCountry: 'Select your country', email: 'Email address', pay: 'Continue to secure payment', processing: 'Please wait…', secure: 'Secure checkout powered by Cashfree. UPI, cards, net banking and supported wallets are available.',
       creating: 'Preparing secure checkout…', verifying: 'Verifying your payment…', redirecting: 'Opening secure checkout…', success: 'Thank you. Your Annathanam contribution was successful.', pending: 'Your payment is pending or was not completed. If money was debited, please check again shortly.', error: 'Payment could not be started. Please check your details and try again.', verifyError: 'We could not verify the payment yet. Please contact the foundation if money was debited.', notConfigured: 'Online contributions are being configured and are not available yet.',
     },
     yogi: {
@@ -69,8 +69,8 @@ export const TRANSLATIONS = {
       },
     },
     forms: {
-      required: 'Fields marked with * are required.', optional: 'optional', fullName: 'Full name *', email: 'Email address', phone: 'Phone / WhatsApp *', country: 'Country *', notes: 'Questions or notes',
-      registrationKicker: 'Online classes', registrationTitle: 'Begin your practice with us.', registrationIntro: 'Share your details to register your interest in Brahmam Foundation’s online classes. Our team will contact you with the next steps.', registrationForm: 'Registration form', consent: 'I agree to be contacted about online classes using the details above.', sendingRegistration: 'Sending registration…', submitRegistration: 'Submit registration', registrationSuccess: 'Your registration has been received. Our team will contact you soon.',
+      required: 'Fields marked with * are required.', optional: 'optional', fullName: 'Full name *', email: 'Email address', phone: 'Phone / WhatsApp *', cityCountry: 'City / Country *', joiningPurpose: 'What is your purpose for joining this class? *',
+      registrationKicker: 'Online classes', registrationTitle: 'Begin your practice with us.', registrationIntro: 'Choose an upcoming class and share your details. Our team will contact you with the next steps.', upcomingClasses: 'Upcoming classes', selectClass: 'Select class', swipeClasses: 'Swipe to explore and select a class category.', previewClass: 'Preview', classPreview: 'Class preview', selectThisClass: 'Select class', selectedClass: 'Selected', closePreview: 'Close class preview', classesEmpty: 'Upcoming classes will appear here after they are added by the admin.', classesError: 'Upcoming classes are temporarily unavailable.', chooseClassError: 'Please select a class before submitting.', registrationForm: 'Registration form', consent: 'I agree to be contacted about online classes using the details above.', sendingRegistration: 'Sending registration…', submitRegistration: 'Submit registration', registrationSuccess: 'Your registration has been received. Our team will contact you soon.', thankYou: 'Thank you', contactShortly: 'Our team will contact you shortly.', close: 'Close',
       feedbackKicker: 'Community experiences', feedbackTitle: 'Words from our community.', feedbackIntro: 'Read experiences and reflections shared by members of the Brahmam Foundation community.', feedbackLoading: 'Loading feedback…', feedbackEmpty: 'No feedback has been published yet.', feedbackError: 'Feedback is temporarily unavailable. Please try again shortly.', feedbackForm: 'Feedback form', feedbackNote: 'Your message is shared with the Brahmam Foundation admin team.', yourName: 'Your name *', rating: 'Rating', chooseRating: 'Choose a rating', excellent: 'Excellent', good: 'Good', okay: 'Okay', better: 'Could be better', improvement: 'Needs improvement', yourFeedback: 'Your feedback *', sendingFeedback: 'Sending feedback…', sendFeedback: 'Send feedback', feedbackSuccess: 'Thank you. Your feedback has been received.',
       submitError: 'Unable to submit the form. Please check your details and try again.',
     },
@@ -83,7 +83,7 @@ export const TRANSLATIONS = {
     navigation: {
       label: 'முதன்மை வழிசெலுத்தல்', open: 'வழிசெலுத்தலைத் திறக்கவும்', close: 'வழிசெலுத்தலை மூடவும்',
       journey: 'ஆன்மீகப் பயணம்', bio: 'வாழ்க்கை வரலாறு', contribution: 'பங்களிப்பு', teachings: 'போதனைகள்', yogam: 'பிரம்ம யோகம்',
-      class: 'வகுப்புகள்', registration: 'பதிவுப் படிவம்', feedback: 'கருத்துப் பதிவு', deeksha: 'தீட்சை', book: 'நூல்',
+      class: 'வகுப்புகள்', registration: 'வரவிருக்கும் வகுப்புகள்', feedback: 'கருத்துப் பதிவு', deeksha: 'தீட்சை', book: 'நூல்',
       gallery: 'காட்சியகம்', photos: 'புகைப்படங்கள்', videos: 'காணொளிகள்', purpose: 'எங்கள் நோக்கம்',
     },
     hero: {
@@ -103,8 +103,8 @@ export const TRANSLATIONS = {
       play: 'இயக்கவும்', close: 'காணொளியை மூடவும்',
     },
     journey: {
-      title: 'பிரம்ம யோகம் – உலகெங்கிலும் இலட்சக்கணக்கான ஆன்மாக்கள் ஏற்றுக்கொண்ட ஆன்மீகப் பயணம்!',
-      description: 'மலேசியாவில் மட்டும் 10,000-க்கும் மேற்பட்ட பயிற்சியாளர்கள் உள்ளனர். சிங்கப்பூர், இந்தியா, அமெரிக்கா, துபாய், ரஷ்யா, இங்கிலாந்து, இலங்கை, ஆஸ்திரேலியா உள்ளிட்ட பல நாடுகளைச் சேர்ந்தவர்கள், 723 ஆண்டுகள் வாழ்ந்த பிரம்ம சித்தராகப் போற்றப்படும் குரு பிரம்மானந்த ஸ்ரீ சிவபிரபாகர சித்த யோகி சுவாமிகளின் புனித வழிகாட்டுதலில் பிரம்ம யோக தீட்சையைப் பெற்று, அதன் ஆன்மீகப் பயிற்சிகளை மேற்கொள்கின்றனர்.',
+      title: 'உலகெங்கும் லட்சக்கணக்கான ஆன்மாக்களின் ஆன்மீகப் பயணமாகப் பிரம்ம யோகம் திகழ்கிறது!',
+      description: 'மலேசியாவில் மட்டும் 10,000-க்கும் மேற்பட்ட ஆன்மாக்கள் பிரம்ம யோக தீட்சை பெற்று பயனடைந்துள்ளனர். இந்தியா, இலங்கை, சிங்கப்பூர், அமெரிக்கா, துபாய், ரஷ்யா, இங்கிலாந்து, பிரான்ஸ், ஆஸ்திரேலியா உள்ளிட்ட பல்வேறு நாடுகளிலும் பலர் 723 ஆண்டுகள் வாழ்ந்த பிரம்ம சித்தராகப் போற்றப்படும் குரு பிரம்மானந்த ஸ்ரீ சிவ பிரபாகர சித்த யோகி சுவாமிகளின் பிரம்ம யோக தீட்சை மற்றும் பயிற்சிகளைப் பெற்று ஆன்மீக, ஆத்ம மற்றும் இறை அனுபவங்களைப் பெற்று வருகின்றனர்.',
     },
     contribution: {
       kicker: 'செயலில் கருணை', title: 'அன்னதானம்',
@@ -114,7 +114,7 @@ export const TRANSLATIONS = {
     payment: {
       kicker: 'பாதுகாப்பாகப் பங்களியுங்கள்', title: 'அன்னதானத்திற்கு உதவுங்கள்', description: 'உங்கள் பங்களிப்பு, அன்புடனும் அக்கறையுடனும் உணவு வழங்க உதவுகிறது.',
       donate: 'நன்கொடை வழங்குங்கள்', close: 'நன்கொடைப் படிவத்தை மூடவும்',
-      amount: 'பங்களிப்புத் தொகை *', name: 'முழுப் பெயர் *', phone: 'தொலைபேசி எண் *', email: 'மின்னஞ்சல் முகவரி', pay: 'பாதுகாப்பான பணம் செலுத்துதலுக்குத் தொடரவும்', processing: 'காத்திருக்கவும்…', secure: 'Cashfree மூலம் பாதுகாப்பான பணம் செலுத்துதல். UPI, அட்டைகள், இணைய வங்கிச் சேவை மற்றும் ஆதரவுள்ள மின்பணப் பைகள் கிடைக்கும்.',
+      amount: 'பங்களிப்புத் தொகை *', name: 'முழுப் பெயர் *', phone: 'தொலைபேசி எண் *', country: 'நாடு *', selectCountry: 'உங்கள் நாட்டைத் தேர்ந்தெடுக்கவும்', email: 'மின்னஞ்சல் முகவரி', pay: 'பாதுகாப்பான பணம் செலுத்துதலுக்குத் தொடரவும்', processing: 'காத்திருக்கவும்…', secure: 'Cashfree மூலம் பாதுகாப்பான பணம் செலுத்துதல். UPI, அட்டைகள், இணைய வங்கிச் சேவை மற்றும் ஆதரவுள்ள மின்பணப் பைகள் கிடைக்கும்.',
       creating: 'பாதுகாப்பான பணம் செலுத்தும் பகுதி தயாராகிறது…', verifying: 'உங்கள் பணப்பரிவர்த்தனை சரிபார்க்கப்படுகிறது…', redirecting: 'பாதுகாப்பான பணம் செலுத்தும் பகுதி திறக்கப்படுகிறது…', success: 'நன்றி. உங்கள் அன்னதானப் பங்களிப்பு வெற்றிகரமாகப் பெறப்பட்டது.', pending: 'உங்கள் பணப்பரிவர்த்தனை நிலுவையில் உள்ளது அல்லது முடிக்கப்படவில்லை. பணம் பிடித்தம் செய்யப்பட்டிருந்தால், சிறிது நேரம் கழித்து மீண்டும் சரிபார்க்கவும்.', error: 'பணம் செலுத்துதலைத் தொடங்க முடியவில்லை. விவரங்களைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்.', verifyError: 'பணப்பரிவர்த்தனையை இப்போது சரிபார்க்க முடியவில்லை. பணம் பிடித்தம் செய்யப்பட்டிருந்தால் அறக்கட்டளையைத் தொடர்புகொள்ளவும்.', notConfigured: 'இணையவழிப் பங்களிப்பு வசதி தயார்படுத்தப்பட்டு வருகிறது; இப்போது கிடைக்கவில்லை.',
     },
     yogi: {
@@ -147,8 +147,8 @@ export const TRANSLATIONS = {
       },
     },
     forms: {
-      required: '* குறியீடு உள்ள புலங்கள் கட்டாயமானவை.', optional: 'விருப்பமானது', fullName: 'முழுப் பெயர் *', email: 'மின்னஞ்சல் முகவரி', phone: 'தொலைபேசி / வாட்ஸ்அப் *', country: 'நாடு *', notes: 'கேள்விகள் அல்லது குறிப்புகள்',
-      registrationKicker: 'இணையவழி வகுப்புகள்', registrationTitle: 'எங்களுடன் உங்கள் பயிற்சியைத் தொடங்குங்கள்.', registrationIntro: 'பிரம்மம் அறக்கட்டளையின் இணையவழி வகுப்புகளில் சேர்வதற்கு உங்கள் விவரங்களைப் பகிருங்கள். அடுத்தகட்ட நடைமுறைகள் குறித்து எங்கள் குழு உங்களைத் தொடர்புகொள்ளும்.', registrationForm: 'பதிவுப் படிவம்', consent: 'மேலே அளித்த விவரங்களைப் பயன்படுத்தி, இணையவழி வகுப்புகள் குறித்து என்னைத் தொடர்புகொள்ளச் சம்மதிக்கிறேன்.', sendingRegistration: 'பதிவு அனுப்பப்படுகிறது…', submitRegistration: 'பதிவைச் சமர்ப்பிக்கவும்', registrationSuccess: 'உங்கள் பதிவு பெறப்பட்டுள்ளது. எங்கள் குழு விரைவில் உங்களைத் தொடர்புகொள்ளும்.',
+      required: '* குறியீடு உள்ள புலங்கள் கட்டாயமானவை.', optional: 'விருப்பமானது', fullName: 'முழுப் பெயர் *', email: 'மின்னஞ்சல் முகவரி', phone: 'தொலைபேசி / வாட்ஸ்அப் *', cityCountry: 'நகரம் / நாடு *', joiningPurpose: 'இந்த வகுப்பில் சேர்வதற்கான உங்கள் நோக்கம் என்ன? *',
+      registrationKicker: 'இணையவழி வகுப்புகள்', registrationTitle: 'எங்களுடன் உங்கள் பயிற்சியைத் தொடங்குங்கள்.', registrationIntro: 'வரவிருக்கும் வகுப்பைத் தேர்ந்தெடுத்து உங்கள் விவரங்களைப் பகிருங்கள். அடுத்தகட்ட நடைமுறைகள் குறித்து எங்கள் குழு உங்களைத் தொடர்புகொள்ளும்.', upcomingClasses: 'வரவிருக்கும் வகுப்புகள்', selectClass: 'வகுப்பைத் தேர்ந்தெடுக்கவும்', swipeClasses: 'வகுப்பு வகைகளைப் பார்த்துத் தேர்ந்தெடுக்க இடது அல்லது வலது பக்கம் நகர்த்தவும்.', previewClass: 'முன்னோட்டம்', classPreview: 'வகுப்பு முன்னோட்டம்', selectThisClass: 'வகுப்பைத் தேர்ந்தெடுக்கவும்', selectedClass: 'தேர்ந்தெடுக்கப்பட்டது', closePreview: 'வகுப்பு முன்னோட்டத்தை மூடவும்', classesEmpty: 'நிர்வாகப் பகுதியில் சேர்க்கப்பட்ட பிறகு வரவிருக்கும் வகுப்புகள் இங்கே தோன்றும்.', classesError: 'வரவிருக்கும் வகுப்புகள் தற்போது கிடைக்கவில்லை.', chooseClassError: 'சமர்ப்பிப்பதற்கு முன் ஒரு வகுப்பைத் தேர்ந்தெடுக்கவும்.', registrationForm: 'பதிவுப் படிவம்', consent: 'மேலே அளித்த விவரங்களைப் பயன்படுத்தி, இணையவழி வகுப்புகள் குறித்து என்னைத் தொடர்புகொள்ளச் சம்மதிக்கிறேன்.', sendingRegistration: 'பதிவு அனுப்பப்படுகிறது…', submitRegistration: 'பதிவைச் சமர்ப்பிக்கவும்', registrationSuccess: 'உங்கள் பதிவு பெறப்பட்டுள்ளது. எங்கள் குழு விரைவில் உங்களைத் தொடர்புகொள்ளும்.', thankYou: 'நன்றி', contactShortly: 'எங்கள் குழு விரைவில் உங்களைத் தொடர்புகொள்ளும்.', close: 'மூடவும்',
       feedbackKicker: 'சமூகத்தின் அனுபவங்கள்', feedbackTitle: 'நம் சமூகத்தின் கருத்துகள்', feedbackIntro: 'பிரம்மம் அறக்கட்டளை சமூக உறுப்பினர்கள் பகிர்ந்த அனுபவங்களையும் எண்ணங்களையும் படியுங்கள்.', feedbackLoading: 'கருத்துகள் ஏற்றப்படுகின்றன…', feedbackEmpty: 'கருத்துகள் எதுவும் இதுவரை வெளியிடப்படவில்லை.', feedbackError: 'கருத்துகள் தற்போது கிடைக்கவில்லை. சிறிது நேரத்தில் மீண்டும் முயலவும்.', feedbackForm: 'கருத்துப் படிவம்', feedbackNote: 'உங்கள் செய்தி பிரம்மம் அறக்கட்டளையின் நிர்வாகக் குழுவுடன் பகிரப்படும்.', yourName: 'உங்கள் பெயர் *', rating: 'மதிப்பீடு', chooseRating: 'மதிப்பீட்டைத் தேர்ந்தெடுக்கவும்', excellent: 'மிகச் சிறப்பு', good: 'நன்று', okay: 'சரி', better: 'மேம்படுத்தலாம்', improvement: 'மேம்பாடு தேவை', yourFeedback: 'உங்கள் கருத்து *', sendingFeedback: 'கருத்து அனுப்பப்படுகிறது…', sendFeedback: 'கருத்தை அனுப்பவும்', feedbackSuccess: 'நன்றி. உங்கள் கருத்து பெறப்பட்டுள்ளது.',
       submitError: 'படிவத்தைச் சமர்ப்பிக்க முடியவில்லை. உங்கள் விவரங்களைச் சரிபார்த்து மீண்டும் முயலவும்.',
     },

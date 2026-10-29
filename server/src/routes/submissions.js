@@ -70,22 +70,32 @@ router.post('/registrations', submissionLimiter, async (request, response, next)
   const email = textField(request.body?.email, 254)?.toLowerCase()
   const phone = textField(request.body?.phone, 30)
   const country = textField(request.body?.country, 80)
-  const message = textField(request.body?.message ?? '', 1000)
+  const message = textField(request.body?.message ?? '', 100)
+  const requestedClassId = request.body?.classId ? Number(request.body.classId) : null
 
-  if (!fullName || !email || !phone || !country || message === null) {
-    return response.status(400).json({ message: 'Complete the required fields and keep the message under 1,000 characters.' })
+  if (!fullName || !email || !phone || !country || !message) {
+    return response.status(400).json({ message: 'Complete the required fields and keep the purpose under 100 characters.' })
   }
   if (!validEmail(email)) return response.status(400).json({ message: 'Enter a valid email address.' })
   if (!validPhone(phone)) return response.status(400).json({ message: 'Enter a valid phone or WhatsApp number.' })
+  if (requestedClassId !== null && (!Number.isSafeInteger(requestedClassId) || requestedClassId <= 0)) {
+    return response.status(400).json({ message: 'Choose a valid upcoming class.' })
+  }
   if (request.body?.consent !== true) {
     return response.status(400).json({ message: 'Please agree to be contacted about online classes.' })
   }
 
   try {
+    let classTitle = ''
+    if (requestedClassId !== null) {
+      const classResult = await pool.query('SELECT title FROM upcoming_classes WHERE id = $1', [requestedClassId])
+      if (!classResult.rows[0]) return response.status(400).json({ message: 'The selected class is no longer available.' })
+      classTitle = classResult.rows[0].title
+    }
     await pool.query(
-      `INSERT INTO class_registrations (full_name, email, phone, country, message)
-       VALUES ($1, $2, $3, $4, $5)`,
-      [fullName, email, phone, country, message],
+      `INSERT INTO class_registrations (full_name, email, phone, country, message, class_id, class_title)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+      [fullName, email, phone, country, message, requestedClassId, classTitle],
     )
     return response.status(201).json({ message: 'Registration received. We will contact you about online classes.' })
   } catch (error) {
@@ -113,7 +123,7 @@ router.get('/admin/registrations', authenticateAdmin, async (request, response, 
   try {
     const result = await listSubmissions(
       'class_registrations',
-      'id, full_name AS "fullName", email, phone, country, message, created_at AS "createdAt"',
+      'id, full_name AS "fullName", email, phone, country, message, class_id AS "classId", class_title AS "classTitle", created_at AS "createdAt"',
       page,
     )
     response.set('Cache-Control', 'no-store')

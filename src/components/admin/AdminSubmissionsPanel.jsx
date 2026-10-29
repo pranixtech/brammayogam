@@ -85,9 +85,15 @@ export function AdminSubmissionsPanel({ kind }) {
               <dl>
                 <div><dt>Email</dt><dd><a href={`mailto:${item.email}`}>{item.email}</a></dd></div>
                 <div><dt>Phone / WhatsApp</dt><dd><a href={`tel:${item.phone.replace(/[^\d+]/g, '')}`}>{item.phone}</a></dd></div>
-                <div><dt>Country</dt><dd>{item.country}</dd></div>
+                <div><dt>City / Country</dt><dd>{item.country}</dd></div>
+                <div><dt>Selected class</dt><dd>{item.classTitle || 'General enquiry'}</dd></div>
               </dl>
-              {item.message && <p className="admin-submission-card__message">{item.message}</p>}
+              {item.message && (
+                <p className="admin-submission-card__message">
+                  <strong>Purpose for joining: </strong>
+                  {item.message}
+                </p>
+              )}
             </article>
           ))}
         </div>

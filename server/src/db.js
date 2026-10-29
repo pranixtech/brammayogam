@@ -71,6 +71,18 @@ export async function initializeDatabase() {
     CREATE INDEX IF NOT EXISTS upcoming_activities_created_idx
       ON upcoming_activities (created_at DESC, id DESC);
 
+    CREATE TABLE IF NOT EXISTS upcoming_classes (
+      id BIGSERIAL PRIMARY KEY,
+      title TEXT NOT NULL,
+      file_name TEXT NOT NULL UNIQUE,
+      original_name TEXT NOT NULL,
+      file_size BIGINT NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    CREATE INDEX IF NOT EXISTS upcoming_classes_created_idx
+      ON upcoming_classes (created_at DESC, id DESC);
+
     CREATE TABLE IF NOT EXISTS annathanam_contributions (
       id BIGSERIAL PRIMARY KEY,
       quote TEXT NOT NULL,
@@ -92,6 +104,7 @@ export async function initializeDatabase() {
       donor_name TEXT NOT NULL,
       donor_email TEXT NOT NULL DEFAULT '',
       donor_phone TEXT NOT NULL,
+      donor_country TEXT NOT NULL DEFAULT '',
       status TEXT NOT NULL DEFAULT 'CREATED',
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -99,6 +112,8 @@ export async function initializeDatabase() {
 
     CREATE INDEX IF NOT EXISTS annathanam_payments_created_idx
       ON annathanam_payments (created_at DESC);
+
+    ALTER TABLE annathanam_payments ADD COLUMN IF NOT EXISTS donor_country TEXT NOT NULL DEFAULT '';
 
     CREATE TABLE IF NOT EXISTS class_registrations (
       id BIGSERIAL PRIMARY KEY,
@@ -113,6 +128,9 @@ export async function initializeDatabase() {
 
     CREATE INDEX IF NOT EXISTS class_registrations_created_idx
       ON class_registrations (created_at DESC, id DESC);
+
+    ALTER TABLE class_registrations ADD COLUMN IF NOT EXISTS class_id BIGINT;
+    ALTER TABLE class_registrations ADD COLUMN IF NOT EXISTS class_title TEXT NOT NULL DEFAULT '';
 
     CREATE TABLE IF NOT EXISTS visitor_feedback (
       id BIGSERIAL PRIMARY KEY,

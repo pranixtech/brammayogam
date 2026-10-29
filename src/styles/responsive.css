@@ -147,8 +147,8 @@
   .section-heading { gap: 30px; }
   .yogi-encounter-section__layout { max-width: 690px; grid-template-columns: 1fr; gap: 42px; }
   .yogi-encounter-section__words { padding-block: 0; }
-  .teachings-section__intro { margin-inline: auto; text-align: center; }
-  .teachings-section__intro p:last-child { margin-inline: auto; }
+  .teachings-section__intro { margin-inline: 0; text-align: left; }
+  .teachings-section__intro p:last-child { margin-inline: 0; text-align: left; }
   .teaching-orbit { width: min(100%, 620px); margin: 20px auto 0; }
   .brahma-yogam-section__intro { grid-template-columns: 1fr; }
   .brahma-energy-grid { grid-template-columns: 1fr; }
@@ -161,9 +161,11 @@
 }
 
 @media (max-width: 620px) {
-  .section-padding { padding-inline: 20px; }
+  .section-padding { padding-inline: 18px; }
   .contribution-section__header h2,
-  .upcoming-activities__header h2 { font-size: 34px; line-height: 1.14; }
+  .upcoming-activities__header h2 { font-size: 28px; line-height: 1.25; text-align: left; }
+  .journey-section__content h2 { font-size: 22px; line-height: 1.35; text-align: left; }
+  .journey-section__content p { font-size: 15.5px; line-height: 1.8; text-align: left; }
   .photos-page__header h1,
   .videos-page__header h1 { font-size: 40px; line-height: 1.08; }
   .photo-panel__heading h2 { font-size: 32px; line-height: 1.12; }
@@ -286,13 +288,15 @@
   .primary-navigation { padding-inline: 22px; }
   .primary-navigation a { font-size: 14px; }
   .contribution-section__header h2,
-  .upcoming-activities__header h2 { font-size: 30px; }
+  .upcoming-activities__header h2 { font-size: 26px; line-height: 1.25; text-align: left; }
+  .journey-section__content h2 { font-size: 20px; line-height: 1.35; text-align: left; }
+  .journey-section__content p { font-size: 15px; line-height: 1.8; text-align: left; }
   .photos-page__header h1,
   .videos-page__header h1,
-  .coming-soon-page h1 { font-size: 36px; }
-  .section-heading h2, .purpose-section h2 { font-size: 32px; }
-  .teachings-section__intro h2 { font-size: 34px; }
-  .full-journey-section__header h2 { font-size: 34px; }
+  .coming-soon-page h1 { font-size: 32px; text-align: left; }
+  .section-heading h2, .purpose-section h2 { font-size: 28px; text-align: left; }
+  .teachings-section__intro h2 { font-size: 30px; text-align: left; }
+  .full-journey-section__header h2 { font-size: 30px; text-align: left; }
   .chapter-index a { font-size: 16px; grid-template-columns: 40px minmax(0, 1fr); }
   .chapter h3 { font-size: 30px; }
   .teaching-orbit { grid-template-columns: 1fr; }

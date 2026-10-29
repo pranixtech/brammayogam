@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { getCountryOptions } from '../../data/countries'
 import { useLanguage } from '../../i18n/useLanguage'
 import { createPaymentOrder, getPaymentOrder } from '../../services/paymentsApi'
 
 const CASHFREE_SDK_URL = 'https://sdk.cashfree.com/js/v3/cashfree.js'
-const EMPTY_FORM = { amount: '', name: '', phone: '', email: '' }
+const EMPTY_FORM = { amount: '', name: '', phone: '', country: '', email: '' }
 let sdkPromise
 
 function loadCashfreeSdk() {
@@ -31,6 +32,7 @@ export function AnnathanamPayment() {
   const [status, setStatus] = useState({ type: '', text: '' })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isOpen, setIsOpen] = useState(() => new URL(window.location.href).searchParams.has('cashfree_order_id'))
+  const countryOptions = useMemo(() => getCountryOptions(language), [language])
 
   const verifyOrder = async (orderId) => {
     setIsSubmitting(true)
@@ -155,6 +157,13 @@ export function AnnathanamPayment() {
               <label>
                 <span>{t('payment.phone')}</span>
                 <input name="phone" type="tel" value={form.phone} maxLength="18" autoComplete="tel" placeholder={language === 'ta' ? '+91 98765 43210' : '+91 98765 43210'} required onChange={updateField} />
+              </label>
+              <label>
+                <span>{t('payment.country')}</span>
+                <select name="country" value={form.country} autoComplete="country-name" required onChange={updateField}>
+                  <option value="">{t('payment.selectCountry')}</option>
+                  {countryOptions.map(({ code, label }) => <option value={code} key={code}>{label}</option>)}
+                </select>
               </label>
               <label>
                 <span>{t('payment.email')} <small>({t('forms.optional')})</small></span>
