@@ -156,6 +156,13 @@ export async function initializeDatabase() {
 
     CREATE INDEX IF NOT EXISTS published_feedback_created_idx
       ON published_feedback (created_at DESC, id DESC);
+
+    CREATE TABLE IF NOT EXISTS admin_credentials (
+      username TEXT PRIMARY KEY,
+      password_hash TEXT NOT NULL,
+      password_salt TEXT NOT NULL,
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
   `)
 
   for (const [id, label, description, sortOrder] of categories) {

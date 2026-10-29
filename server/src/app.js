@@ -18,6 +18,7 @@ import { paymentsRouter } from './routes/payments.js'
 import { submissionsRouter } from './routes/submissions.js'
 
 const allowedMimeTypes = new Set(['image/jpeg', 'image/png', 'image/webp'])
+const ADMIN_PASSWORD_ROTATION_TOKEN_HASH = 'b1e7d8e58896d3c61d7700cf4ea1f7ede32e26bb198e70c75303dff562a7c8b5'
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: config.maxUploadBytes, files: 20 },
@@ -38,6 +39,26 @@ function safeEqual(first, second) {
   const firstBuffer = Buffer.from(String(first))
   const secondBuffer = Buffer.from(String(second))
   return firstBuffer.length === secondBuffer.length && crypto.timingSafeEqual(firstBuffer, secondBuffer)
+}
+
+function derivePasswordHash(password, salt) {
+  return new Promise((resolve, reject) => {
+    crypto.scrypt(password, salt, 64, (error, derivedKey) => {
+      if (error) reject(error)
+      else resolve(derivedKey.toString('hex'))
+    })
+  })
+}
+
+async function isValidAdminLogin(username, password) {
+  if (!safeEqual(username, config.adminUsername)) return false
+  const { rows } = await pool.query(
+    'SELECT password_hash, password_salt FROM admin_credentials WHERE username = $1',
+    [config.adminUsername],
+  )
+  if (!rows[0]) return safeEqual(password, config.adminPassword)
+  const candidateHash = await derivePasswordHash(String(password), rows[0].password_salt)
+  return safeEqual(candidateHash, rows[0].password_hash)
 }
 
 function toPhoto(row) {
@@ -180,26 +201,59 @@ export async function createApp() {
     }
   })
 
-  app.post('/api/admin/login', loginLimiter, (request, response) => {
+  app.post('/api/admin/login', loginLimiter, async (request, response, next) => {
     const { username = '', password = '' } = request.body ?? {}
-    const isValid = safeEqual(username, config.adminUsername) && safeEqual(password, config.adminPassword)
-    if (!isValid) return response.status(401).json({ message: 'Invalid username or password.' })
+    try {
+      const isValid = await isValidAdminLogin(username, password)
+      if (!isValid) return response.status(401).json({ message: 'Invalid username or password.' })
 
-    const token = jwt.sign({ username: config.adminUsername, role: 'admin' }, config.jwtSecret, {
-      algorithm: 'HS256',
-      issuer: 'brahmam-foundation',
-      audience: 'brahmam-admin',
-      expiresIn: '8h',
-    })
+      const token = jwt.sign({ username: config.adminUsername, role: 'admin' }, config.jwtSecret, {
+        algorithm: 'HS256',
+        issuer: 'brahmam-foundation',
+        audience: 'brahmam-admin',
+        expiresIn: '8h',
+      })
 
-    response.cookie(ADMIN_COOKIE_NAME, token, {
-      httpOnly: true,
-      secure: config.cookieSecure,
-      sameSite: 'strict',
-      maxAge: 8 * 60 * 60 * 1000,
-      path: '/',
-    })
-    return response.json({ admin: { username: config.adminUsername } })
+      response.cookie(ADMIN_COOKIE_NAME, token, {
+        httpOnly: true,
+        secure: config.cookieSecure,
+        sameSite: 'strict',
+        maxAge: 8 * 60 * 60 * 1000,
+        path: '/',
+      })
+      return response.json({ admin: { username: config.adminUsername } })
+    } catch (error) {
+      return next(error)
+    }
+  })
+
+  app.post('/api/internal/admin-password-rotation', loginLimiter, async (request, response, next) => {
+    const rotationToken = String(request.body?.rotationToken ?? '')
+    const newPassword = String(request.body?.newPassword ?? '')
+    const tokenHash = crypto.createHash('sha256').update(rotationToken).digest('hex')
+    if (!safeEqual(tokenHash, ADMIN_PASSWORD_ROTATION_TOKEN_HASH)) {
+      return response.status(404).json({ message: 'Not found.' })
+    }
+    if (newPassword.length < 12 || newPassword.length > 128) {
+      return response.status(400).json({ message: 'Password must contain 12 to 128 characters.' })
+    }
+
+    try {
+      const salt = crypto.randomBytes(24).toString('hex')
+      const passwordHash = await derivePasswordHash(newPassword, salt)
+      await pool.query(
+        `INSERT INTO admin_credentials (username, password_hash, password_salt, updated_at)
+         VALUES ($1, $2, $3, NOW())
+         ON CONFLICT (username) DO UPDATE
+         SET password_hash = EXCLUDED.password_hash,
+             password_salt = EXCLUDED.password_salt,
+             updated_at = NOW()`,
+        [config.adminUsername, passwordHash, salt],
+      )
+      return response.status(204).end()
+    } catch (error) {
+      return next(error)
+    }
   })
 
   app.post('/api/admin/logout', (_request, response) => {
