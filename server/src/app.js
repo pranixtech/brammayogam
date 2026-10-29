@@ -16,6 +16,7 @@ import { adsRouter } from './routes/ads.js'
 import { classesRouter } from './routes/classes.js'
 import { contributionsRouter } from './routes/contributions.js'
 import { paymentsRouter } from './routes/payments.js'
+import { quotesRouter } from './routes/quotes.js'
 import { submissionsRouter } from './routes/submissions.js'
 
 const allowedMimeTypes = new Set(['image/jpeg', 'image/png', 'image/webp'])
@@ -136,6 +137,7 @@ export async function createApp() {
   app.use('/api', classesRouter)
   app.use('/api', contributionsRouter)
   app.use('/api', paymentsRouter)
+  app.use('/api', quotesRouter)
   app.use('/api', submissionsRouter)
 
   app.get('/api/health', async (_request, response, next) => {
@@ -194,6 +196,18 @@ export async function createApp() {
     try {
       const { rows } = await pool.query(
         'SELECT id, youtube_id, title, created_at FROM homepage_youtube_videos ORDER BY created_at DESC, id DESC LIMIT 4',
+      )
+      response.set('Cache-Control', 'no-store, no-cache, must-revalidate')
+      response.json({ videos: rows.map(toVideo) })
+    } catch (error) {
+      next(error)
+    }
+  })
+
+  app.get('/api/guru-interviews', async (_request, response, next) => {
+    try {
+      const { rows } = await pool.query(
+        'SELECT id, youtube_id, title, created_at FROM guru_interview_videos ORDER BY created_at DESC, id DESC LIMIT 3',
       )
       response.set('Cache-Control', 'no-store, no-cache, must-revalidate')
       response.json({ videos: rows.map(toVideo) })
@@ -366,6 +380,49 @@ export async function createApp() {
     try {
       const result = await pool.query('DELETE FROM homepage_youtube_videos WHERE id = $1', [request.params.id])
       if (result.rowCount === 0) return response.status(404).json({ message: 'Homepage video not found.' })
+      return response.status(204).end()
+    } catch (error) {
+      return next(error)
+    }
+  })
+
+  app.post('/api/admin/guru-interviews', authenticateAdmin, async (request, response, next) => {
+    const youtubeId = extractYouTubeId(request.body?.url)
+    const title = String(request.body?.title ?? '').trim().slice(0, 160)
+    if (!youtubeId) return response.status(400).json({ message: 'Enter a valid YouTube video link.' })
+    if (!title) return response.status(400).json({ message: 'Enter a title for the interview.' })
+
+    let client
+    try {
+      client = await pool.connect()
+      await client.query('BEGIN')
+      await client.query('LOCK TABLE guru_interview_videos IN EXCLUSIVE MODE')
+      const countResult = await client.query('SELECT COUNT(*)::integer AS total FROM guru_interview_videos')
+      if (countResult.rows[0].total >= 3) {
+        await client.query('ROLLBACK')
+        return response.status(409).json({ message: 'Three Guru interview videos are already published. Delete one before adding another.' })
+      }
+      const { rows } = await client.query(
+        `INSERT INTO guru_interview_videos (youtube_id, title)
+         VALUES ($1, $2)
+         RETURNING id, youtube_id, title, created_at`,
+        [youtubeId, title],
+      )
+      await client.query('COMMIT')
+      return response.status(201).json({ video: toVideo(rows[0]) })
+    } catch (error) {
+      if (client) await client.query('ROLLBACK').catch(() => undefined)
+      if (error.code === '23505') return response.status(409).json({ message: 'This interview is already published.' })
+      return next(error)
+    } finally {
+      client?.release()
+    }
+  })
+
+  app.delete('/api/admin/guru-interviews/:id', authenticateAdmin, async (request, response, next) => {
+    try {
+      const result = await pool.query('DELETE FROM guru_interview_videos WHERE id = $1', [request.params.id])
+      if (result.rowCount === 0) return response.status(404).json({ message: 'Guru interview not found.' })
       return response.status(204).end()
     } catch (error) {
       return next(error)

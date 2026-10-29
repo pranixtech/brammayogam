@@ -158,6 +158,7 @@
   .chapter-index ol { display: grid; grid-template-columns: repeat(2, 1fr); column-gap: 28px; }
   .photo-gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .home-videos-section .video-gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .guru-interviews-section .video-gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 620px) {
@@ -180,6 +181,7 @@
   .home-videos-section__header { margin-bottom: 32px; }
   .home-videos-section__header h2 { font-size: 36px; line-height: 1.1; }
   .home-videos-section .video-gallery-grid { grid-template-columns: 1fr; }
+  .guru-interviews-section .video-gallery-grid { grid-template-columns: 1fr; }
 
   .section-heading { margin-bottom: 50px; }
   .section-heading h2, .purpose-section h2 { font-size: 36px; line-height: 1.12; }

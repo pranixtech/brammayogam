@@ -87,6 +87,15 @@
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
+.guru-interviews-section { background: var(--color-paper); }
+.guru-interviews-section .video-gallery-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.quotes-section { background: linear-gradient(180deg, #fffdf8, #f7efe2); }
+.quotes-section__header { max-width: 1240px; margin: 0 auto clamp(28px, 5vw, 52px); text-align: center; }
+.quotes-section__header .section-kicker { margin-bottom: 12px; }
+.quotes-section__header h2 { margin: 0; color: var(--color-wine); font-size: 22px; line-height: 1.3; }
+.quotes-section__image { width: min(100%, 980px); margin: 0 auto; overflow: hidden; border: 1px solid rgba(221, 153, 52, 0.24); border-radius: 10px; background: #fff; box-shadow: 0 22px 60px rgba(73, 42, 24, 0.12); }
+.quotes-section__image img { display: block; width: 100%; height: auto; }
+
 .journey-section { background: var(--color-wine-deep); color: #fff; text-shadow: 0 1px 2px rgba(44, 24, 20, 0.22); }
 .journey-section__content { width: min(100%, 1160px); margin-inline: auto; text-align: left; }
 .journey-section__content h2 { margin: 0; color: #fff; font-family: var(--font-display); font-size: clamp(22px, 2.6vw, 36px); font-weight: 600; line-height: 1.35; text-align: left; text-wrap: pretty; }

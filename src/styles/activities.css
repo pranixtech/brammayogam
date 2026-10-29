@@ -47,6 +47,9 @@
 .admin-ad-previews .admin-class-preview { max-width: none; margin: 0; }
 .admin-ad-previews .admin-class-preview img { aspect-ratio: 16 / 9; }
 .admin-ads__guidance { margin: 0; color: var(--color-muted); font-size: 12px; line-height: 1.5; }
+.admin-quote-preview { max-width: 680px; margin-top: 22px; }
+.admin-quote-preview img, .admin-quote-card > img { aspect-ratio: auto; object-fit: contain; }
+.admin-quote-card { max-width: 680px; }
 
 @media (max-width: 900px) {
   .upcoming-activities__grid, .admin-activities__grid, .admin-classes__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }

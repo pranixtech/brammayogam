@@ -57,6 +57,16 @@ export async function initializeDatabase() {
     CREATE INDEX IF NOT EXISTS homepage_youtube_videos_created_idx
       ON homepage_youtube_videos (created_at DESC);
 
+    CREATE TABLE IF NOT EXISTS guru_interview_videos (
+      id BIGSERIAL PRIMARY KEY,
+      youtube_id TEXT NOT NULL UNIQUE,
+      title TEXT NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    CREATE INDEX IF NOT EXISTS guru_interview_videos_created_idx
+      ON guru_interview_videos (created_at DESC, id DESC);
+
     CREATE TABLE IF NOT EXISTS upcoming_activities (
       id BIGSERIAL PRIMARY KEY,
       title TEXT NOT NULL,
@@ -93,6 +103,14 @@ export async function initializeDatabase() {
 
     CREATE INDEX IF NOT EXISTS homepage_ads_created_idx
       ON homepage_ads (created_at ASC, id ASC);
+
+    CREATE TABLE IF NOT EXISTS quote_images (
+      id BIGSERIAL PRIMARY KEY,
+      file_name TEXT NOT NULL UNIQUE,
+      original_name TEXT NOT NULL,
+      file_size BIGINT NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
 
     CREATE TABLE IF NOT EXISTS annathanam_contributions (
       id BIGSERIAL PRIMARY KEY,

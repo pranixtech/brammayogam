@@ -4,6 +4,7 @@ import { AdminActivitiesManager } from '../components/admin/AdminActivitiesManag
 import { AdminAdsManager } from '../components/admin/AdminAdsManager'
 import { AdminContributionsManager } from '../components/admin/AdminContributionsManager'
 import { AdminClassesManager } from '../components/admin/AdminClassesManager'
+import { AdminQuotesManager } from '../components/admin/AdminQuotesManager'
 import { AdminSubmissionsPanel } from '../components/admin/AdminSubmissionsPanel'
 import { AdminFeedbackManager } from '../components/admin/AdminFeedbackManager'
 import { MainLogo } from '../components/common/MainLogo'
@@ -24,6 +25,12 @@ import {
   notifyVideosUpdated,
   uploadGalleryPhotos,
 } from '../services/galleryApi'
+import {
+  createGuruInterview,
+  deleteGuruInterview,
+  getGuruInterviews,
+  notifyGuruInterviewsUpdated,
+} from '../services/guruContentApi'
 
 const CATEGORIES = [
   { id: 'guru', label: 'Guru' },
@@ -202,6 +209,22 @@ function AdminDashboard({ admin, onLogout }) {
           </button>
           <button
             type="button"
+            className={activeManager === 'guru-interviews' ? 'is-active' : ''}
+            aria-pressed={activeManager === 'guru-interviews'}
+            onClick={() => setActiveManager('guru-interviews')}
+          >
+            Guru’s Interviews
+          </button>
+          <button
+            type="button"
+            className={activeManager === 'quotes' ? 'is-active' : ''}
+            aria-pressed={activeManager === 'quotes'}
+            onClick={() => setActiveManager('quotes')}
+          >
+            Quotes
+          </button>
+          <button
+            type="button"
             className={activeManager === 'ads' ? 'is-active' : ''}
             aria-pressed={activeManager === 'ads'}
             onClick={() => setActiveManager('ads')}
@@ -364,6 +387,24 @@ function AdminDashboard({ admin, onLogout }) {
             deleteConfirmation="Remove this video from the homepage?"
           />
         )}
+
+        {activeManager === 'guru-interviews' && (
+          <AdminVideoManager
+            sectionId="admin-guru-interviews-title"
+            kicker="Guru conversations"
+            heading="Guru’s Interviews"
+            description="Add up to three YouTube interview videos shown below the homepage image slider."
+            emptyMessage="No Guru interview videos have been added yet."
+            limit={3}
+            loadVideos={getGuruInterviews}
+            addVideo={createGuruInterview}
+            removeVideo={deleteGuruInterview}
+            notifyUpdated={notifyGuruInterviewsUpdated}
+            deleteConfirmation="Remove this Guru interview from the homepage?"
+          />
+        )}
+
+        {activeManager === 'quotes' && <AdminQuotesManager />}
 
         {activeManager === 'ads' && <AdminAdsManager />}
         {activeManager === 'activities' && <AdminActivitiesManager />}
