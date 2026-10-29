@@ -43,6 +43,10 @@
 .admin-class-preview figcaption { display: flex; padding: 12px 14px; align-items: center; justify-content: space-between; gap: 12px; }
 .admin-class-preview strong { color: var(--color-ink); font-size: 12px; }
 .admin-class-preview span { color: var(--color-muted); font-size: 11px; overflow-wrap: anywhere; text-align: right; }
+.admin-ad-previews { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 22px; gap: 16px; }
+.admin-ad-previews .admin-class-preview { max-width: none; margin: 0; }
+.admin-ad-previews .admin-class-preview img { aspect-ratio: 16 / 9; }
+.admin-ads__guidance { margin: 0; color: var(--color-muted); font-size: 12px; line-height: 1.5; }
 
 @media (max-width: 900px) {
   .upcoming-activities__grid, .admin-activities__grid, .admin-classes__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -51,7 +55,7 @@
 }
 
 @media (max-width: 640px) {
-  .upcoming-activities__grid, .admin-activities__grid, .admin-activities__fields, .admin-classes__grid { grid-template-columns: 1fr; }
+  .upcoming-activities__grid, .admin-activities__grid, .admin-activities__fields, .admin-classes__grid, .admin-ad-previews { grid-template-columns: 1fr; }
   .admin-activities__file { grid-column: auto; }
   .upcoming-activity__copy { min-height: 0; }
   .admin-class-preview figcaption { align-items: flex-start; flex-direction: column; }

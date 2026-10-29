@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { AdminVideoManager } from '../components/admin/AdminVideoManager'
 import { AdminActivitiesManager } from '../components/admin/AdminActivitiesManager'
+import { AdminAdsManager } from '../components/admin/AdminAdsManager'
 import { AdminContributionsManager } from '../components/admin/AdminContributionsManager'
 import { AdminClassesManager } from '../components/admin/AdminClassesManager'
 import { AdminSubmissionsPanel } from '../components/admin/AdminSubmissionsPanel'
@@ -201,6 +202,14 @@ function AdminDashboard({ admin, onLogout }) {
           </button>
           <button
             type="button"
+            className={activeManager === 'ads' ? 'is-active' : ''}
+            aria-pressed={activeManager === 'ads'}
+            onClick={() => setActiveManager('ads')}
+          >
+            Ads
+          </button>
+          <button
+            type="button"
             className={activeManager === 'activities' ? 'is-active' : ''}
             aria-pressed={activeManager === 'activities'}
             onClick={() => setActiveManager('activities')}
@@ -356,6 +365,7 @@ function AdminDashboard({ admin, onLogout }) {
           />
         )}
 
+        {activeManager === 'ads' && <AdminAdsManager />}
         {activeManager === 'activities' && <AdminActivitiesManager />}
         {activeManager === 'contributions' && <AdminContributionsManager />}
         {activeManager === 'classes' && <AdminClassesManager />}

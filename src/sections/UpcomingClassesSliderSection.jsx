@@ -1,30 +1,30 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useLanguage } from '../i18n/useLanguage'
-import { getUpcomingClasses, subscribeToUpcomingClasses } from '../services/classesApi'
+import { getAds, subscribeToAds } from '../services/adsApi'
 
 export function UpcomingClassesSliderSection() {
   const { t } = useLanguage()
-  const [classes, setClasses] = useState([])
+  const [ads, setAds] = useState([])
   const [activeIndex, setActiveIndex] = useState(0)
 
   useEffect(() => {
     let controller
-    const loadClasses = () => {
+    const loadAds = () => {
       controller?.abort()
       controller = new AbortController()
-      getUpcomingClasses(controller.signal)
-        .then(({ classes: items }) => {
-          setClasses(items)
+      getAds(controller.signal)
+        .then(({ ads: items }) => {
+          setAds(items)
           setActiveIndex((current) => (items.length ? Math.min(current, items.length - 1) : 0))
         })
         .catch((error) => {
-          if (error.name !== 'AbortError') setClasses([])
+          if (error.name !== 'AbortError') setAds([])
         })
     }
 
-    loadClasses()
-    const unsubscribe = subscribeToUpcomingClasses(loadClasses)
+    loadAds()
+    const unsubscribe = subscribeToAds(loadAds)
     return () => {
       controller?.abort()
       unsubscribe()
@@ -32,14 +32,14 @@ export function UpcomingClassesSliderSection() {
   }, [])
 
   useEffect(() => {
-    if (classes.length < 2 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined
+    if (ads.length < 2 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined
     const intervalId = window.setInterval(() => {
-      setActiveIndex((current) => (current + 1) % classes.length)
+      setActiveIndex((current) => (current + 1) % ads.length)
     }, 5000)
     return () => window.clearInterval(intervalId)
-  }, [classes.length])
+  }, [ads.length])
 
-  if (!classes.length) return null
+  if (!ads.length) return null
 
   return (
     <section className="classes-promo section-padding" aria-labelledby="classes-promo-title">
@@ -57,13 +57,13 @@ export function UpcomingClassesSliderSection() {
           aria-label={t('classesPromo.carousel')}
         >
           <div className="classes-promo__viewport">
-            {classes.map((item, index) => (
+            {ads.map((item, index) => (
               <figure
                 className={`classes-promo__slide${index === activeIndex ? ' is-active' : ''}`}
                 aria-hidden={index !== activeIndex}
                 key={item.id}
               >
-                <img src={item.image} alt={index === activeIndex ? item.title : ''} loading={index === 0 ? 'eager' : 'lazy'} />
+                <img src={item.image} alt={index === activeIndex ? `${t('classesPromo.advertisement')} ${index + 1}` : ''} loading={index === 0 ? 'eager' : 'lazy'} />
               </figure>
             ))}
           </div>

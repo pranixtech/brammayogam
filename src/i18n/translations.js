@@ -34,7 +34,7 @@ export const TRANSLATIONS = {
       mediaAlt: 'Brahmam Foundation Annathanam contribution',
     },
     classesPromo: {
-      kicker: 'Upcoming classes', title: 'Choose your next practice.', description: 'Explore our upcoming online classes and reserve your place.', carousel: 'Upcoming class advertisements', previous: 'Previous class', next: 'Next class', choose: 'Choose a class advertisement', show: 'Show class', register: 'Register now',
+      kicker: 'Upcoming classes', title: 'Choose your next practice.', description: 'Explore our upcoming online classes and reserve your place.', carousel: 'Upcoming class advertisements', advertisement: 'Upcoming class advertisement', previous: 'Previous class', next: 'Next class', choose: 'Choose a class advertisement', show: 'Show class', register: 'Register now',
     },
     payment: {
       kicker: 'Contribute securely', title: 'Support Annathanam', description: 'Your contribution helps serve nourishing meals with care and compassion.',
@@ -115,7 +115,7 @@ export const TRANSLATIONS = {
       mediaAlt: 'பிரம்மம் அறக்கட்டளையின் அன்னதானப் பங்களிப்பு',
     },
     classesPromo: {
-      kicker: 'வரவிருக்கும் வகுப்புகள்', title: 'உங்கள் அடுத்த பயிற்சியைத் தேர்ந்தெடுக்கவும்.', description: 'வரவிருக்கும் இணையவழி வகுப்புகளைப் பார்த்து உங்கள் இடத்தைப் பதிவு செய்யுங்கள்.', carousel: 'வரவிருக்கும் வகுப்பு அறிவிப்புகள்', previous: 'முந்தைய வகுப்பு', next: 'அடுத்த வகுப்பு', choose: 'வகுப்பு அறிவிப்பைத் தேர்ந்தெடுக்கவும்', show: 'வகுப்பைக் காட்டவும்', register: 'இப்போதே பதிவு செய்யுங்கள்',
+      kicker: 'வரவிருக்கும் வகுப்புகள்', title: 'உங்கள் அடுத்த பயிற்சியைத் தேர்ந்தெடுக்கவும்.', description: 'வரவிருக்கும் இணையவழி வகுப்புகளைப் பார்த்து உங்கள் இடத்தைப் பதிவு செய்யுங்கள்.', carousel: 'வரவிருக்கும் வகுப்பு அறிவிப்புகள்', advertisement: 'வரவிருக்கும் வகுப்பு அறிவிப்பு', previous: 'முந்தைய வகுப்பு', next: 'அடுத்த வகுப்பு', choose: 'வகுப்பு அறிவிப்பைத் தேர்ந்தெடுக்கவும்', show: 'வகுப்பைக் காட்டவும்', register: 'இப்போதே பதிவு செய்யுங்கள்',
     },
     payment: {
       kicker: 'பாதுகாப்பாகப் பங்களியுங்கள்', title: 'அன்னதானத்திற்கு உதவுங்கள்', description: 'உங்கள் பங்களிப்பு, அன்புடனும் அக்கறையுடனும் உணவு வழங்க உதவுகிறது.',

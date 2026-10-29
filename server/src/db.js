@@ -83,6 +83,17 @@ export async function initializeDatabase() {
     CREATE INDEX IF NOT EXISTS upcoming_classes_created_idx
       ON upcoming_classes (created_at DESC, id DESC);
 
+    CREATE TABLE IF NOT EXISTS homepage_ads (
+      id BIGSERIAL PRIMARY KEY,
+      file_name TEXT NOT NULL UNIQUE,
+      original_name TEXT NOT NULL,
+      file_size BIGINT NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    CREATE INDEX IF NOT EXISTS homepage_ads_created_idx
+      ON homepage_ads (created_at ASC, id ASC);
+
     CREATE TABLE IF NOT EXISTS annathanam_contributions (
       id BIGSERIAL PRIMARY KEY,
       quote TEXT NOT NULL,

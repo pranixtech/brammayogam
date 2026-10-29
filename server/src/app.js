@@ -12,6 +12,7 @@ import { config } from './config.js'
 import { pool } from './db.js'
 import { ADMIN_COOKIE_NAME, authenticateAdmin } from './middleware/authenticateAdmin.js'
 import { activitiesRouter } from './routes/activities.js'
+import { adsRouter } from './routes/ads.js'
 import { classesRouter } from './routes/classes.js'
 import { contributionsRouter } from './routes/contributions.js'
 import { paymentsRouter } from './routes/payments.js'
@@ -131,6 +132,7 @@ export async function createApp() {
   app.use(cookieParser())
   app.use('/uploads', express.static(config.uploadDirectory, { immutable: true, maxAge: '30d', fallthrough: false }))
   app.use('/api', activitiesRouter)
+  app.use('/api', adsRouter)
   app.use('/api', classesRouter)
   app.use('/api', contributionsRouter)
   app.use('/api', paymentsRouter)
