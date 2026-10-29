@@ -5,6 +5,7 @@ import { Header } from '../components/layout/Header'
 import { WhatsAppButton } from '../components/common/WhatsAppButton'
 import { ComingSoonPage } from '../pages/ComingSoonPage'
 import { AdminPage } from '../pages/AdminPage'
+import { BioPage } from '../pages/BioPage'
 import { FeedbackPage } from '../pages/FeedbackPage'
 import { HomePage } from '../pages/HomePage'
 import { PhotosPage } from '../pages/PhotosPage'
@@ -15,7 +16,7 @@ import { useLanguage } from '../i18n/useLanguage'
 
 const PAGE_TITLE_KEYS = {
   '/class': 'class', '/registration': 'registration', '/feedback': 'feedback', '/deeksha': 'deeksha',
-  '/book': 'book', '/photos': 'photos', '/videos': 'videos', '/yogam': 'yogam',
+  '/book': 'book', '/photos': 'photos', '/videos': 'videos', '/yogam': 'yogam', '/bio': 'bio',
 }
 
 export default function App() {
@@ -44,6 +45,7 @@ export default function App() {
       <main>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/bio" element={<BioPage />} />
           <Route path="/class" element={<ComingSoonPage titleKey="class" action={{ href: '/registration', labelKey: 'comingSoon.register' }} />} />
           <Route path="/registration" element={<RegistrationPage />} />
           <Route path="/feedback" element={<FeedbackPage />} />

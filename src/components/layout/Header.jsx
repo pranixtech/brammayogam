@@ -5,7 +5,7 @@ import { useScrollThreshold } from '../../hooks/useScrollThreshold'
 import { useLanguage } from '../../i18n/useLanguage'
 
 const NAVIGATION_KEYS = {
-  '/#journey': 'journey', '/#spiritual-journey': 'bio', '/#contribution': 'contribution', '/#teachings': 'teachings',
+  '/#journey': 'journey', '/bio': 'bio', '/#contribution': 'contribution', '/#teachings': 'teachings',
   '/yogam': 'yogam', '/class': 'class', '/registration': 'registration', '/feedback': 'feedback',
   '/deeksha': 'deeksha', '/book': 'book', '/photos': 'photos', '/videos': 'videos', '/#purpose': 'purpose',
 }
