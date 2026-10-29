@@ -5,7 +5,7 @@ export const TRANSLATIONS = {
     navigation: {
       label: 'Main navigation', open: 'Open navigation', close: 'Close navigation',
       journey: 'The journey', bio: 'Bio', contribution: 'Contribution', teachings: 'Teachings', yogam: 'Brahma Yogam',
-      class: 'Class', registration: 'Upcoming Classes', feedback: 'Feedback', deeksha: 'Deeksha', book: 'Book',
+      class: 'Upcoming Classes', registration: 'Upcoming Classes', feedback: 'Feedback', deeksha: 'Deeksha', book: 'Book',
       gallery: 'Gallery', photos: 'Photos', videos: 'Videos', purpose: 'Our purpose',
     },
     hero: {
@@ -86,7 +86,7 @@ export const TRANSLATIONS = {
     navigation: {
       label: 'முதன்மை வழிசெலுத்தல்', open: 'வழிசெலுத்தலைத் திறக்கவும்', close: 'வழிசெலுத்தலை மூடவும்',
       journey: 'ஆன்மீகப் பயணம்', bio: 'வாழ்க்கை வரலாறு', contribution: 'பங்களிப்பு', teachings: 'போதனைகள்', yogam: 'பிரம்ம யோகம்',
-      class: 'வகுப்புகள்', registration: 'வரவிருக்கும் வகுப்புகள்', feedback: 'கருத்துப் பதிவு', deeksha: 'தீட்சை', book: 'நூல்',
+      class: 'வரவிருக்கும் வகுப்புகள்', registration: 'வரவிருக்கும் வகுப்புகள்', feedback: 'கருத்துப் பதிவு', deeksha: 'தீட்சை', book: 'நூல்',
       gallery: 'காட்சியகம்', photos: 'புகைப்படங்கள்', videos: 'காணொளிகள்', purpose: 'எங்கள் நோக்கம்',
     },
     hero: {

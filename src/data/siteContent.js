@@ -6,7 +6,7 @@ export const NAVIGATION_ITEMS = [
   { label: 'Contribution', href: '/#contribution' },
   { label: 'Teachings', href: '/#teachings' },
   { label: 'Brahma Yogam', href: '/yogam' },
-  { label: 'Class', href: '/class' },
+  { label: 'Upcoming Classes', href: '/class' },
   { label: 'Registration Form', href: '/registration' },
   { label: 'Feedback', href: '/feedback' },
   { label: 'Deeksha', href: '/deeksha' },

@@ -68,9 +68,6 @@ export function UpcomingClassesSliderSection() {
             ))}
           </div>
 
-          <div className="classes-promo__caption" aria-live="polite">
-            <strong>{classes[activeIndex]?.title}</strong>
-          </div>
         </div>
 
         <Link className="classes-promo__register" to="/registration">{t('classesPromo.register')}</Link>
