@@ -29,6 +29,11 @@ services:
       UPLOAD_DIR: /app/uploads
       MAX_UPLOAD_BYTES: 10485760
       MAX_ACTIVITY_UPLOAD_BYTES: ${MAX_ACTIVITY_UPLOAD_BYTES:-104857600}
+      PUBLIC_APP_URL: ${PUBLIC_APP_URL:-http://localhost:8080}
+      CASHFREE_ENV: ${CASHFREE_ENV:-sandbox}
+      CASHFREE_CLIENT_ID: ${CASHFREE_CLIENT_ID:-}
+      CASHFREE_CLIENT_SECRET: ${CASHFREE_CLIENT_SECRET:-}
+      CASHFREE_API_VERSION: ${CASHFREE_API_VERSION:-2026-01-01}
     volumes:
       - gallery_uploads:/app/uploads
     ports:

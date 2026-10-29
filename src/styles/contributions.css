@@ -17,7 +17,7 @@
   margin: 0;
   color: var(--color-wine);
   font-family: var(--font-display);
-  font-size: clamp(56px, 7vw, 96px);
+  font-size: clamp(40px, 5.5vw, 72px);
   font-weight: 400;
   line-height: 1;
   letter-spacing: -0.035em;
@@ -88,6 +88,116 @@
   font-style: normal;
   line-height: 0.45;
 }
+
+.annathanam-payment {
+  display: flex;
+  justify-content: center;
+  padding: clamp(24px, 4vw, 42px) 0;
+}
+
+.annathanam-payment__trigger {
+  min-width: min(100%, 260px);
+  min-height: 58px;
+  padding: 0 36px;
+  border: 1px solid var(--color-wine);
+  border-radius: 3px;
+  background: var(--color-wine);
+  color: #fff9ed;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.annathanam-payment__trigger:hover { box-shadow: 0 14px 30px rgba(84, 42, 24, 0.2); transform: translateY(-2px); }
+.annathanam-payment__trigger:focus-visible { outline: 3px solid rgba(221, 153, 52, 0.35); outline-offset: 4px; }
+
+.annathanam-payment__backdrop {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: flex;
+  box-sizing: border-box;
+  overflow-y: auto;
+  padding: clamp(12px, 4vw, 48px);
+  background: rgba(38, 25, 18, 0.72);
+  align-items: center;
+  justify-content: center;
+  overscroll-behavior: contain;
+}
+
+body.payment-modal-open { overflow: hidden; }
+
+.annathanam-payment__dialog {
+  position: relative;
+  flex: 0 1 760px;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: clamp(28px, 5vw, 54px);
+  border: 1px solid rgba(221, 153, 52, 0.32);
+  background: linear-gradient(135deg, #fffdf8 0%, #f7ead4 100%);
+  box-shadow: 0 28px 90px rgba(28, 15, 8, 0.32);
+}
+
+.annathanam-payment__close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  background: transparent;
+  color: var(--color-muted);
+  cursor: pointer;
+  font-size: 30px;
+  line-height: 1;
+}
+
+.annathanam-payment__intro h3 {
+  margin: 10px 0 18px;
+  color: var(--color-wine);
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 400;
+  line-height: 1.12;
+  overflow-wrap: anywhere;
+}
+
+.annathanam-payment__intro > p:last-child {
+  margin: 0 0 28px;
+  color: var(--color-muted);
+  font-family: var(--font-serif);
+  font-size: 17px;
+  line-height: 1.75;
+}
+
+.annathanam-payment__form {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  align-content: start;
+}
+
+.annathanam-payment__form label { display: grid; min-width: 0; gap: 8px; color: var(--color-ink); font-size: 12px; font-weight: 700; }
+.annathanam-payment__form label > span { letter-spacing: 0.05em; }
+.annathanam-payment__form input { width: 100%; min-width: 0; height: 50px; padding: 0 14px; border: 1px solid rgba(120, 91, 63, 0.28); border-radius: 3px; outline: 0; background: #fff; color: var(--color-ink); font: 15px var(--font-body); }
+.annathanam-payment__form input:focus { border-color: var(--color-saffron); box-shadow: 0 0 0 3px rgba(221, 153, 52, 0.14); }
+.annathanam-payment__amount { position: relative; }
+.annathanam-payment__amount b { position: absolute; z-index: 1; top: 50%; left: 14px; color: var(--color-wine); transform: translateY(-50%); }
+.annathanam-payment__amount input { padding-left: 34px; }
+.annathanam-payment__form button { min-width: 0; min-height: 52px; padding: 12px 22px; border: 0; border-radius: 3px; background: var(--color-wine); color: #fff9ed; cursor: pointer; font-size: 11px; font-weight: 700; line-height: 1.45; letter-spacing: 0.08em; overflow-wrap: anywhere; text-transform: uppercase; }
+.annathanam-payment__form button:disabled { cursor: wait; opacity: 0.65; }
+.annathanam-payment__secure { min-width: 0; align-self: center; color: var(--color-muted); font-size: 11px; line-height: 1.5; overflow-wrap: anywhere; }
+.annathanam-payment__status { grid-column: 1 / -1; margin: 0; padding: 13px 15px; border-radius: 3px; font-size: 13px; line-height: 1.55; }
+.annathanam-payment__status.is-success { background: #e8f5eb; color: #1f6b35; }
+.annathanam-payment__status.is-error { background: #fff0ed; color: #963a2c; }
+.annathanam-payment__status.is-pending { background: #fff6df; color: #725218; }
 
 .admin-contributions__fields {
   display: grid;
@@ -166,4 +276,13 @@
   .admin-contributions__grid { grid-template-columns: 1fr; }
   .contribution-card { gap: 26px; }
   .contribution-card__media { aspect-ratio: 4 / 3; }
+  .annathanam-payment__form { grid-template-columns: 1fr; }
+  .annathanam-payment__backdrop { align-items: flex-start; padding: 12px 24px 12px 12px; }
+  .annathanam-payment__dialog { flex-basis: auto; width: 100%; max-width: 100%; margin: 0; padding: 42px 20px 26px; }
+  .annathanam-payment__intro h3 { margin-bottom: 12px; font-size: clamp(24px, 6.8vw, 32px); }
+  .annathanam-payment__intro > p:last-child { margin-bottom: 22px; font-size: 15px; line-height: 1.6; }
+  .annathanam-payment__intro .section-kicker { margin-bottom: 16px; font-size: 10px; line-height: 1.5; }
+  .annathanam-payment__form { gap: 15px; }
+  .annathanam-payment__form input { height: 48px; font-size: 16px; }
+  .annathanam-payment__secure { font-size: 10px; }
 }

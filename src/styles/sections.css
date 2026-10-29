@@ -77,7 +77,7 @@
   margin: 0;
   color: var(--color-wine);
   font-family: var(--font-display);
-  font-size: clamp(46px, 6vw, 76px);
+  font-size: clamp(36px, 5vw, 62px);
   font-weight: 400;
   line-height: 1;
   letter-spacing: -0.035em;
@@ -89,10 +89,10 @@
 
 .journey-section { background: var(--color-wine-deep); color: #fff; text-shadow: 0 1px 2px rgba(44, 24, 20, 0.22); }
 .journey-section__content { max-width: 1050px; margin-inline: auto; text-align: center; }
-.journey-section__content h2 { margin: 0; color: #fff; font-family: var(--font-display); font-size: clamp(38px, 5.3vw, 72px); font-weight: 400; line-height: 1.08; text-wrap: balance; }
+.journey-section__content h2 { margin: 0; color: #fff; font-family: var(--font-display); font-size: clamp(32px, 4.5vw, 58px); font-weight: 400; line-height: 1.14; text-wrap: balance; }
 .journey-section__content p { max-width: 900px; margin: clamp(28px, 4vw, 48px) auto 0; color: #f0e7dd; font-family: var(--font-serif); font-size: clamp(17px, 1.65vw, 21px); line-height: 1.8; }
 
-.teachings-section__intro h2 { margin: 0; color: var(--color-wine); font-family: var(--font-display); font-size: clamp(58px, 6vw, 90px); font-weight: 400; line-height: 0.98; letter-spacing: -0.035em; }
+.teachings-section__intro h2 { margin: 0; color: var(--color-wine); font-family: var(--font-display); font-size: clamp(40px, 5vw, 68px); font-weight: 400; line-height: 1.08; letter-spacing: -0.025em; }
 
 .yogi-encounter-section { background: var(--color-cream); }
 .yogi-encounter-section__layout { display: grid; width: min(100%, 1240px); margin-inline: auto; grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr); gap: clamp(40px, 7vw, 110px); align-items: center; }
@@ -111,7 +111,7 @@
 .yogi-encounter-carousel__dots button:focus-visible { outline: 2px solid var(--color-wine); outline-offset: 4px; }
 .yogi-encounter-section__words { padding-block: 26px; }
 .yogi-encounter-section__words .section-kicker { margin-bottom: 24px; }
-.yogi-encounter-section__words h2 { max-width: 580px; margin: 0; color: var(--color-wine); font-family: var(--font-display); font-size: clamp(48px, 5vw, 74px); font-weight: 400; line-height: 1.04; letter-spacing: -0.035em; text-wrap: balance; }
+.yogi-encounter-section__words h2 { max-width: 580px; margin: 0; color: var(--color-wine); font-family: var(--font-display); font-size: clamp(36px, 4.5vw, 60px); font-weight: 400; line-height: 1.1; letter-spacing: -0.025em; text-wrap: balance; }
 .yogi-encounter-section__words blockquote { max-width: 520px; margin: clamp(36px, 4vw, 58px) 0 0; padding-left: clamp(20px, 2.5vw, 32px); border-left: 2px solid var(--color-wine); color: #5d4b41; font-family: var(--font-serif); font-size: clamp(19px, 2vw, 26px); line-height: 1.75; }
 
 .places-ticker { padding: 25px 0; overflow: hidden; border-block: 1px solid var(--color-line); background: var(--color-cream); }
@@ -173,7 +173,7 @@
   margin: 0;
   color: var(--color-wine);
   font-family: var(--font-display);
-  font-size: clamp(48px, 5.5vw, 84px);
+  font-size: clamp(38px, 4.8vw, 66px);
   font-weight: 400;
   line-height: 1.08;
   letter-spacing: -0.04em;
@@ -261,7 +261,7 @@
   margin: 0 0 34px;
   color: var(--color-wine);
   font-family: var(--font-display);
-  font-size: clamp(38px, 4.5vw, 64px);
+  font-size: clamp(30px, 3.8vw, 50px);
   font-weight: 400;
   line-height: 1.08;
   letter-spacing: -0.025em;
@@ -342,7 +342,7 @@
   max-width: 1050px;
   margin: 0;
   font-family: 'Noto Serif Tamil', Georgia, serif;
-  font-size: clamp(36px, 5vw, 70px);
+  font-size: clamp(30px, 4.2vw, 54px);
   font-weight: 500;
   line-height: 1.35;
   letter-spacing: -0.025em;
@@ -389,7 +389,7 @@
   margin: 0;
   color: var(--color-ink);
   font-family: 'Noto Serif Tamil', Georgia, serif;
-  font-size: clamp(34px, 4vw, 58px);
+  font-size: clamp(28px, 3.4vw, 46px);
   font-weight: 500;
   line-height: 1.4;
 }
@@ -481,7 +481,7 @@
   margin: 0;
   color: var(--color-wine);
   font-family: var(--font-display);
-  font-size: clamp(64px, 8vw, 118px);
+  font-size: clamp(44px, 6vw, 82px);
   font-weight: 400;
   line-height: 0.95;
   letter-spacing: -0.045em;
@@ -545,7 +545,7 @@
   margin: 0;
   color: var(--color-wine);
   font-family: var(--font-display);
-  font-size: clamp(42px, 5vw, 68px);
+  font-size: clamp(34px, 4vw, 54px);
   font-weight: 400;
   line-height: 1;
 }
@@ -751,7 +751,7 @@
   margin: 0;
   color: var(--color-wine);
   font-family: var(--font-display);
-  font-size: clamp(64px, 8vw, 118px);
+  font-size: clamp(44px, 6vw, 82px);
   font-weight: 400;
   line-height: 0.95;
   letter-spacing: -0.045em;
@@ -817,7 +817,7 @@
 
 .admin-login__logo { width: 92px; height: 92px; margin: 0 auto 22px; object-fit: contain; }
 .admin-login__card .section-kicker { margin-bottom: 15px; }
-.admin-login__card h1 { margin: 0; color: var(--color-wine); font-family: var(--font-display); font-size: clamp(42px, 7vw, 62px); font-weight: 400; line-height: 1; }
+.admin-login__card h1 { margin: 0; color: var(--color-wine); font-family: var(--font-display); font-size: clamp(34px, 5vw, 50px); font-weight: 400; line-height: 1.08; }
 .admin-login__card > p:last-of-type { margin: 20px auto 32px; color: var(--color-muted); font-family: var(--font-serif); font-size: 15px; line-height: 1.7; }
 
 .admin-form { display: grid; gap: 20px; text-align: left; }
@@ -883,7 +883,7 @@
 .admin-dashboard__content { width: min(100% - 40px, 1240px); margin: 0 auto; padding: clamp(48px, 8vw, 92px) 0; }
 .admin-dashboard__intro { margin-bottom: 42px; }
 .admin-dashboard__intro .section-kicker { margin-bottom: 14px; }
-.admin-dashboard__intro h1 { margin: 0; color: var(--color-wine); font-family: var(--font-display); font-size: clamp(48px, 7vw, 82px); font-weight: 400; line-height: 0.95; }
+.admin-dashboard__intro h1 { margin: 0; color: var(--color-wine); font-family: var(--font-display); font-size: clamp(38px, 5.5vw, 64px); font-weight: 400; line-height: 1.05; }
 
 .admin-main-tabs { display: flex; margin-bottom: 44px; padding: 7px; border: 1px solid var(--color-line); border-radius: 8px; background: rgba(255, 253, 248, 0.75); gap: 7px; }
 .admin-main-tabs button { min-height: 52px; padding: 0 32px; border: 0; border-radius: 5px; background: transparent; color: var(--color-muted); cursor: pointer; font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; transition: background var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast); }
@@ -958,7 +958,7 @@
   margin: 0;
   color: var(--color-wine);
   font-family: var(--font-display);
-  font-size: clamp(68px, 9vw, 130px);
+  font-size: clamp(46px, 7vw, 88px);
   font-weight: 400;
   line-height: 0.95;
   letter-spacing: -0.045em;

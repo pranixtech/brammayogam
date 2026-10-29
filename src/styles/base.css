@@ -38,6 +38,7 @@ body::before {
 #root { min-height: 100%; }
 a { color: inherit; -webkit-tap-highlight-color: transparent; }
 button { font: inherit; -webkit-tap-highlight-color: transparent; }
+h1, h2, h3 { max-width: 100%; overflow-wrap: anywhere; }
 ::selection { background: var(--color-gold); color: var(--color-wine-deep); }
 
 .site-shell { overflow: hidden; }
@@ -67,7 +68,7 @@ button { font: inherit; -webkit-tap-highlight-color: transparent; }
   margin: 0;
   color: #fff4df;
   font-family: var(--font-display);
-  font-size: clamp(52px, 6.2vw, 92px);
+  font-size: clamp(40px, 5vw, 72px);
   font-weight: 400;
   line-height: 1;
   letter-spacing: -0.035em;

@@ -3,6 +3,7 @@ import { AdminVideoManager } from '../components/admin/AdminVideoManager'
 import { AdminActivitiesManager } from '../components/admin/AdminActivitiesManager'
 import { AdminContributionsManager } from '../components/admin/AdminContributionsManager'
 import { AdminSubmissionsPanel } from '../components/admin/AdminSubmissionsPanel'
+import { AdminFeedbackManager } from '../components/admin/AdminFeedbackManager'
 import { MainLogo } from '../components/common/MainLogo'
 import {
   createHomeVideo,
@@ -54,7 +55,7 @@ function LoginForm({ onLogin }) {
         <MainLogo className="admin-login__logo" />
         <p className="section-kicker">Brahmam Foundation</p>
         <h1 id="admin-login-title">Site admin</h1>
-        <p>Sign in to manage media, class registrations and feedback.</p>
+        <p>Sign in to manage media, class registrations and public feedback.</p>
 
         <form className="admin-form" onSubmit={handleSubmit}>
           <label>
@@ -350,7 +351,7 @@ function AdminDashboard({ admin, onLogout }) {
         {activeManager === 'contributions' && <AdminContributionsManager />}
 
         {activeManager === 'registrations' && <AdminSubmissionsPanel kind="registrations" />}
-        {activeManager === 'feedback' && <AdminSubmissionsPanel kind="feedback" />}
+        {activeManager === 'feedback' && <AdminFeedbackManager />}
       </section>
     </div>
   )

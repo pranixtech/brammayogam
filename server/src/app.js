@@ -13,6 +13,7 @@ import { pool } from './db.js'
 import { ADMIN_COOKIE_NAME, authenticateAdmin } from './middleware/authenticateAdmin.js'
 import { activitiesRouter } from './routes/activities.js'
 import { contributionsRouter } from './routes/contributions.js'
+import { paymentsRouter } from './routes/payments.js'
 import { submissionsRouter } from './routes/submissions.js'
 
 const allowedMimeTypes = new Set(['image/jpeg', 'image/png', 'image/webp'])
@@ -100,11 +101,17 @@ export async function createApp() {
       },
     },
   }))
-  app.use(express.json({ limit: '100kb' }))
+  app.use(express.json({
+    limit: '100kb',
+    verify: (request, _response, buffer) => {
+      if (request.originalUrl === '/api/payments/webhook') request.rawBody = Buffer.from(buffer)
+    },
+  }))
   app.use(cookieParser())
   app.use('/uploads', express.static(config.uploadDirectory, { immutable: true, maxAge: '30d', fallthrough: false }))
   app.use('/api', activitiesRouter)
   app.use('/api', contributionsRouter)
+  app.use('/api', paymentsRouter)
   app.use('/api', submissionsRouter)
 
   app.get('/api/health', async (_request, response, next) => {
@@ -345,6 +352,7 @@ export async function createApp() {
       return response.status(400).json({ message })
     }
     if (error.message?.startsWith('Only JPG')) return response.status(400).json({ message: error.message })
+    if (error.statusCode) return response.status(error.statusCode).json({ message: error.message })
     return response.status(500).json({ message: 'An unexpected server error occurred.' })
   })
 

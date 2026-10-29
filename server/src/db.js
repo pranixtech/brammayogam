@@ -84,6 +84,22 @@ export async function initializeDatabase() {
     CREATE INDEX IF NOT EXISTS annathanam_contributions_created_idx
       ON annathanam_contributions (created_at ASC, id ASC);
 
+    CREATE TABLE IF NOT EXISTS annathanam_payments (
+      order_id TEXT PRIMARY KEY,
+      cf_order_id TEXT,
+      amount NUMERIC(12, 2) NOT NULL CHECK (amount >= 1),
+      currency TEXT NOT NULL DEFAULT 'INR',
+      donor_name TEXT NOT NULL,
+      donor_email TEXT NOT NULL DEFAULT '',
+      donor_phone TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'CREATED',
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    CREATE INDEX IF NOT EXISTS annathanam_payments_created_idx
+      ON annathanam_payments (created_at DESC);
+
     CREATE TABLE IF NOT EXISTS class_registrations (
       id BIGSERIAL PRIMARY KEY,
       full_name TEXT NOT NULL,
@@ -109,6 +125,19 @@ export async function initializeDatabase() {
 
     CREATE INDEX IF NOT EXISTS visitor_feedback_created_idx
       ON visitor_feedback (created_at DESC, id DESC);
+
+    CREATE TABLE IF NOT EXISTS published_feedback (
+      id BIGSERIAL PRIMARY KEY,
+      full_name TEXT NOT NULL,
+      role_or_location TEXT NOT NULL DEFAULT '',
+      rating INTEGER NOT NULL DEFAULT 5 CHECK (rating BETWEEN 1 AND 5),
+      message TEXT NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    CREATE INDEX IF NOT EXISTS published_feedback_created_idx
+      ON published_feedback (created_at DESC, id DESC);
   `)
 
   for (const [id, label, description, sortOrder] of categories) {

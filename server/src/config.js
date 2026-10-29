@@ -19,6 +19,17 @@ export const config = {
   uploadDirectory: process.env.UPLOAD_DIR ?? path.join(serverRoot, 'uploads'),
   maxUploadBytes: numberFromEnvironment('MAX_UPLOAD_BYTES', 10 * 1024 * 1024),
   maxActivityUploadBytes: numberFromEnvironment('MAX_ACTIVITY_UPLOAD_BYTES', 100 * 1024 * 1024),
+  publicAppUrl: (process.env.PUBLIC_APP_URL ?? 'http://localhost:5173').replace(/\/$/, ''),
+  cashfreeClientId: process.env.CASHFREE_CLIENT_ID ?? '',
+  cashfreeClientSecret: process.env.CASHFREE_CLIENT_SECRET ?? '',
+  cashfreeEnvironment: process.env.CASHFREE_ENV === 'production' ? 'production' : 'sandbox',
+  cashfreeApiVersion: process.env.CASHFREE_API_VERSION ?? '2026-01-01',
+  get cashfreeEnabled() {
+    return Boolean(this.cashfreeClientId && this.cashfreeClientSecret)
+  },
+  get cashfreeApiUrl() {
+    return this.cashfreeEnvironment === 'production' ? 'https://api.cashfree.com/pg' : 'https://sandbox.cashfree.com/pg'
+  },
 }
 
 export function assertProductionConfiguration() {

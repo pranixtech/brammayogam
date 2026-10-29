@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getContributions, subscribeToContributions } from '../services/contributionsApi'
 import { useLanguage } from '../i18n/useLanguage'
+import { AnnathanamPayment } from '../components/payments/AnnathanamPayment'
 
 export function ContributionSection() {
   const { t } = useLanguage()
@@ -47,7 +48,7 @@ export function ContributionSection() {
         </header>
 
         <div className="contribution-section__grid">
-          {contributions.map((contribution) => (
+          {contributions.map((contribution, index) => (
             <article className="contribution-card" key={contribution.id}>
               <blockquote>{contribution.quote}</blockquote>
               <div className="contribution-card__media">
@@ -58,6 +59,7 @@ export function ContributionSection() {
                   <video src={contribution.src} controls preload="metadata" playsInline aria-label={t('contribution.mediaAlt')} />
                 )}
               </div>
+              {index === 0 && <AnnathanamPayment />}
             </article>
           ))}
         </div>

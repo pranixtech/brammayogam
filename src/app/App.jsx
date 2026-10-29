@@ -25,7 +25,7 @@ export default function App() {
 
   useEffect(() => {
     if (isAdminPage) document.title = 'Admin | Brahmam Foundation'
-    else if (pathname === '/') document.title = language === 'ta' ? 'பிரம்மம் அறக்கட்டளை | அகப்பயணத்தின் பாதை' : 'Brahmam Foundation | The Inward Path'
+    else if (pathname === '/') document.title = language === 'ta' ? 'பிரம்மம் அறக்கட்டளை | அகப்பயணப் பாதை' : 'Brahmam Foundation | The Inward Path'
     else document.title = `${t(`navigation.${PAGE_TITLE_KEYS[pathname]}`)} | ${language === 'ta' ? 'பிரம்மம் அறக்கட்டளை' : 'Brahmam Foundation'}`
 
     if (hash) {

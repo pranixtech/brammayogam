@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { getAdminFeedback, getAdminRegistrations } from '../../services/submissionsApi'
+import { getAdminRegistrations } from '../../services/submissionsApi'
 
 const PANELS = {
   registrations: {
@@ -8,13 +8,6 @@ const PANELS = {
     empty: 'No online class registrations yet.',
     key: 'registrations',
     load: getAdminRegistrations,
-  },
-  feedback: {
-    title: 'User feedback',
-    description: 'Messages shared privately with the foundation admin team.',
-    empty: 'No feedback has been submitted yet.',
-    key: 'feedback',
-    load: getAdminFeedback,
   },
 }
 
@@ -89,18 +82,11 @@ export function AdminSubmissionsPanel({ kind }) {
                 <h3>{item.fullName}</h3>
                 <time dateTime={item.createdAt}>{formatDate(item.createdAt)}</time>
               </header>
-              {kind === 'registrations' ? (
-                <dl>
-                  <div><dt>Email</dt><dd><a href={`mailto:${item.email}`}>{item.email}</a></dd></div>
-                  <div><dt>Phone / WhatsApp</dt><dd><a href={`tel:${item.phone.replace(/[^\d+]/g, '')}`}>{item.phone}</a></dd></div>
-                  <div><dt>Country</dt><dd>{item.country}</dd></div>
-                </dl>
-              ) : (
-                <p className="admin-submission-card__rating">
-                  {item.rating ? `${'★'.repeat(item.rating)}${'☆'.repeat(5 - item.rating)} · ${item.rating}/5` : 'No rating'}
-                  {item.email && <> · <a href={`mailto:${item.email}`}>{item.email}</a></>}
-                </p>
-              )}
+              <dl>
+                <div><dt>Email</dt><dd><a href={`mailto:${item.email}`}>{item.email}</a></dd></div>
+                <div><dt>Phone / WhatsApp</dt><dd><a href={`tel:${item.phone.replace(/[^\d+]/g, '')}`}>{item.phone}</a></dd></div>
+                <div><dt>Country</dt><dd>{item.country}</dd></div>
+              </dl>
               {item.message && <p className="admin-submission-card__message">{item.message}</p>}
             </article>
           ))}

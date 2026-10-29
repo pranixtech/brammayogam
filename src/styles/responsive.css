@@ -162,6 +162,12 @@
 
 @media (max-width: 620px) {
   .section-padding { padding-inline: 20px; }
+  .contribution-section__header h2,
+  .upcoming-activities__header h2 { font-size: 34px; line-height: 1.14; }
+  .photos-page__header h1,
+  .videos-page__header h1 { font-size: 40px; line-height: 1.08; }
+  .photo-panel__heading h2 { font-size: 32px; line-height: 1.12; }
+  .coming-soon-page h1 { font-size: 42px; line-height: 1.08; }
   .site-header .brand__logo { width: 48px; height: 48px; }
   .brand__text strong { font-size: 19px; }
   .meditation-hero { padding: 108px 0 80px; }
@@ -170,19 +176,19 @@
   .meditation-socials { margin-top: 32px; gap: 13px; }
   .meditation-socials__link { width: 44px; height: 44px; }
   .home-videos-section__header { margin-bottom: 32px; }
-  .home-videos-section__header h2 { font-size: 46px; }
+  .home-videos-section__header h2 { font-size: 36px; line-height: 1.1; }
   .home-videos-section .video-gallery-grid { grid-template-columns: 1fr; }
 
   .section-heading { margin-bottom: 50px; }
-  .section-heading h2, .purpose-section h2 { font-size: 46px; }
+  .section-heading h2, .purpose-section h2 { font-size: 36px; line-height: 1.12; }
 
-  .teachings-section__intro h2 { font-size: 52px; }
+  .teachings-section__intro h2 { font-size: 38px; }
   .yogi-encounter-section__layout { gap: 32px; }
-  .yogi-encounter-section__words h2 { font-size: clamp(42px, 11vw, 58px); }
+  .yogi-encounter-section__words h2 { font-size: clamp(32px, 8.5vw, 42px); }
   .yogi-encounter-section__words blockquote { margin-top: 28px; font-size: 19px; }
 
   .full-journey-section__header { margin-bottom: 70px; }
-  .full-journey-section__header h2 { font-size: 52px; }
+  .full-journey-section__header h2 { font-size: 38px; }
   .full-journey-section__header > p:last-child { font-size: 16px; }
   .chapter-index > span { margin-bottom: 26px; font-size: 11px; }
   .chapter-index ol { grid-template-columns: 1fr; }
@@ -196,7 +202,7 @@
   }
   .chapter-index a span { padding-top: 3px; font-size: 12px; }
   .chapter { padding: 56px 0; }
-  .chapter h3 { font-size: 40px; }
+  .chapter h3 { font-size: 32px; }
   .chapter__body p { font-size: 16px; line-height: 1.8; }
   .chapter:last-child .chapter__body p:last-child { font-size: 26px; }
 
@@ -209,7 +215,7 @@
   .brahma-yogam-section__hero,
   .brahma-purpose-card,
   .brahma-wisdom-journey { padding: 32px 24px; }
-  .brahma-yogam-section__hero h1 { font-size: 33px; }
+  .brahma-yogam-section__hero h1 { font-size: 29px; line-height: 1.2; }
   .brahma-yogam-section__english-title { margin-top: 22px; font-size: 11px; }
   .brahma-yogam-section__intro { margin-top: 34px; padding-top: 26px; gap: 22px; }
   .brahma-yogam-section__intro p { font-size: 15px; line-height: 1.9; }
@@ -279,11 +285,16 @@
   .menu-button { width: 40px; height: 40px; }
   .primary-navigation { padding-inline: 22px; }
   .primary-navigation a { font-size: 14px; }
-  .section-heading h2, .purpose-section h2 { font-size: 41px; }
-  .teachings-section__intro h2 { font-size: 46px; }
-  .full-journey-section__header h2 { font-size: 46px; }
+  .contribution-section__header h2,
+  .upcoming-activities__header h2 { font-size: 30px; }
+  .photos-page__header h1,
+  .videos-page__header h1,
+  .coming-soon-page h1 { font-size: 36px; }
+  .section-heading h2, .purpose-section h2 { font-size: 32px; }
+  .teachings-section__intro h2 { font-size: 34px; }
+  .full-journey-section__header h2 { font-size: 34px; }
   .chapter-index a { font-size: 16px; grid-template-columns: 40px minmax(0, 1fr); }
-  .chapter h3 { font-size: 36px; }
+  .chapter h3 { font-size: 30px; }
   .teaching-orbit { grid-template-columns: 1fr; }
 }
 
