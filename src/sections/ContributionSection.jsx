@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getContributions, subscribeToContributions } from '../services/contributionsApi'
 import { useLanguage } from '../i18n/useLanguage'
-import { AnnathanamPayment } from '../components/payments/AnnathanamPayment'
+import { DonationPayment } from '../components/payments/DonationPayment'
 
 export function ContributionSection() {
   const { t } = useLanguage()
@@ -59,7 +59,7 @@ export function ContributionSection() {
                   <video src={contribution.src} controls preload="metadata" playsInline aria-label={t('contribution.mediaAlt')} />
                 )}
               </div>
-              {index === 0 && <AnnathanamPayment />}
+              {index === 0 && <DonationPayment />}
             </article>
           ))}
         </div>

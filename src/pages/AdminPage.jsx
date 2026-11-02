@@ -3,6 +3,7 @@ import { AdminVideoManager } from '../components/admin/AdminVideoManager'
 import { AdminActivitiesManager } from '../components/admin/AdminActivitiesManager'
 import { AdminAdsManager } from '../components/admin/AdminAdsManager'
 import { AdminContributionsManager } from '../components/admin/AdminContributionsManager'
+import { AdminDonationsManager } from '../components/admin/AdminDonationsManager'
 import { AdminClassesManager } from '../components/admin/AdminClassesManager'
 import { AdminQuotesManager } from '../components/admin/AdminQuotesManager'
 import { AdminSubmissionsPanel } from '../components/admin/AdminSubmissionsPanel'
@@ -249,6 +250,14 @@ function AdminDashboard({ admin, onLogout }) {
           </button>
           <button
             type="button"
+            className={activeManager === 'donations' ? 'is-active' : ''}
+            aria-pressed={activeManager === 'donations'}
+            onClick={() => setActiveManager('donations')}
+          >
+            Donations
+          </button>
+          <button
+            type="button"
             className={activeManager === 'classes' ? 'is-active' : ''}
             aria-pressed={activeManager === 'classes'}
             onClick={() => setActiveManager('classes')}
@@ -409,6 +418,7 @@ function AdminDashboard({ admin, onLogout }) {
         {activeManager === 'ads' && <AdminAdsManager />}
         {activeManager === 'activities' && <AdminActivitiesManager />}
         {activeManager === 'contributions' && <AdminContributionsManager />}
+        {activeManager === 'donations' && <AdminDonationsManager />}
         {activeManager === 'classes' && <AdminClassesManager />}
 
         {activeManager === 'registrations' && <AdminSubmissionsPanel kind="registrations" />}

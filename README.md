@@ -45,19 +45,9 @@ Always use the Docker website URL above for the admin. Port `4000` is also expos
 
 PostgreSQL data, including class registrations and feedback, and uploaded media are stored in named Docker volumes. Gallery JPG, PNG and WebP images are normalized to WebP and limited to 10 MB each. The admin's Upcoming Activities tab accepts JPG, PNG, WebP, MP4 and WebM files up to 100 MB each. The homepage section remains hidden until its first activity is uploaded. Activity images are normalized to WebP, while activity videos are stored as local files. Admin inboxes show 20 submissions per page; public submissions are rate limited.
 
-## Cashfree Annathanam payments
+## Direct donations
 
-The Annathanam section includes Cashfree hosted checkout. Add the following server-only values to `.env`:
-
-```bash
-PUBLIC_APP_URL=https://your-whitelisted-domain.example
-CASHFREE_ENV=sandbox
-CASHFREE_CLIENT_ID=your-cashfree-app-id
-CASHFREE_CLIENT_SECRET=your-cashfree-secret-key
-CASHFREE_API_VERSION=2026-01-01
-```
-
-Generate the App ID and Secret Key in the Cashfree Merchant Dashboard and whitelist `PUBLIC_APP_URL`. Keep `CASHFREE_ENV=sandbox` while testing. The Secret Key must never be added to frontend code or committed to Git. Configure the Cashfree webhook URL as `https://your-domain.example/api/payments/webhook`; webhook signatures and final order status are verified by the API.
+The Annathanam section accepts direct UPI and bank-transfer donations without a payment gateway. Configure the organization UPI ID and bank account details in **Admin → Donations**. Donation confirmations are stored as `PENDING`; an authenticated admin must compare the submitted UTR with the bank transaction before marking it `VERIFIED` or `REJECTED`. The application never stores UPI PINs, bank-login credentials or card details.
 
 ## Production deployment
 

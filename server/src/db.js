@@ -125,24 +125,45 @@ export async function initializeDatabase() {
     CREATE INDEX IF NOT EXISTS annathanam_contributions_created_idx
       ON annathanam_contributions (created_at ASC, id ASC);
 
-    CREATE TABLE IF NOT EXISTS annathanam_payments (
-      order_id TEXT PRIMARY KEY,
-      cf_order_id TEXT,
-      amount NUMERIC(12, 2) NOT NULL CHECK (amount >= 1),
-      currency TEXT NOT NULL DEFAULT 'INR',
+    CREATE TABLE IF NOT EXISTS donation_settings (
+      id SMALLINT PRIMARY KEY CHECK (id = 1),
+      organization_name TEXT NOT NULL,
+      upi_id TEXT NOT NULL,
+      bank_name TEXT NOT NULL,
+      account_name TEXT NOT NULL,
+      account_number TEXT NOT NULL,
+      ifsc TEXT NOT NULL,
+      branch TEXT NOT NULL,
+      account_type TEXT NOT NULL DEFAULT '',
+      updated_by TEXT,
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    INSERT INTO donation_settings
+      (id, organization_name, upi_id, bank_name, account_name, account_number, ifsc, branch, account_type)
+    VALUES
+      (1, 'Brahmam Foundation', 'organization@upi', 'YOUR BANK', 'Brahmam Foundation', '000000000000', 'ABCD0123456', 'YOUR BRANCH', 'Savings')
+    ON CONFLICT (id) DO NOTHING;
+
+    CREATE TABLE IF NOT EXISTS donations (
+      id BIGSERIAL PRIMARY KEY,
       donor_name TEXT NOT NULL,
-      donor_email TEXT NOT NULL DEFAULT '',
-      donor_phone TEXT NOT NULL,
-      donor_country TEXT NOT NULL DEFAULT '',
-      status TEXT NOT NULL DEFAULT 'CREATED',
+      email TEXT NOT NULL,
+      phone TEXT NOT NULL,
+      amount NUMERIC(12, 2) NOT NULL CHECK (amount >= 1 AND amount <= 500000),
+      payment_method TEXT NOT NULL CHECK (payment_method IN ('UPI', 'BANK_TRANSFER')),
+      utr_number TEXT NOT NULL,
+      message TEXT NOT NULL DEFAULT '',
+      status TEXT NOT NULL DEFAULT 'PENDING' CHECK (status IN ('PENDING', 'VERIFIED', 'REJECTED')),
+      verified_by TEXT,
+      verified_at TIMESTAMPTZ,
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
 
-    CREATE INDEX IF NOT EXISTS annathanam_payments_created_idx
-      ON annathanam_payments (created_at DESC);
-
-    ALTER TABLE annathanam_payments ADD COLUMN IF NOT EXISTS donor_country TEXT NOT NULL DEFAULT '';
+    CREATE UNIQUE INDEX IF NOT EXISTS donations_utr_unique_idx ON donations (LOWER(utr_number));
+    CREATE INDEX IF NOT EXISTS donations_status_idx ON donations (status);
+    CREATE INDEX IF NOT EXISTS donations_created_idx ON donations (created_at DESC);
 
     CREATE TABLE IF NOT EXISTS class_registrations (
       id BIGSERIAL PRIMARY KEY,

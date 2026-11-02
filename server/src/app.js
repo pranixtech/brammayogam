@@ -15,7 +15,7 @@ import { activitiesRouter } from './routes/activities.js'
 import { adsRouter } from './routes/ads.js'
 import { classesRouter } from './routes/classes.js'
 import { contributionsRouter } from './routes/contributions.js'
-import { paymentsRouter } from './routes/payments.js'
+import { donationsRouter } from './routes/donations.js'
 import { quotesRouter } from './routes/quotes.js'
 import { submissionsRouter } from './routes/submissions.js'
 
@@ -124,19 +124,14 @@ export async function createApp() {
       },
     },
   }))
-  app.use(express.json({
-    limit: '100kb',
-    verify: (request, _response, buffer) => {
-      if (request.originalUrl === '/api/payments/webhook') request.rawBody = Buffer.from(buffer)
-    },
-  }))
+  app.use(express.json({ limit: '100kb' }))
   app.use(cookieParser())
   app.use('/uploads', express.static(config.uploadDirectory, { immutable: true, maxAge: '30d', fallthrough: false }))
   app.use('/api', activitiesRouter)
   app.use('/api', adsRouter)
   app.use('/api', classesRouter)
   app.use('/api', contributionsRouter)
-  app.use('/api', paymentsRouter)
+  app.use('/api', donationsRouter)
   app.use('/api', quotesRouter)
   app.use('/api', submissionsRouter)
 
