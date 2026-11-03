@@ -36,6 +36,14 @@ const loginLimiter = rateLimit({
   message: { message: 'Too many login attempts. Please try again later.' },
 })
 
+const credentialSyncLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 60,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+  message: { message: 'Too many credential synchronization requests.' },
+})
+
 function safeEqual(first, second) {
   const firstBuffer = Buffer.from(String(first))
   const secondBuffer = Buffer.from(String(second))
@@ -52,14 +60,92 @@ function derivePasswordHash(password, salt) {
 }
 
 async function isValidAdminLogin(username, password) {
-  if (!safeEqual(username, config.adminUsername)) return false
+  const normalizedUsername = String(username ?? '').trim()
   const { rows } = await pool.query(
-    'SELECT password_hash, password_salt FROM admin_credentials WHERE username = $1',
-    [config.adminUsername],
+    'SELECT username, password_hash, password_salt FROM admin_credentials WHERE lower(username) = lower($1)',
+    [normalizedUsername],
   )
-  if (!rows[0]) return safeEqual(password, config.adminPassword)
+  if (!rows[0]) {
+    return safeEqual(normalizedUsername, config.adminUsername) && safeEqual(password, config.adminPassword)
+      ? config.adminUsername
+      : null
+  }
   const candidateHash = await derivePasswordHash(String(password), rows[0].password_salt)
-  return safeEqual(candidateHash, rows[0].password_hash)
+  return safeEqual(candidateHash, rows[0].password_hash) ? rows[0].username : null
+}
+
+function credentialSyncAuthorized(request) {
+  const authorization = String(request.get('authorization') ?? '')
+  const prefix = 'Bearer '
+  if (!authorization.startsWith(prefix) || config.credentialSyncSecret.length < 32) return false
+  return safeEqual(authorization.slice(prefix.length), config.credentialSyncSecret)
+}
+
+function hasControlCharacters(value) {
+  return Array.from(value).some((character) => {
+    const codePoint = character.codePointAt(0)
+    return codePoint < 32 || codePoint === 127
+  })
+}
+
+function validateAdminCredentialInput(body) {
+  const username = String(body?.username ?? '').trim()
+  const previousUsername = String(body?.previousUsername ?? '').trim()
+  const password = body?.password == null ? '' : String(body.password)
+  if (username.length < 3 || username.length > 120 || hasControlCharacters(username)) {
+    throw Object.assign(new Error('Enter a valid admin username with 3 to 120 characters.'), { status: 400 })
+  }
+  if (previousUsername && (previousUsername.length > 120 || hasControlCharacters(previousUsername))) {
+    throw Object.assign(new Error('The previous admin username is invalid.'), { status: 400 })
+  }
+  if (password && (password.length < 12 || password.length > 256)) {
+    throw Object.assign(new Error('The admin password must contain 12 to 256 characters.'), { status: 400 })
+  }
+  return { username, previousUsername: previousUsername || username, password }
+}
+
+async function upsertAdminCredential({ username, previousUsername, password }) {
+  const client = await pool.connect()
+  try {
+    await client.query('BEGIN')
+    const existing = await client.query(
+      'SELECT username, password_hash, password_salt FROM admin_credentials WHERE lower(username) = lower($1) FOR UPDATE',
+      [previousUsername],
+    )
+    if (!existing.rows[0] && !password) {
+      throw Object.assign(new Error('A password is required when creating a new admin user.'), { status: 400 })
+    }
+    const conflict = await client.query(
+      'SELECT username FROM admin_credentials WHERE lower(username) = lower($1) AND lower(username) <> lower($2)',
+      [username, previousUsername],
+    )
+    if (conflict.rows[0]) {
+      throw Object.assign(new Error('That admin username already exists.'), { status: 409 })
+    }
+    const passwordSalt = password ? crypto.randomBytes(16).toString('hex') : existing.rows[0].password_salt
+    const passwordHash = password ? await derivePasswordHash(password, passwordSalt) : existing.rows[0].password_hash
+    if (existing.rows[0]) {
+      await client.query(
+        `UPDATE admin_credentials
+         SET username = $1, password_hash = $2, password_salt = $3, updated_at = NOW()
+         WHERE username = $4`,
+        [username, passwordHash, passwordSalt, existing.rows[0].username],
+      )
+    } else {
+      await client.query(
+        `INSERT INTO admin_credentials (username, password_hash, password_salt, updated_at)
+         VALUES ($1, $2, $3, NOW())`,
+        [username, passwordHash, passwordSalt],
+      )
+    }
+    await client.query('COMMIT')
+    return username
+  } catch (error) {
+    await client.query('ROLLBACK')
+    throw error
+  } finally {
+    client.release()
+  }
 }
 
 function toPhoto(row) {
@@ -144,6 +230,20 @@ export async function createApp() {
     }
   })
 
+  app.post('/api/internal/admin-credentials', credentialSyncLimiter, async (request, response, next) => {
+    if (!credentialSyncAuthorized(request)) {
+      return response.status(401).json({ message: 'Credential synchronization is not authorized.' })
+    }
+    try {
+      const values = validateAdminCredentialInput(request.body)
+      const username = await upsertAdminCredential(values)
+      return response.status(200).json({ ok: true, username })
+    } catch (error) {
+      if (error.status) return response.status(error.status).json({ message: error.message })
+      return next(error)
+    }
+  })
+
   app.get('/api/categories', async (_request, response, next) => {
     try {
       const { rows } = await pool.query(
@@ -214,10 +314,10 @@ export async function createApp() {
   app.post('/api/admin/login', loginLimiter, async (request, response, next) => {
     const { username = '', password = '' } = request.body ?? {}
     try {
-      const isValid = await isValidAdminLogin(username, password)
-      if (!isValid) return response.status(401).json({ message: 'Invalid username or password.' })
+      const authenticatedUsername = await isValidAdminLogin(username, password)
+      if (!authenticatedUsername) return response.status(401).json({ message: 'Invalid username or password.' })
 
-      const token = jwt.sign({ username: config.adminUsername, role: 'admin' }, config.jwtSecret, {
+      const token = jwt.sign({ username: authenticatedUsername, role: 'admin' }, config.jwtSecret, {
         algorithm: 'HS256',
         issuer: 'brahmam-foundation',
         audience: 'brahmam-admin',
@@ -231,7 +331,7 @@ export async function createApp() {
         maxAge: 8 * 60 * 60 * 1000,
         path: '/',
       })
-      return response.json({ admin: { username: config.adminUsername } })
+      return response.json({ admin: { username: authenticatedUsername } })
     } catch (error) {
       return next(error)
     }

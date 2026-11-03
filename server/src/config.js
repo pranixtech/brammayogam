@@ -14,6 +14,7 @@ export const config = {
   databaseUrl: process.env.DATABASE_URL ?? 'postgres://brahmam:brahmam@localhost:5432/brahmam',
   adminUsername: process.env.ADMIN_USERNAME ?? 'admin',
   adminPassword: process.env.ADMIN_PASSWORD ?? 'change-this-password',
+  credentialSyncSecret: process.env.CREDENTIAL_SYNC_SECRET ?? '',
   jwtSecret: process.env.JWT_SECRET ?? 'change-this-jwt-secret-before-production',
   cookieSecure: process.env.COOKIE_SECURE === 'true',
   uploadDirectory: process.env.UPLOAD_DIR ?? path.join(serverRoot, 'uploads'),
@@ -27,5 +28,8 @@ export function assertProductionConfiguration() {
   const unsafeValues = ['change-this-password', 'change-this-jwt-secret-before-production']
   if (unsafeValues.includes(config.adminPassword) || unsafeValues.includes(config.jwtSecret)) {
     throw new Error('ADMIN_PASSWORD and JWT_SECRET must be changed in production')
+  }
+  if (config.credentialSyncSecret.length < 32) {
+    throw new Error('CREDENTIAL_SYNC_SECRET must contain at least 32 characters in production')
   }
 }

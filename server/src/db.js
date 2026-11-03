@@ -215,6 +215,9 @@ export async function initializeDatabase() {
       password_salt TEXT NOT NULL,
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
+
+    CREATE UNIQUE INDEX IF NOT EXISTS admin_credentials_username_lower_idx
+      ON admin_credentials (lower(username));
   `)
 
   for (const [id, label, description, sortOrder] of categories) {
