@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
+import languageIcon from '../../assets/language-icon.png'
 import { Brand } from '../common/Brand'
+import { SocialLinks } from '../common/SocialLinks'
 import { NAVIGATION_ITEMS } from '../../data/siteContent'
 import { useScrollThreshold } from '../../hooks/useScrollThreshold'
 import { useLanguage } from '../../i18n/useLanguage'
@@ -12,7 +14,9 @@ const NAVIGATION_KEYS = {
 
 export function Header({ forceSolid = false }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isLanguageOpen, setIsLanguageOpen] = useState(false)
   const navigationRef = useRef(null)
+  const languageRef = useRef(null)
   const { language, setLanguage, t } = useLanguage()
   const isScrolled = useScrollThreshold()
   const closeMenu = () => {
@@ -26,14 +30,22 @@ export function Header({ forceSolid = false }) {
     document.body.classList.toggle('menu-open', isMenuOpen)
 
     const closeOnEscape = (event) => {
-      if (event.key === 'Escape') closeMenu()
+      if (event.key === 'Escape') {
+        closeMenu()
+        setIsLanguageOpen(false)
+      }
+    }
+    const closeLanguageOnOutsideClick = (event) => {
+      if (!languageRef.current?.contains(event.target)) setIsLanguageOpen(false)
     }
 
     window.addEventListener('keydown', closeOnEscape)
+    window.addEventListener('pointerdown', closeLanguageOnOutsideClick)
 
     return () => {
       document.body.classList.remove('menu-open')
       window.removeEventListener('keydown', closeOnEscape)
+      window.removeEventListener('pointerdown', closeLanguageOnOutsideClick)
     }
   }, [isMenuOpen])
 
@@ -47,46 +59,12 @@ export function Header({ forceSolid = false }) {
     <header className={`site-header${isScrolled || forceSolid ? ' site-header--scrolled' : ''}`}>
       <Brand onClick={closeMenu} />
 
-      <button
-        className={`menu-button${isMenuOpen ? ' menu-button--open' : ''}`}
-        type="button"
-        aria-label={t(isMenuOpen ? 'navigation.close' : 'navigation.open')}
-        aria-controls="primary-navigation"
-        aria-expanded={isMenuOpen}
-        onClick={() => setIsMenuOpen((currentValue) => !currentValue)}
-      >
-        <span />
-        <span />
-      </button>
-
       <nav
         ref={navigationRef}
         id="primary-navigation"
         className={`primary-navigation${isMenuOpen ? ' primary-navigation--open' : ''}`}
         aria-label={t('navigation.label')}
       >
-        <div className="language-toggle" role="group" aria-label={t('language.label')}>
-          <button
-            className={`language-toggle__option${language === 'en' ? ' is-active' : ''}`}
-            type="button"
-            lang="en"
-            aria-pressed={language === 'en'}
-            onClick={() => setLanguage('en')}
-          >
-            {t('language.english')}
-          </button>
-          <span className="language-toggle__mark" aria-hidden="true">✦</span>
-          <button
-            className={`language-toggle__option${language === 'ta' ? ' is-active' : ''}`}
-            type="button"
-            lang="ta"
-            aria-pressed={language === 'ta'}
-            onClick={() => setLanguage('ta')}
-          >
-            {t('language.tamil')}
-          </button>
-        </div>
-
         {NAVIGATION_ITEMS.map(({ label, href, lang, featured, children }) => (
           children ? (
             <details className="navigation-dropdown" key={label}>
@@ -114,7 +92,77 @@ export function Header({ forceSolid = false }) {
             </a>
           )
         ))}
+
+        <SocialLinks as="div" className="primary-navigation__socials" />
       </nav>
+
+      <div className="site-header__actions">
+        <div className="header-language" ref={languageRef}>
+          <button
+            className="header-language__trigger"
+            type="button"
+            aria-label={t('language.label')}
+            aria-haspopup="menu"
+            aria-expanded={isLanguageOpen}
+            onClick={() => setIsLanguageOpen((current) => !current)}
+          >
+            <img
+              src={languageIcon}
+              alt=""
+              aria-hidden="true"
+              className="header-language__icon"
+              width="26"
+              height="26"
+            />
+          </button>
+
+          {isLanguageOpen && (
+            <div className="header-language__popover" role="menu" aria-label={t('language.label')}>
+              <button
+                type="button"
+                role="menuitemradio"
+                aria-checked={language === 'en'}
+                className={language === 'en' ? 'is-active' : undefined}
+                onClick={() => {
+                  setLanguage('en')
+                  setIsLanguageOpen(false)
+                }}
+              >
+                <span lang="en">{t('language.english')}</span>
+                <span aria-hidden="true">{language === 'en' ? '✓' : ''}</span>
+              </button>
+              <button
+                type="button"
+                role="menuitemradio"
+                aria-checked={language === 'ta'}
+                className={language === 'ta' ? 'is-active' : undefined}
+                onClick={() => {
+                  setLanguage('ta')
+                  setIsLanguageOpen(false)
+                }}
+              >
+                <span lang="ta">{t('language.tamil')}</span>
+                <span aria-hidden="true">{language === 'ta' ? '✓' : ''}</span>
+              </button>
+            </div>
+          )}
+        </div>
+
+        <button
+          className={`menu-button${isMenuOpen ? ' menu-button--open' : ''}`}
+          type="button"
+          aria-label={t(isMenuOpen ? 'navigation.close' : 'navigation.open')}
+          aria-controls="primary-navigation"
+          aria-expanded={isMenuOpen}
+          onClick={() => {
+            setIsLanguageOpen(false)
+            setIsMenuOpen((currentValue) => !currentValue)
+          }}
+        >
+          <span />
+          <span />
+        </button>
+      </div>
     </header>
   )
 }
