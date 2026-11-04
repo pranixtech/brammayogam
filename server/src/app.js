@@ -28,14 +28,6 @@ const upload = multer({
   },
 })
 
-const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  limit: 10,
-  standardHeaders: 'draft-8',
-  legacyHeaders: false,
-  message: { message: 'Too many login attempts. Please try again later.' },
-})
-
 const credentialSyncLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 60,
@@ -311,7 +303,7 @@ export async function createApp() {
     }
   })
 
-  app.post('/api/admin/login', loginLimiter, async (request, response, next) => {
+  app.post('/api/admin/login', async (request, response, next) => {
     const { username = '', password = '' } = request.body ?? {}
     try {
       const authenticatedUsername = await isValidAdminLogin(username, password)
