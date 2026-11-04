@@ -140,6 +140,14 @@ async function upsertAdminCredential({ username, previousUsername, password }) {
   }
 }
 
+async function deleteAdminCredential(username) {
+  const { rows } = await pool.query(
+    'DELETE FROM admin_credentials WHERE lower(username) = lower($1) RETURNING username',
+    [username],
+  )
+  return rows[0]?.username ?? null
+}
+
 function toPhoto(row) {
   return {
     id: String(row.id),
@@ -230,6 +238,23 @@ export async function createApp() {
       const values = validateAdminCredentialInput(request.body)
       const username = await upsertAdminCredential(values)
       return response.status(200).json({ ok: true, username })
+    } catch (error) {
+      if (error.status) return response.status(error.status).json({ message: error.message })
+      return next(error)
+    }
+  })
+
+  app.delete('/api/internal/admin-credentials', credentialSyncLimiter, async (request, response, next) => {
+    if (!credentialSyncAuthorized(request)) {
+      return response.status(401).json({ message: 'Credential synchronization is not authorized.' })
+    }
+    try {
+      const { username } = validateAdminCredentialInput(request.body)
+      if (username.toLowerCase() === config.adminUsername.toLowerCase()) {
+        return response.status(409).json({ message: 'The built-in Brahmam administrator cannot be deleted from Pranix Tech.' })
+      }
+      const deletedUsername = await deleteAdminCredential(username)
+      return response.status(200).json({ ok: true, username: deletedUsername || username, deleted: Boolean(deletedUsername) })
     } catch (error) {
       if (error.status) return response.status(error.status).json({ message: error.message })
       return next(error)
