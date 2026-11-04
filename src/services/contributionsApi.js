@@ -11,6 +11,10 @@ export function uploadContribution(formData) {
   return request('/api/admin/contributions', { method: 'POST', body: formData })
 }
 
+export function updateContribution(id, formData) {
+  return request(`/api/admin/contributions/${encodeURIComponent(id)}`, { method: 'PATCH', body: formData })
+}
+
 export function deleteContribution(id) {
   return request(`/api/admin/contributions/${encodeURIComponent(id)}`, { method: 'DELETE' })
 }

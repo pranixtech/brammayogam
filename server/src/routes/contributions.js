@@ -137,6 +137,83 @@ router.post('/admin/contributions', authenticateAdmin, upload.single('media'), a
   }
 })
 
+router.patch('/admin/contributions/:id', authenticateAdmin, upload.single('media'), async (request, response, next) => {
+  const file = request.file
+  const quote = String(request.body?.quote ?? '').trim()
+  const mediaType = file && mediaTypes[file.mimetype]?.type
+
+  if (!quote) {
+    if (file) await fs.unlink(file.path).catch(() => undefined)
+    return response.status(400).json({ message: 'Enter the quote shown below the media.' })
+  }
+  if (quote.length > 1000) {
+    if (file) await fs.unlink(file.path).catch(() => undefined)
+    return response.status(400).json({ message: 'The Annathanam quote must contain 1000 characters or fewer.' })
+  }
+
+  let finalPath = file?.path
+  let imageOutputPath
+  try {
+    const existing = await pool.query(
+      'SELECT id, file_name FROM annathanam_contributions WHERE id = $1',
+      [request.params.id],
+    )
+    if (!existing.rows.length) {
+      if (file) await fs.unlink(file.path).catch(() => undefined)
+      return response.status(404).json({ message: 'Annathanam contribution not found.' })
+    }
+
+    let result
+    if (file) {
+      if (mediaType === 'image') {
+        const webpName = `${crypto.randomUUID()}.webp`
+        const webpPath = path.join(config.uploadDirectory, webpName)
+        imageOutputPath = webpPath
+        try {
+          await sharp(file.path, { failOn: 'error', limitInputPixels: 50_000_000 })
+            .rotate()
+            .resize({ width: 2400, height: 2400, fit: 'inside', withoutEnlargement: true })
+            .webp({ quality: 86 })
+            .toFile(webpPath)
+        } catch {
+          await fs.unlink(file.path).catch(() => undefined)
+          await fs.unlink(webpPath).catch(() => undefined)
+          return response.status(400).json({ message: 'The selected image could not be read.' })
+        }
+        await fs.unlink(file.path)
+        finalPath = webpPath
+      } else if (!(await isValidVideo(file))) {
+        await fs.unlink(file.path)
+        return response.status(400).json({ message: 'The selected video is not a valid MP4 or WebM file.' })
+      }
+
+      const fileName = path.basename(finalPath)
+      const fileSize = (await fs.stat(finalPath)).size
+      result = await pool.query(
+        `UPDATE annathanam_contributions
+         SET quote = $1, media_type = $2, file_name = $3, original_name = $4, file_size = $5
+         WHERE id = $6
+         RETURNING id, quote, media_type, file_name, created_at`,
+        [quote, mediaType, fileName, file.originalname, fileSize, request.params.id],
+      )
+      await fs.unlink(path.join(config.uploadDirectory, existing.rows[0].file_name)).catch(() => undefined)
+    } else {
+      result = await pool.query(
+        `UPDATE annathanam_contributions SET quote = $1 WHERE id = $2
+         RETURNING id, quote, media_type, file_name, created_at`,
+        [quote, request.params.id],
+      )
+    }
+
+    return response.json({ contribution: toContribution(result.rows[0]), limit: MAX_CONTRIBUTIONS })
+  } catch (error) {
+    if (file && finalPath) await fs.unlink(finalPath).catch(() => undefined)
+    if (file && finalPath !== file.path) await fs.unlink(file.path).catch(() => undefined)
+    if (imageOutputPath && imageOutputPath !== finalPath) await fs.unlink(imageOutputPath).catch(() => undefined)
+    return next(error)
+  }
+})
+
 router.delete('/admin/contributions/:id', authenticateAdmin, async (request, response, next) => {
   try {
     const { rows } = await pool.query(

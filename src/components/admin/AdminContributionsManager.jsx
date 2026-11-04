@@ -3,6 +3,7 @@ import {
   deleteContribution,
   getContributions,
   notifyContributionsUpdated,
+  updateContribution,
   uploadContribution,
 } from '../../services/contributionsApi'
 
@@ -15,7 +16,12 @@ export function AdminContributionsManager() {
   const [message, setMessage] = useState({ type: '', text: '' })
   const [isLoading, setIsLoading] = useState(true)
   const [isUploading, setIsUploading] = useState(false)
+  const [editingId, setEditingId] = useState(null)
+  const [editQuote, setEditQuote] = useState('')
+  const [editFile, setEditFile] = useState(null)
+  const [isUpdating, setIsUpdating] = useState(false)
   const fileInput = useRef(null)
+  const editFileInput = useRef(null)
   const isAtLimit = contributions.length >= MAX_CONTRIBUTIONS
 
   useEffect(() => {
@@ -69,6 +75,47 @@ export function AdminContributionsManager() {
       setMessage({ type: 'success', text: 'Annathanam contribution deleted.' })
     } catch (error) {
       setMessage({ type: 'error', text: error.message })
+    }
+  }
+
+  const startEditing = (contribution) => {
+    setEditingId(contribution.id)
+    setEditQuote(contribution.quote)
+    setEditFile(null)
+    setMessage({ type: '', text: '' })
+    if (editFileInput.current) editFileInput.current.value = ''
+  }
+
+  const cancelEditing = () => {
+    setEditingId(null)
+    setEditQuote('')
+    setEditFile(null)
+    if (editFileInput.current) editFileInput.current.value = ''
+  }
+
+  const handleUpdate = async (event) => {
+    event.preventDefault()
+    if (!editingId || !editQuote.trim()) return
+    if (editFile && editFile.size > 100 * 1024 * 1024) {
+      setMessage({ type: 'error', text: 'Choose a replacement file that is 100 MB or smaller.' })
+      return
+    }
+
+    const formData = new FormData()
+    formData.append('quote', editQuote.trim())
+    if (editFile) formData.append('media', editFile)
+    setIsUpdating(true)
+    setMessage({ type: '', text: '' })
+    try {
+      const { contribution } = await updateContribution(editingId, formData)
+      setContributions((current) => current.map((item) => item.id === contribution.id ? contribution : item))
+      cancelEditing()
+      notifyContributionsUpdated()
+      setMessage({ type: 'success', text: 'Annathanam contribution updated.' })
+    } catch (error) {
+      setMessage({ type: 'error', text: error.message })
+    } finally {
+      setIsUpdating(false)
     }
   }
 
@@ -135,10 +182,45 @@ export function AdminContributionsManager() {
                     ? <img src={contribution.src} alt="Annathanam contribution" loading="lazy" />
                     : <video src={contribution.src} controls preload="metadata" playsInline aria-label="Annathanam contribution" />}
                 </div>
-                <div className="admin-contributions__card-copy">
-                  <blockquote>{contribution.quote}</blockquote>
-                  <button type="button" onClick={() => handleDelete(contribution)}>Delete</button>
-                </div>
+                {editingId === contribution.id ? (
+                  <form className="admin-contributions__edit" onSubmit={handleUpdate}>
+                    <label className="admin-activities__field">
+                      <span>Quote below the media</span>
+                      <textarea
+                        value={editQuote}
+                        maxLength={1000}
+                        rows={5}
+                        required
+                        onChange={(event) => setEditQuote(event.target.value)}
+                      />
+                      <small>{editQuote.length}/1000 characters</small>
+                    </label>
+                    <label className="admin-activities__field admin-activities__file">
+                      <span>Replace image or video (optional)</span>
+                      <input
+                        ref={editFileInput}
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp,video/mp4,video/webm"
+                        onChange={(event) => setEditFile(event.target.files?.[0] ?? null)}
+                      />
+                      <small>Leave empty to keep the current media.</small>
+                    </label>
+                    <div className="admin-contributions__edit-actions">
+                      <button className="admin-button admin-button--primary" type="submit" disabled={isUpdating || !editQuote.trim()}>
+                        {isUpdating ? 'Saving…' : 'Save changes'}
+                      </button>
+                      <button className="admin-button admin-button--quiet" type="button" disabled={isUpdating} onClick={cancelEditing}>Cancel</button>
+                    </div>
+                  </form>
+                ) : (
+                  <div className="admin-contributions__card-copy">
+                    <blockquote>{contribution.quote}</blockquote>
+                    <div className="admin-contributions__card-actions">
+                      <button type="button" onClick={() => startEditing(contribution)}>Edit</button>
+                      <button type="button" className="is-delete" onClick={() => handleDelete(contribution)}>Delete</button>
+                    </div>
+                  </div>
+                )}
               </article>
             ))}
           </div>

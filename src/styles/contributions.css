@@ -357,11 +357,32 @@ body.payment-modal-open { overflow: hidden; }
   padding: 4px;
   border: 0;
   background: transparent;
-  color: #a43d2c;
+  color: var(--color-wine);
   cursor: pointer;
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
+}
+
+.admin-contributions__card-actions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.admin-contributions__card-copy button.is-delete { color: #a43d2c; }
+
+.admin-contributions__edit {
+  display: grid;
+  padding: 18px;
+  gap: 16px;
+}
+
+.admin-contributions__edit-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 @media (max-width: 760px) {

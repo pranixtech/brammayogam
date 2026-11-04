@@ -877,6 +877,7 @@
 
 .admin-form { display: grid; gap: 20px; text-align: left; }
 .admin-form label,
+.admin-form__field,
 .admin-alt-field { display: grid; color: var(--color-ink); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; gap: 9px; text-transform: uppercase; }
 .admin-form input,
 .admin-alt-field input {
@@ -894,6 +895,28 @@
 }
 .admin-form input:focus,
 .admin-alt-field input:focus { border-color: var(--color-saffron); box-shadow: 0 0 0 3px rgba(221, 153, 52, 0.12); }
+
+.admin-password-field { position: relative; display: block; }
+.admin-password-field input { padding-right: 74px; }
+.admin-password-field__toggle {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  min-width: 58px;
+  min-height: 34px;
+  padding: 0 8px;
+  border: 0;
+  border-left: 1px solid var(--color-line);
+  background: transparent;
+  color: var(--color-wine);
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transform: translateY(-50%);
+}
+.admin-password-field__toggle:focus-visible { outline: 2px solid var(--color-saffron); outline-offset: 1px; }
 
 .admin-button {
   min-height: 44px;

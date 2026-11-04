@@ -42,6 +42,7 @@ const CATEGORIES = [
 
 function LoginForm({ onLogin }) {
   const [form, setForm] = useState({ username: '', password: '' })
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -78,17 +79,29 @@ function LoginForm({ onLogin }) {
               onChange={(event) => setForm((current) => ({ ...current, username: event.target.value }))}
             />
           </label>
-          <label>
-            <span>Password</span>
-            <input
-              type="password"
-              name="password"
-              value={form.password}
-              autoComplete="current-password"
-              required
-              onChange={(event) => setForm((current) => ({ ...current, password: event.target.value }))}
-            />
-          </label>
+          <div className="admin-form__field">
+            <label htmlFor="admin-password">Password</label>
+            <span className="admin-password-field">
+              <input
+                id="admin-password"
+                type={isPasswordVisible ? 'text' : 'password'}
+                name="password"
+                value={form.password}
+                autoComplete="current-password"
+                required
+                onChange={(event) => setForm((current) => ({ ...current, password: event.target.value }))}
+              />
+              <button
+                type="button"
+                className="admin-password-field__toggle"
+                aria-label={isPasswordVisible ? 'Hide password' : 'Show password'}
+                aria-pressed={isPasswordVisible}
+                onClick={() => setIsPasswordVisible((current) => !current)}
+              >
+                {isPasswordVisible ? 'Hide' : 'Show'}
+              </button>
+            </span>
+          </div>
           {error && <p className="admin-message admin-message--error" role="alert">{error}</p>}
           <button className="admin-button admin-button--primary" type="submit" disabled={isSubmitting}>
             {isSubmitting ? 'Signing in…' : 'Sign in'}
