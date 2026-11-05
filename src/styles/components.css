@@ -34,19 +34,23 @@
   width: 42px;
   height: 42px;
   padding: 0;
-  border: 1px solid rgba(221, 153, 52, 0.42);
+  border: 1px solid rgba(221, 153, 52, 0.28);
   border-radius: 50%;
   background: rgba(255, 252, 245, 0.78);
   color: var(--color-saffron);
   cursor: pointer;
-  box-shadow: 0 8px 24px rgba(99, 62, 30, 0.09);
+  box-shadow: none;
   place-items: center;
 }
 .header-language__icon {
   width: 25px;
   height: 25px;
   display: block;
-  object-fit: contain;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
   transition: transform 200ms ease;
 }
 .header-language__trigger svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.6; }

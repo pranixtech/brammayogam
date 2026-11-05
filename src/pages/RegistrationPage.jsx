@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
-import { getCountryOptions } from '../data/countries'
+import { CITY_OPTIONS, findCityOption } from '../data/cities'
+import { getCountryName, getCountryOptions } from '../data/countries'
 import { submitRegistration } from '../services/submissionsApi'
 import { getUpcomingClasses, subscribeToUpcomingClasses } from '../services/classesApi'
 import { useLanguage } from '../i18n/useLanguage'
@@ -56,6 +57,16 @@ export function RegistrationPage() {
   const updateField = (event) => {
     const { name, type, value, checked } = event.target
     setForm((current) => ({ ...current, [name]: type === 'checkbox' ? checked : value }))
+  }
+
+  const updateCity = (event) => {
+    const city = event.target.value
+    const selectedCity = findCityOption(city)
+    setForm((current) => ({
+      ...current,
+      city: selectedCity?.name ?? city,
+      country: selectedCity?.countryCode ?? current.country,
+    }))
   }
 
   const handleSubmit = async (event) => {
@@ -144,7 +155,21 @@ export function RegistrationPage() {
             </label>
             <label>
               <span>{t('forms.city')}</span>
-              <input name="city" value={form.city} maxLength="80" autoComplete="address-level2" required onChange={updateField} />
+              <input
+                name="city"
+                value={form.city}
+                list="registration-city-options"
+                maxLength="80"
+                autoComplete="address-level2"
+                placeholder={t('forms.selectCity')}
+                required
+                onChange={updateCity}
+              />
+              <datalist id="registration-city-options">
+                {CITY_OPTIONS.map(({ name, countryCode }) => (
+                  <option value={name} label={getCountryName(countryCode, language)} key={`${countryCode}-${name}`} />
+                ))}
+              </datalist>
             </label>
             <label>
               <span>{t('forms.country')}</span>

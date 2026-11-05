@@ -49,7 +49,8 @@
 .admin-ads__guidance { margin: 0; color: var(--color-muted); font-size: 12px; line-height: 1.5; }
 .admin-quote-preview { max-width: 680px; margin-top: 22px; }
 .admin-quote-preview img, .admin-quote-card > img { aspect-ratio: auto; object-fit: contain; }
-.admin-quote-card { max-width: 680px; }
+.admin-quotes__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.admin-quote-card { max-width: none; }
 
 @media (max-width: 900px) {
   .upcoming-activities__grid, .admin-activities__grid, .admin-classes__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -58,7 +59,7 @@
 }
 
 @media (max-width: 640px) {
-  .upcoming-activities__grid, .admin-activities__grid, .admin-activities__fields, .admin-classes__grid, .admin-ad-previews { grid-template-columns: 1fr; }
+  .upcoming-activities__grid, .admin-activities__grid, .admin-activities__fields, .admin-classes__grid, .admin-ad-previews, .admin-quotes__grid { grid-template-columns: 1fr; }
   .admin-activities__file { grid-column: auto; }
   .upcoming-activity__copy { min-height: 0; }
   .admin-class-preview figcaption { align-items: flex-start; flex-direction: column; }

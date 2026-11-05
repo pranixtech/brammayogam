@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import languageIcon from '../../assets/language-icon.png'
 import { Brand } from '../common/Brand'
 import { SocialLinks } from '../common/SocialLinks'
 import { NAVIGATION_ITEMS } from '../../data/siteContent'
@@ -7,7 +6,7 @@ import { useScrollThreshold } from '../../hooks/useScrollThreshold'
 import { useLanguage } from '../../i18n/useLanguage'
 
 const NAVIGATION_KEYS = {
-  '/#journey': 'journey', '/bio': 'bio', '/#contribution': 'contribution', '/#teachings': 'teachings',
+  '/#journey': 'journey', '/bio': 'bio', '/#quotes': 'quotes', '/#contribution': 'contribution', '/#teachings': 'teachings',
   '/yogam': 'yogam', '/registration': 'registration', '/feedback': 'feedback',
   '/deeksha': 'deeksha', '/book': 'book', '/photos': 'photos', '/videos': 'videos', '/#purpose': 'purpose',
 }
@@ -106,14 +105,14 @@ export function Header({ forceSolid = false }) {
             aria-expanded={isLanguageOpen}
             onClick={() => setIsLanguageOpen((current) => !current)}
           >
-            <img
-              src={languageIcon}
-              alt=""
+            <svg
               aria-hidden="true"
               className="header-language__icon"
-              width="26"
-              height="26"
-            />
+              viewBox="0 0 24 24"
+            >
+              <circle cx="12" cy="12" r="9" />
+              <path d="M3 12h18M12 3c2.4 2.45 3.65 5.45 3.65 9S14.4 18.55 12 21M12 3c-2.4 2.45-3.65 5.45-3.65 9S9.6 18.55 12 21" />
+            </svg>
           </button>
 
           {isLanguageOpen && (

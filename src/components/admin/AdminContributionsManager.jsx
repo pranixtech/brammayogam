@@ -7,7 +7,7 @@ import {
   uploadContribution,
 } from '../../services/contributionsApi'
 
-const MAX_CONTRIBUTIONS = 2
+const MAX_CONTRIBUTIONS = 5
 
 export function AdminContributionsManager() {
   const [contributions, setContributions] = useState([])
@@ -127,11 +127,11 @@ export function AdminContributionsManager() {
             <p className="section-kicker">Contribution section</p>
             <h2>Annathanam</h2>
           </div>
-          <p>Publish up to two images or videos. Enter the quote that appears directly below each media item.</p>
+          <p>Publish up to five images or videos for the homepage slider. Enter the quote displayed with each media item.</p>
         </div>
 
         {isAtLimit ? (
-          <p className="admin-capacity-note">Both Annathanam slots are filled. Delete an existing item before uploading another.</p>
+          <p className="admin-capacity-note">All five Annathanam slider slots are filled. Delete an existing item before uploading another.</p>
         ) : (
           <>
             <div className="admin-contributions__fields">

@@ -9,6 +9,7 @@ import { pool } from '../db.js'
 import { authenticateAdmin } from '../middleware/authenticateAdmin.js'
 
 const router = Router()
+const MAX_QUOTE_IMAGES = 10
 const allowedImages = new Set(['image/jpeg', 'image/png', 'image/webp'])
 
 const upload = multer({
@@ -31,10 +32,11 @@ function toQuoteImage(row) {
 router.get('/quote-image', async (_request, response, next) => {
   try {
     const { rows } = await pool.query(
-      'SELECT id, file_name, created_at FROM quote_images ORDER BY created_at DESC, id DESC LIMIT 1',
+      'SELECT id, file_name, created_at FROM quote_images ORDER BY created_at ASC, id ASC LIMIT $1',
+      [MAX_QUOTE_IMAGES],
     )
     response.set('Cache-Control', 'no-store, no-cache, must-revalidate')
-    return response.json({ quoteImage: rows[0] ? toQuoteImage(rows[0]) : null })
+    return response.json({ quoteImages: rows.map(toQuoteImage), limit: MAX_QUOTE_IMAGES })
   } catch (error) {
     return next(error)
   }
@@ -58,8 +60,12 @@ router.post('/admin/quote-image', authenticateAdmin, upload.single('image'), asy
     client = await pool.connect()
     await client.query('BEGIN')
     await client.query('LOCK TABLE quote_images IN EXCLUSIVE MODE')
-    const { rows: existingRows } = await client.query('SELECT file_name FROM quote_images')
-    await client.query('DELETE FROM quote_images')
+    const { rows: countRows } = await client.query('SELECT COUNT(*)::integer AS count FROM quote_images')
+    if (countRows[0].count >= MAX_QUOTE_IMAGES) {
+      await client.query('ROLLBACK')
+      await fs.unlink(webpPath).catch(() => undefined)
+      return response.status(409).json({ message: 'Only ten quote images can be published. Delete one before adding another.' })
+    }
     const { rows } = await client.query(
       `INSERT INTO quote_images (file_name, original_name, file_size)
        VALUES ($1, $2, $3)
@@ -67,10 +73,7 @@ router.post('/admin/quote-image', authenticateAdmin, upload.single('image'), asy
       [webpName, file.originalname, fileSize],
     )
     await client.query('COMMIT')
-    await Promise.all(existingRows.map(({ file_name: oldFile }) => (
-      fs.unlink(path.join(config.uploadDirectory, oldFile)).catch(() => undefined)
-    )))
-    return response.status(201).json({ quoteImage: toQuoteImage(rows[0]) })
+    return response.status(201).json({ quoteImage: toQuoteImage(rows[0]), limit: MAX_QUOTE_IMAGES })
   } catch (error) {
     if (client) await client.query('ROLLBACK').catch(() => undefined)
     await fs.unlink(webpPath).catch(() => undefined)

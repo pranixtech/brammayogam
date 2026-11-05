@@ -27,9 +27,16 @@ const PHOTO_CATEGORIES = [
 
 const PHOTOS_PER_PAGE = 12
 
+function getInitialCategoryId() {
+  const requestedCategory = new URLSearchParams(window.location.search).get('category')
+  return PHOTO_CATEGORIES.some(({ id }) => id === requestedCategory)
+    ? requestedCategory
+    : PHOTO_CATEGORIES[0].id
+}
+
 export function PhotosPage() {
   const { t } = useLanguage()
-  const [activeCategoryId, setActiveCategoryId] = useState(PHOTO_CATEGORIES[0].id)
+  const [activeCategoryId, setActiveCategoryId] = useState(getInitialCategoryId)
   const [uploadedPhotos, setUploadedPhotos] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [loadError, setLoadError] = useState('')

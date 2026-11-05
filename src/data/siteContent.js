@@ -3,6 +3,7 @@ export const SITE_NAME = 'Brahmam Foundation'
 export const NAVIGATION_ITEMS = [
   { label: 'The journey', href: '/#journey' },
   { label: 'Bio', href: '/bio' },
+  { label: 'Quotes', href: '/#quotes' },
   { label: 'Contribution', href: '/#contribution' },
   { label: 'Teachings', href: '/#teachings' },
   { label: 'Brahma Yogam', href: '/yogam' },

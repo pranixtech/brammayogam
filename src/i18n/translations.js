@@ -4,7 +4,7 @@ export const TRANSLATIONS = {
     language: { label: 'Choose site language', english: 'English', tamil: 'தமிழ்' },
     navigation: {
       label: 'Main navigation', open: 'Open navigation', close: 'Close navigation',
-      journey: 'The journey', bio: 'Bio', contribution: 'Contribution', teachings: 'Teachings', yogam: 'Brahma Yogam',
+      journey: 'The journey', bio: 'Bio', quotes: 'Quotes', contribution: 'Contribution', teachings: 'Teachings', yogam: 'Brahma Yogam',
       class: 'Upcoming Classes', registration: 'Upcoming Classes', feedback: 'Feedback', deeksha: 'Deeksha', book: 'Book',
       gallery: 'Gallery', photos: 'Photos', videos: 'Videos', purpose: 'Our purpose',
     },
@@ -29,16 +29,16 @@ export const TRANSLATIONS = {
       description: 'Over 10,000 seekers in Malaysia alone have received Brahma Yoga Deeksha and benefited from its practices. Across India, Sri Lanka, Singapore, the USA, Dubai, Russia, the UK, France, Australia, and beyond, many continue to embrace the Brahma Yoga Deeksha and teachings of Guru Brahmananda Sri Sivaprabakara Siddha Yogi Swamigal, revered as a Brahma Siddhar who lived for 723 years, experiencing spiritual awakening and divine experiences.',
     },
     contribution: {
-      kicker: 'Compassion in action', title: 'Annathanam',
+      kicker: 'Compassion in action', title: 'Uyir Seva (Annathanam)',
       description: 'Sharing food with care is a sacred expression of service and compassion.',
-      mediaAlt: 'Brahmam Foundation Annathanam contribution',
+      mediaAlt: 'Brahmam Foundation Annathanam contribution', gallery: 'View Annathanam Gallery', slider: 'Uyir Seva media slider', previous: 'Previous Annathanam image', next: 'Next Annathanam image', show: 'Show Annathanam image', of: 'of',
     },
     classesPromo: {
       kicker: 'Upcoming classes', title: 'Choose your next practice.', description: 'Explore our upcoming online classes and reserve your place.', carousel: 'Upcoming class advertisements', advertisement: 'Upcoming class advertisement', previous: 'Previous class', next: 'Next class', choose: 'Choose a class advertisement', show: 'Show class', register: 'Register now',
     },
     guruContent: {
       interviewsKicker: 'Conversations with the Guru', interviewsTitle: 'Guru’s Interviews', interviewsLabel: 'Guru interview videos',
-      quotesKicker: 'Words for reflection', quotesTitle: 'Quotes', quotesAlt: 'A spiritual quote shared by Brahmam Foundation',
+      quotesKicker: 'Words for reflection', quotesTitle: 'Quotes', quotesAlt: 'A spiritual quote shared by Brahmam Foundation', quotesCarousel: 'Quote image carousel', quotesPrevious: 'Previous quote', quotesNext: 'Next quote', quotesShow: 'Show quote', quotesOf: 'of',
     },
     donation: {
       kicker: 'Direct contribution', title: 'Support Annathanam', description: 'Donate directly through UPI or bank transfer. Every submitted transaction remains pending until our team verifies it.', donateNow: 'Donate Now', close: 'Close donation panel',
@@ -78,7 +78,7 @@ export const TRANSLATIONS = {
       },
     },
     forms: {
-      required: 'Fields marked with * are required.', optional: 'optional', fullName: 'Full name *', email: 'Email address', phone: 'Phone / WhatsApp *', city: 'City *', country: 'Country *', selectCountry: 'Select your country', cityCountry: 'City / Country *', joiningPurpose: 'What is your purpose for joining this class? *',
+      required: 'Fields marked with * are required.', optional: 'optional', fullName: 'Full name *', email: 'Email address', phone: 'Phone / WhatsApp *', city: 'City *', country: 'Country *', selectCity: 'Type or select your city', selectCountry: 'Select your country', cityCountry: 'City / Country *', joiningPurpose: 'What is your purpose for joining this class? *',
       registrationKicker: 'Online classes', registrationTitle: 'Begin your practice with us.', registrationIntro: 'Choose an upcoming class and share your details. Our team will contact you with the next steps.', upcomingClasses: 'Upcoming classes', selectClass: 'Select class', swipeClasses: 'Swipe to explore and select a class category.', previewClass: 'Preview', classPreview: 'Class preview', selectThisClass: 'Select class', selectedClass: 'Selected', closePreview: 'Close class preview', classesEmpty: 'Upcoming classes will appear here after they are added by the admin.', classesError: 'Upcoming classes are temporarily unavailable.', chooseClassError: 'Please select a class before submitting.', registrationForm: 'Registration form', consent: 'I agree to be contacted about online classes using the details above.', sendingRegistration: 'Sending registration…', submitRegistration: 'Submit registration', registrationSuccess: 'Your registration has been received. Our team will contact you soon.', thankYou: 'Thank you', contactShortly: 'Our team will contact you shortly.', close: 'Close',
       feedbackKicker: 'Community experiences', feedbackTitle: 'Words from our community.', feedbackIntro: 'Read experiences and reflections shared by members of the Brahmam Foundation community.', feedbackLoading: 'Loading feedback…', feedbackEmpty: 'No feedback has been published yet.', feedbackError: 'Feedback is temporarily unavailable. Please try again shortly.', feedbackForm: 'Feedback form', feedbackNote: 'Your message is shared with the Brahmam Foundation admin team.', yourName: 'Your name *', rating: 'Rating', chooseRating: 'Choose a rating', excellent: 'Excellent', good: 'Good', okay: 'Okay', better: 'Could be better', improvement: 'Needs improvement', yourFeedback: 'Your feedback *', sendingFeedback: 'Sending feedback…', sendFeedback: 'Send feedback', feedbackSuccess: 'Thank you. Your feedback has been received.',
       submitError: 'Unable to submit the form. Please check your details and try again.',
@@ -91,7 +91,7 @@ export const TRANSLATIONS = {
     language: { label: 'தள மொழியைத் தேர்ந்தெடுக்கவும்', english: 'English', tamil: 'தமிழ்' },
     navigation: {
       label: 'முதன்மை வழிசெலுத்தல்', open: 'வழிசெலுத்தலைத் திறக்கவும்', close: 'வழிசெலுத்தலை மூடவும்',
-      journey: 'ஆன்மீகப் பயணம்', bio: 'வாழ்க்கை வரலாறு', contribution: 'பங்களிப்பு', teachings: 'போதனைகள்', yogam: 'பிரம்ம யோகம்',
+      journey: 'ஆன்மீகப் பயணம்', bio: 'வாழ்க்கை வரலாறு', quotes: 'பொன்மொழிகள்', contribution: 'பங்களிப்பு', teachings: 'போதனைகள்', yogam: 'பிரம்ம யோகம்',
       class: 'வரவிருக்கும் வகுப்புகள்', registration: 'வரவிருக்கும் வகுப்புகள்', feedback: 'கருத்துப் பதிவு', deeksha: 'தீட்சை', book: 'நூல்',
       gallery: 'காட்சியகம்', photos: 'புகைப்படங்கள்', videos: 'காணொளிகள்', purpose: 'எங்கள் நோக்கம்',
     },
@@ -116,16 +116,16 @@ export const TRANSLATIONS = {
       description: 'மலேசியாவில் மட்டும் 10,000-க்கும் மேற்பட்ட ஆன்மாக்கள் பிரம்ம யோக தீட்சை பெற்று பயனடைந்துள்ளனர். இந்தியா, இலங்கை, சிங்கப்பூர், அமெரிக்கா, துபாய், ரஷ்யா, இங்கிலாந்து, பிரான்ஸ், ஆஸ்திரேலியா உள்ளிட்ட பல்வேறு நாடுகளிலும் பலர் 723 ஆண்டுகள் வாழ்ந்த பிரம்ம சித்தராகப் போற்றப்படும் குரு பிரம்மானந்த ஸ்ரீ சிவ பிரபாகர சித்த யோகி சுவாமிகளின் பிரம்ம யோக தீட்சை மற்றும் பயிற்சிகளைப் பெற்று ஆன்மீக, ஆத்ம மற்றும் இறை அனுபவங்களைப் பெற்று வருகின்றனர்.',
     },
     contribution: {
-      kicker: 'செயலில் கருணை', title: 'அன்னதானம்',
+      kicker: 'செயலில் கருணை', title: 'உயிர் சேவை (அன்னதானம்)',
       description: 'அன்புடன் உணவைப் பகிர்வது, சேவையையும் கருணையையும் வெளிப்படுத்தும் புனிதச் செயலாகும்.',
-      mediaAlt: 'பிரம்மம் அறக்கட்டளையின் அன்னதானப் பங்களிப்பு',
+      mediaAlt: 'பிரம்மம் அறக்கட்டளையின் அன்னதானப் பங்களிப்பு', gallery: 'அன்னதானப் படங்களைப் பார்க்கவும்', slider: 'உயிர் சேவை படத் தொகுப்பு', previous: 'முந்தைய அன்னதானப் படம்', next: 'அடுத்த அன்னதானப் படம்', show: 'அன்னதானப் படத்தைக் காட்டவும்', of: '/',
     },
     classesPromo: {
       kicker: 'வரவிருக்கும் வகுப்புகள்', title: 'உங்கள் அடுத்த பயிற்சியைத் தேர்ந்தெடுக்கவும்.', description: 'வரவிருக்கும் இணையவழி வகுப்புகளைப் பார்த்து உங்கள் இடத்தைப் பதிவு செய்யுங்கள்.', carousel: 'வரவிருக்கும் வகுப்பு அறிவிப்புகள்', advertisement: 'வரவிருக்கும் வகுப்பு அறிவிப்பு', previous: 'முந்தைய வகுப்பு', next: 'அடுத்த வகுப்பு', choose: 'வகுப்பு அறிவிப்பைத் தேர்ந்தெடுக்கவும்', show: 'வகுப்பைக் காட்டவும்', register: 'இப்போதே பதிவு செய்யுங்கள்',
     },
     guruContent: {
       interviewsKicker: 'குருவுடனான உரையாடல்கள்', interviewsTitle: 'குருவின் நேர்காணல்கள்', interviewsLabel: 'குருவின் நேர்காணல் காணொளிகள்',
-      quotesKicker: 'சிந்தனைக்கான வார்த்தைகள்', quotesTitle: 'பொன்மொழிகள்', quotesAlt: 'பிரம்மம் அறக்கட்டளை பகிர்ந்த ஆன்மீகப் பொன்மொழி',
+      quotesKicker: 'சிந்தனைக்கான வார்த்தைகள்', quotesTitle: 'பொன்மொழிகள்', quotesAlt: 'பிரம்மம் அறக்கட்டளை பகிர்ந்த ஆன்மீகப் பொன்மொழி', quotesCarousel: 'பொன்மொழிப் படத் தொகுப்பு', quotesPrevious: 'முந்தைய பொன்மொழி', quotesNext: 'அடுத்த பொன்மொழி', quotesShow: 'பொன்மொழியைக் காட்டவும்', quotesOf: '/',
     },
     donation: {
       kicker: 'நேரடிப் பங்களிப்பு', title: 'அன்னதானத்திற்கு உதவுங்கள்', description: 'UPI அல்லது வங்கிப் பரிமாற்றம் மூலம் நேரடியாக நன்கொடை வழங்குங்கள். எங்கள் குழு சரிபார்க்கும் வரை ஒவ்வொரு பரிவர்த்தனையும் நிலுவையில் இருக்கும்.', donateNow: 'இப்போது நன்கொடை வழங்குங்கள்', close: 'நன்கொடைப் பகுதியை மூடவும்',
@@ -165,7 +165,7 @@ export const TRANSLATIONS = {
       },
     },
     forms: {
-      required: '* குறியீடு உள்ள புலங்கள் கட்டாயமானவை.', optional: 'விருப்பமானது', fullName: 'முழுப் பெயர் *', email: 'மின்னஞ்சல் முகவரி', phone: 'தொலைபேசி / வாட்ஸ்அப் *', city: 'நகரம் *', country: 'நாடு *', selectCountry: 'உங்கள் நாட்டைத் தேர்ந்தெடுக்கவும்', cityCountry: 'நகரம் / நாடு *', joiningPurpose: 'இந்த வகுப்பில் சேர்வதற்கான உங்கள் நோக்கம் என்ன? *',
+      required: '* குறியீடு உள்ள புலங்கள் கட்டாயமானவை.', optional: 'விருப்பமானது', fullName: 'முழுப் பெயர் *', email: 'மின்னஞ்சல் முகவரி', phone: 'தொலைபேசி / வாட்ஸ்அப் *', city: 'நகரம் *', country: 'நாடு *', selectCity: 'உங்கள் நகரத்தைத் தட்டச்சு செய்யவும் அல்லது தேர்ந்தெடுக்கவும்', selectCountry: 'உங்கள் நாட்டைத் தேர்ந்தெடுக்கவும்', cityCountry: 'நகரம் / நாடு *', joiningPurpose: 'இந்த வகுப்பில் சேர்வதற்கான உங்கள் நோக்கம் என்ன? *',
       registrationKicker: 'இணையவழி வகுப்புகள்', registrationTitle: 'எங்களுடன் உங்கள் பயிற்சியைத் தொடங்குங்கள்.', registrationIntro: 'வரவிருக்கும் வகுப்பைத் தேர்ந்தெடுத்து உங்கள் விவரங்களைப் பகிருங்கள். அடுத்தகட்ட நடைமுறைகள் குறித்து எங்கள் குழு உங்களைத் தொடர்புகொள்ளும்.', upcomingClasses: 'வரவிருக்கும் வகுப்புகள்', selectClass: 'வகுப்பைத் தேர்ந்தெடுக்கவும்', swipeClasses: 'வகுப்பு வகைகளைப் பார்த்துத் தேர்ந்தெடுக்க இடது அல்லது வலது பக்கம் நகர்த்தவும்.', previewClass: 'முன்னோட்டம்', classPreview: 'வகுப்பு முன்னோட்டம்', selectThisClass: 'வகுப்பைத் தேர்ந்தெடுக்கவும்', selectedClass: 'தேர்ந்தெடுக்கப்பட்டது', closePreview: 'வகுப்பு முன்னோட்டத்தை மூடவும்', classesEmpty: 'நிர்வாகப் பகுதியில் சேர்க்கப்பட்ட பிறகு வரவிருக்கும் வகுப்புகள் இங்கே தோன்றும்.', classesError: 'வரவிருக்கும் வகுப்புகள் தற்போது கிடைக்கவில்லை.', chooseClassError: 'சமர்ப்பிப்பதற்கு முன் ஒரு வகுப்பைத் தேர்ந்தெடுக்கவும்.', registrationForm: 'பதிவுப் படிவம்', consent: 'மேலே அளித்த விவரங்களைப் பயன்படுத்தி, இணையவழி வகுப்புகள் குறித்து என்னைத் தொடர்புகொள்ளச் சம்மதிக்கிறேன்.', sendingRegistration: 'பதிவு அனுப்பப்படுகிறது…', submitRegistration: 'பதிவைச் சமர்ப்பிக்கவும்', registrationSuccess: 'உங்கள் பதிவு பெறப்பட்டுள்ளது. எங்கள் குழு விரைவில் உங்களைத் தொடர்புகொள்ளும்.', thankYou: 'நன்றி', contactShortly: 'எங்கள் குழு விரைவில் உங்களைத் தொடர்புகொள்ளும்.', close: 'மூடவும்',
       feedbackKicker: 'சமூகத்தின் அனுபவங்கள்', feedbackTitle: 'நம் சமூகத்தின் கருத்துகள்', feedbackIntro: 'பிரம்மம் அறக்கட்டளை சமூக உறுப்பினர்கள் பகிர்ந்த அனுபவங்களையும் எண்ணங்களையும் படியுங்கள்.', feedbackLoading: 'கருத்துகள் ஏற்றப்படுகின்றன…', feedbackEmpty: 'கருத்துகள் எதுவும் இதுவரை வெளியிடப்படவில்லை.', feedbackError: 'கருத்துகள் தற்போது கிடைக்கவில்லை. சிறிது நேரத்தில் மீண்டும் முயலவும்.', feedbackForm: 'கருத்துப் படிவம்', feedbackNote: 'உங்கள் செய்தி பிரம்மம் அறக்கட்டளையின் நிர்வாகக் குழுவுடன் பகிரப்படும்.', yourName: 'உங்கள் பெயர் *', rating: 'மதிப்பீடு', chooseRating: 'மதிப்பீட்டைத் தேர்ந்தெடுக்கவும்', excellent: 'மிகச் சிறப்பு', good: 'நன்று', okay: 'சரி', better: 'மேம்படுத்தலாம்', improvement: 'மேம்பாடு தேவை', yourFeedback: 'உங்கள் கருத்து *', sendingFeedback: 'கருத்து அனுப்பப்படுகிறது…', sendFeedback: 'கருத்தை அனுப்பவும்', feedbackSuccess: 'நன்றி. உங்கள் கருத்து பெறப்பட்டுள்ளது.',
       submitError: 'படிவத்தைச் சமர்ப்பிக்க முடியவில்லை. உங்கள் விவரங்களைச் சரிபார்த்து மீண்டும் முயலவும்.',

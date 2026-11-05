@@ -8,7 +8,7 @@ import { config } from '../config.js'
 import { pool } from '../db.js'
 import { authenticateAdmin } from '../middleware/authenticateAdmin.js'
 
-const MAX_CONTRIBUTIONS = 2
+const MAX_CONTRIBUTIONS = 5
 const router = Router()
 const mediaTypes = {
   'image/jpeg': { type: 'image', extension: '.jpg' },
@@ -115,7 +115,7 @@ router.post('/admin/contributions', authenticateAdmin, upload.single('media'), a
     if (countRows[0].count >= MAX_CONTRIBUTIONS) {
       await client.query('ROLLBACK')
       await fs.unlink(finalPath).catch(() => undefined)
-      return response.status(409).json({ message: 'Only two Annathanam contributions can be published. Delete one before adding another.' })
+      return response.status(409).json({ message: 'Only five Annathanam contributions can be published. Delete one before adding another.' })
     }
 
     const { rows } = await client.query(
