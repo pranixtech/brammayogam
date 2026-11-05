@@ -13,7 +13,7 @@ function formatDate(value) {
   return Number.isNaN(date.getTime()) ? '—' : date.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })
 }
 
-export function AdminSubmissionsPanel({ kind }) {
+export function AdminSubmissionsPanel({ kind, focusRegistrationId = '' }) {
   const [items, setItems] = useState([])
   const [page, setPage] = useState(1)
   const [total, setTotal] = useState(0)
@@ -22,8 +22,9 @@ export function AdminSubmissionsPanel({ kind }) {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
-  const [searchInput, setSearchInput] = useState('')
-  const [search, setSearch] = useState('')
+  const initialSearch = focusRegistrationId ? `#${focusRegistrationId}` : ''
+  const [searchInput, setSearchInput] = useState(initialSearch)
+  const [search, setSearch] = useState(initialSearch)
   const [paymentStatus, setPaymentStatus] = useState('')
   const [dateFrom, setDateFrom] = useState('')
   const [dateTo, setDateTo] = useState('')
@@ -34,6 +35,7 @@ export function AdminSubmissionsPanel({ kind }) {
   const [undoPassword, setUndoPassword] = useState('')
   const [isUndoing, setIsUndoing] = useState(false)
   const [undoError, setUndoError] = useState('')
+  const [notificationTargetId, setNotificationTargetId] = useState(focusRegistrationId)
 
   useEffect(() => {
     const controller = new AbortController()
@@ -56,6 +58,11 @@ export function AdminSubmissionsPanel({ kind }) {
       })
     return () => controller.abort()
   }, [dateFrom, dateTo, page, paymentStatus, refreshKey, search, sortBy, sortDirection])
+
+  useEffect(() => {
+    if (!notificationTargetId || !items.some((item) => String(item.id) === notificationTargetId)) return
+    window.requestAnimationFrame(() => document.getElementById(`admin-registration-${notificationTargetId}`)?.scrollIntoView({ block: 'center' }))
+  }, [items, notificationTargetId])
 
   useEffect(() => {
     if (!undoItem) return undefined
@@ -98,6 +105,7 @@ export function AdminSubmissionsPanel({ kind }) {
     setDateTo('')
     setSortBy('createdAt')
     setSortDirection('desc')
+    setNotificationTargetId('')
     setPage(1)
     setIsLoading(true)
   }
@@ -236,7 +244,7 @@ export function AdminSubmissionsPanel({ kind }) {
             </thead>
             <tbody>
               {items.map((item) => (
-                <tr key={item.id}>
+                <tr className={String(item.id) === notificationTargetId ? 'is-notification-target' : undefined} id={`admin-registration-${item.id}`} key={item.id}>
                   <td>#{item.id}</td>
                   <td><strong>{item.fullName}</strong>{item.message && <small title={item.message}>{item.message}</small>}</td>
                   <td><a href={`mailto:${item.email}`}>{item.email}</a><a href={`tel:${item.phone.replace(/[^\d+]/g, '')}`}>{item.phone}</a></td>

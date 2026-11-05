@@ -32,6 +32,7 @@ import {
   getGuruInterviews,
   notifyGuruInterviewsUpdated,
 } from '../services/guruContentApi'
+import { connectAdminNotifications } from '../services/adminRealtime'
 
 const CATEGORIES = [
   { id: 'guru', label: 'Guru' },
@@ -121,7 +122,39 @@ function AdminDashboard({ admin, onLogout }) {
   const [message, setMessage] = useState({ type: '', text: '' })
   const [isLoading, setIsLoading] = useState(true)
   const [isUploading, setIsUploading] = useState(false)
+  const [notifications, setNotifications] = useState([])
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
+  const [focusedRegistrationId, setFocusedRegistrationId] = useState('')
   const fileInputRef = useRef(null)
+  const notificationsRef = useRef(null)
+
+  useEffect(() => connectAdminNotifications((registration) => {
+    if (!registration?.id) return
+    setNotifications((current) => {
+      if (current.some((item) => String(item.registration.id) === String(registration.id))) return current
+      return [{ id: `${registration.id}-${Date.now()}`, registration, isRead: false }, ...current].slice(0, 20)
+    })
+  }), [])
+
+  useEffect(() => {
+    const closeOnOutsideClick = (event) => {
+      if (!notificationsRef.current?.contains(event.target)) setIsNotificationsOpen(false)
+    }
+    window.addEventListener('pointerdown', closeOnOutsideClick)
+    return () => window.removeEventListener('pointerdown', closeOnOutsideClick)
+  }, [])
+
+  const unreadNotifications = notifications.filter((notification) => !notification.isRead).length
+
+  const openRegistrationNotification = (notification) => {
+    setNotifications((current) => current.map((item) => (
+      item.id === notification.id ? { ...item, isRead: true } : item
+    )))
+    setIsNotificationsOpen(false)
+    setFocusedRegistrationId(String(notification.registration.id))
+    setActiveManager('registrations')
+    window.requestAnimationFrame(() => document.getElementById('admin-registrations-title')?.scrollIntoView({ block: 'start' }))
+  }
 
   useEffect(() => {
     const controller = new AbortController()
@@ -183,6 +216,34 @@ function AdminDashboard({ admin, onLogout }) {
           <span><strong>Brahmam Foundation</strong><small>Site administration</small></span>
         </a>
         <div className="admin-dashboard__account">
+          <div className="admin-notifications" ref={notificationsRef}>
+            <button
+              className="admin-notifications__trigger"
+              type="button"
+              aria-label={`Registration notifications${unreadNotifications ? `, ${unreadNotifications} unread` : ''}`}
+              aria-haspopup="dialog"
+              aria-expanded={isNotificationsOpen}
+              onClick={() => setIsNotificationsOpen((current) => !current)}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" /></svg>
+              {unreadNotifications > 0 && <span>{unreadNotifications > 99 ? '99+' : unreadNotifications}</span>}
+            </button>
+            {isNotificationsOpen && (
+              <section className="admin-notifications__panel" aria-label="Registration notifications">
+                <header><strong>Notifications</strong>{unreadNotifications > 0 && <button type="button" onClick={() => setNotifications((current) => current.map((item) => ({ ...item, isRead: true })))}>Mark all read</button>}</header>
+                {notifications.length ? (
+                  <div className="admin-notifications__list">
+                    {notifications.map((notification) => (
+                      <button className={notification.isRead ? '' : 'is-unread'} type="button" key={notification.id} onClick={() => openRegistrationNotification(notification)}>
+                        <span className="admin-notifications__dot" aria-hidden="true" />
+                        <span><strong>New class registration</strong><small>{notification.registration.fullName} · {notification.registration.classTitle || 'General enquiry'}</small><time>{new Date(notification.registration.createdAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}</time></span>
+                      </button>
+                    ))}
+                  </div>
+                ) : <p>No new registration notifications.</p>}
+              </section>
+            )}
+          </div>
           <span>Signed in as {admin.username}</span>
           <button type="button" className="admin-button admin-button--quiet" onClick={onLogout}>Log out</button>
         </div>
@@ -434,7 +495,7 @@ function AdminDashboard({ admin, onLogout }) {
         {activeManager === 'donations' && <AdminDonationsManager />}
         {activeManager === 'classes' && <AdminClassesManager />}
 
-        {activeManager === 'registrations' && <AdminSubmissionsPanel kind="registrations" />}
+        {activeManager === 'registrations' && <AdminSubmissionsPanel kind="registrations" focusRegistrationId={focusedRegistrationId} key={focusedRegistrationId || 'registrations'} />}
         {activeManager === 'feedback' && <AdminFeedbackManager />}
       </section>
     </div>

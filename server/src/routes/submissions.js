@@ -8,6 +8,7 @@ import sharp from 'sharp'
 import { config } from '../config.js'
 import { pool } from '../db.js'
 import { authenticateAdmin } from '../middleware/authenticateAdmin.js'
+import { notifyNewRegistration } from '../realtime.js'
 
 const router = Router()
 const PAGE_SIZE = 20
@@ -166,12 +167,15 @@ router.post('/registrations', submissionLimiter, paymentScreenshotUpload.single(
       }
       classTitle = classResult.rows[0].title
     }
-    await pool.query(
+    const { rows } = await pool.query(
       `INSERT INTO class_registrations
         (full_name, email, phone, city, country, message, class_id, class_title, payment_method, payment_screenshot_file_name, payment_status)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'PENDING')`,
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'PENDING')
+       RETURNING id, full_name AS "fullName", class_title AS "classTitle",
+         payment_status AS "paymentStatus", created_at AS "createdAt"`,
       [fullName, email, phone, city, country, message, requestedClassId, classTitle, paymentMethod, paymentScreenshotFileName],
     )
+    notifyNewRegistration(rows[0])
     return response.status(201).json({ message: 'Registration and payment proof received. Our team will verify the payment and contact you.' })
   } catch (error) {
     await fs.unlink(paymentScreenshotPath).catch(() => undefined)
@@ -235,13 +239,19 @@ router.get('/admin/registrations', authenticateAdmin, async (request, response, 
     const values = []
     const filters = []
     if (search) {
-      values.push(`%${search}%`)
-      const parameter = `$${values.length}`
-      filters.push(`(
-        full_name ILIKE ${parameter} OR email ILIKE ${parameter} OR phone ILIKE ${parameter}
-        OR class_title ILIKE ${parameter} OR payment_method ILIKE ${parameter}
-        OR payment_status ILIKE ${parameter}
-      )`)
+      const registrationIdSearch = /^#(\d+)$/.exec(search)
+      if (registrationIdSearch) {
+        values.push(Number(registrationIdSearch[1]))
+        filters.push(`id = $${values.length}`)
+      } else {
+        values.push(`%${search}%`)
+        const parameter = `$${values.length}`
+        filters.push(`(
+          full_name ILIKE ${parameter} OR email ILIKE ${parameter} OR phone ILIKE ${parameter}
+          OR class_title ILIKE ${parameter} OR payment_method ILIKE ${parameter}
+          OR payment_status ILIKE ${parameter}
+        )`)
+      }
     }
     if (paymentStatus) {
       values.push(paymentStatus)
