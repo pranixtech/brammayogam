@@ -18,6 +18,8 @@ export const config = {
   jwtSecret: process.env.JWT_SECRET ?? 'change-this-jwt-secret-before-production',
   cookieSecure: process.env.COOKIE_SECURE === 'true',
   uploadDirectory: process.env.UPLOAD_DIR ?? path.join(serverRoot, 'uploads'),
+  registrationPaymentDirectory: process.env.REGISTRATION_PAYMENT_DIR
+    ?? path.join(process.env.UPLOAD_DIR ?? path.join(serverRoot, 'uploads'), 'registration-payments'),
   maxUploadBytes: numberFromEnvironment('MAX_UPLOAD_BYTES', 10 * 1024 * 1024),
   maxActivityUploadBytes: numberFromEnvironment('MAX_ACTIVITY_UPLOAD_BYTES', 100 * 1024 * 1024),
 }

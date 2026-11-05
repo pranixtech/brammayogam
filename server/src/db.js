@@ -183,6 +183,14 @@ export async function initializeDatabase() {
     ALTER TABLE class_registrations ADD COLUMN IF NOT EXISTS class_id BIGINT;
     ALTER TABLE class_registrations ADD COLUMN IF NOT EXISTS class_title TEXT NOT NULL DEFAULT '';
     ALTER TABLE class_registrations ADD COLUMN IF NOT EXISTS city TEXT NOT NULL DEFAULT '';
+    ALTER TABLE class_registrations ADD COLUMN IF NOT EXISTS payment_method TEXT NOT NULL DEFAULT '';
+    ALTER TABLE class_registrations ADD COLUMN IF NOT EXISTS payment_screenshot_file_name TEXT NOT NULL DEFAULT '';
+    ALTER TABLE class_registrations ADD COLUMN IF NOT EXISTS payment_status TEXT NOT NULL DEFAULT '';
+    ALTER TABLE class_registrations ADD COLUMN IF NOT EXISTS payment_verified_by TEXT;
+    ALTER TABLE class_registrations ADD COLUMN IF NOT EXISTS payment_verified_at TIMESTAMPTZ;
+
+    CREATE INDEX IF NOT EXISTS class_registrations_payment_status_idx
+      ON class_registrations (payment_status, created_at DESC);
 
     CREATE TABLE IF NOT EXISTS visitor_feedback (
       id BIGSERIAL PRIMARY KEY,

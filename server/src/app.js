@@ -197,6 +197,7 @@ function toVideo(row) {
 
 export async function createApp() {
   await fs.mkdir(config.uploadDirectory, { recursive: true })
+  await fs.mkdir(config.registrationPaymentDirectory, { recursive: true })
 
   const app = express()
   app.disable('x-powered-by')
@@ -212,6 +213,7 @@ export async function createApp() {
   }))
   app.use(express.json({ limit: '100kb' }))
   app.use(cookieParser())
+  app.use('/uploads/registration-payments', (_request, response) => response.status(404).end())
   app.use('/uploads', express.static(config.uploadDirectory, { immutable: true, maxAge: '30d', fallthrough: false }))
   app.use('/api', activitiesRouter)
   app.use('/api', adsRouter)

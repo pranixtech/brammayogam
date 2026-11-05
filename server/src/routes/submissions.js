@@ -1,10 +1,26 @@
+import crypto from 'node:crypto'
+import fs from 'node:fs/promises'
+import path from 'node:path'
 import { Router } from 'express'
 import rateLimit from 'express-rate-limit'
+import multer from 'multer'
+import sharp from 'sharp'
+import { config } from '../config.js'
 import { pool } from '../db.js'
 import { authenticateAdmin } from '../middleware/authenticateAdmin.js'
 
 const router = Router()
 const PAGE_SIZE = 20
+const allowedPaymentImages = new Set(['image/jpeg', 'image/png', 'image/webp'])
+
+const paymentScreenshotUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: config.maxUploadBytes, files: 1 },
+  fileFilter: (_request, file, callback) => {
+    const allowed = allowedPaymentImages.has(file.mimetype)
+    callback(allowed ? null : new Error('Upload the payment screenshot as a JPG, PNG or WebP image.'), allowed)
+  },
+})
 
 const submissionLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
@@ -54,18 +70,7 @@ const publishedFeedbackColumns = `
   id, full_name AS "fullName", role_or_location AS "roleOrLocation",
   rating, message, created_at AS "createdAt", updated_at AS "updatedAt"`
 
-async function listSubmissions(table, columns, page) {
-  const [items, count] = await Promise.all([
-    pool.query(
-      `SELECT ${columns} FROM ${table} ORDER BY created_at DESC, id DESC LIMIT $1 OFFSET $2`,
-      [PAGE_SIZE, (page - 1) * PAGE_SIZE],
-    ),
-    pool.query(`SELECT COUNT(*)::integer AS total FROM ${table}`),
-  ])
-  return { items: items.rows, page, pageSize: PAGE_SIZE, total: count.rows[0].total }
-}
-
-router.post('/registrations', submissionLimiter, async (request, response, next) => {
+router.post('/registrations', submissionLimiter, paymentScreenshotUpload.single('paymentScreenshot'), async (request, response, next) => {
   const fullName = textField(request.body?.fullName, 120)
   const email = textField(request.body?.email, 254)?.toLowerCase()
   const phone = textField(request.body?.phone, 30)
@@ -73,6 +78,8 @@ router.post('/registrations', submissionLimiter, async (request, response, next)
   const country = String(request.body?.country ?? '').trim().toUpperCase()
   const message = textField(request.body?.message ?? '', 100)
   const requestedClassId = request.body?.classId ? Number(request.body.classId) : null
+  const paymentMethod = String(request.body?.paymentMethod ?? '').trim().toUpperCase()
+  const paymentScreenshot = request.file
 
   if (!fullName || !email || !phone || !city || !message || !/^[A-Z]{2}$/.test(country)) {
     return response.status(400).json({ message: 'Complete the required fields and keep the purpose under 100 characters.' })
@@ -83,22 +90,66 @@ router.post('/registrations', submissionLimiter, async (request, response, next)
     return response.status(400).json({ message: 'Choose a valid upcoming class.' })
   }
   if (request.body?.consent !== true) {
-    return response.status(400).json({ message: 'Please agree to be contacted about online classes.' })
+    if (request.body?.consent !== 'true') {
+      return response.status(400).json({ message: 'Please agree to be contacted about online classes.' })
+    }
+  }
+  if (paymentMethod !== 'UPI') {
+    return response.status(400).json({ message: 'Choose the available UPI payment method.' })
+  }
+  if (!paymentScreenshot) {
+    return response.status(400).json({ message: 'Upload your payment screenshot before submitting the registration.' })
+  }
+
+  const paymentScreenshotFileName = `${crypto.randomUUID()}.webp`
+  const paymentScreenshotPath = path.join(config.registrationPaymentDirectory, paymentScreenshotFileName)
+
+  try {
+    await sharp(paymentScreenshot.buffer, { failOn: 'error', limitInputPixels: 40_000_000 })
+      .rotate()
+      .resize({ width: 1600, height: 1600, fit: 'inside', withoutEnlargement: true })
+      .webp({ quality: 84 })
+      .toFile(paymentScreenshotPath)
+  } catch {
+    return response.status(400).json({ message: 'The payment screenshot could not be read. Upload a valid JPG, PNG or WebP image.' })
   }
 
   try {
     let classTitle = ''
     if (requestedClassId !== null) {
       const classResult = await pool.query('SELECT title FROM upcoming_classes WHERE id = $1', [requestedClassId])
-      if (!classResult.rows[0]) return response.status(400).json({ message: 'The selected class is no longer available.' })
+      if (!classResult.rows[0]) {
+        await fs.unlink(paymentScreenshotPath).catch(() => undefined)
+        return response.status(400).json({ message: 'The selected class is no longer available.' })
+      }
       classTitle = classResult.rows[0].title
     }
     await pool.query(
-      `INSERT INTO class_registrations (full_name, email, phone, city, country, message, class_id, class_title)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-      [fullName, email, phone, city, country, message, requestedClassId, classTitle],
+      `INSERT INTO class_registrations
+        (full_name, email, phone, city, country, message, class_id, class_title, payment_method, payment_screenshot_file_name, payment_status)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'PENDING')`,
+      [fullName, email, phone, city, country, message, requestedClassId, classTitle, paymentMethod, paymentScreenshotFileName],
     )
-    return response.status(201).json({ message: 'Registration received. We will contact you about online classes.' })
+    return response.status(201).json({ message: 'Registration and payment proof received. Our team will verify the payment and contact you.' })
+  } catch (error) {
+    await fs.unlink(paymentScreenshotPath).catch(() => undefined)
+    return next(error)
+  }
+})
+
+router.get('/admin/registrations/:id/payment-screenshot', authenticateAdmin, async (request, response, next) => {
+  const id = feedbackId(request.params.id)
+  if (!id) return response.status(400).json({ message: 'Choose a valid registration.' })
+
+  try {
+    const { rows } = await pool.query(
+      'SELECT payment_screenshot_file_name FROM class_registrations WHERE id = $1',
+      [id],
+    )
+    const fileName = rows[0]?.payment_screenshot_file_name
+    if (!fileName) return response.status(404).json({ message: 'Payment screenshot not found.' })
+    response.set('Cache-Control', 'private, no-store')
+    return response.sendFile(path.join(config.registrationPaymentDirectory, fileName))
   } catch (error) {
     return next(error)
   }
@@ -119,16 +170,75 @@ router.get('/feedback', async (_request, response, next) => {
 
 router.get('/admin/registrations', authenticateAdmin, async (request, response, next) => {
   const page = pageFromQuery(request.query.page)
+  const search = textField(String(request.query.search ?? ''), 120)
+  const paymentStatus = String(request.query.paymentStatus ?? '').trim().toUpperCase()
   if (!page) return response.status(400).json({ message: 'Choose a valid page number.' })
+  if (search === null) return response.status(400).json({ message: 'Search text is too long.' })
+  if (paymentStatus && !['PENDING', 'VERIFIED'].includes(paymentStatus)) {
+    return response.status(400).json({ message: 'Choose a valid payment status.' })
+  }
 
   try {
-    const result = await listSubmissions(
-      'class_registrations',
-      'id, full_name AS "fullName", email, phone, city, country, message, class_id AS "classId", class_title AS "classTitle", created_at AS "createdAt"',
-      page,
-    )
+    const values = []
+    const filters = []
+    if (search) {
+      values.push(`%${search}%`)
+      const parameter = `$${values.length}`
+      filters.push(`(
+        full_name ILIKE ${parameter} OR email ILIKE ${parameter} OR phone ILIKE ${parameter}
+        OR class_title ILIKE ${parameter} OR payment_method ILIKE ${parameter}
+        OR payment_status ILIKE ${parameter}
+      )`)
+    }
+    if (paymentStatus) {
+      values.push(paymentStatus)
+      filters.push(`payment_status = $${values.length}`)
+    }
+    const whereClause = filters.length ? `WHERE ${filters.join(' AND ')}` : ''
+    const limitParameter = values.length + 1
+    const offsetParameter = values.length + 2
+    const [items, count] = await Promise.all([
+      pool.query(
+        `SELECT id, full_name AS "fullName", email, phone, city, country, message,
+          class_id AS "classId", class_title AS "classTitle", payment_method AS "paymentMethod",
+          payment_status AS "paymentStatus", payment_screenshot_file_name <> '' AS "hasPaymentScreenshot",
+          payment_verified_by AS "paymentVerifiedBy", payment_verified_at AS "paymentVerifiedAt",
+          created_at AS "createdAt"
+         FROM class_registrations ${whereClause}
+         ORDER BY created_at DESC, id DESC LIMIT $${limitParameter} OFFSET $${offsetParameter}`,
+        [...values, PAGE_SIZE, (page - 1) * PAGE_SIZE],
+      ),
+      pool.query(`SELECT COUNT(*)::integer AS total FROM class_registrations ${whereClause}`, values),
+    ])
     response.set('Cache-Control', 'no-store')
-    return response.json({ registrations: result.items, page, pageSize: result.pageSize, total: result.total })
+    return response.json({ registrations: items.rows, page, pageSize: PAGE_SIZE, total: count.rows[0].total })
+  } catch (error) {
+    return next(error)
+  }
+})
+
+router.patch('/admin/registrations/:id/verify-payment', authenticateAdmin, async (request, response, next) => {
+  const id = feedbackId(request.params.id)
+  if (!id) return response.status(400).json({ message: 'Choose a valid registration.' })
+
+  try {
+    const { rows } = await pool.query(
+      `UPDATE class_registrations
+       SET payment_status = 'VERIFIED', payment_verified_by = $1, payment_verified_at = NOW()
+       WHERE id = $2 AND payment_status = 'PENDING' AND payment_screenshot_file_name <> ''
+       RETURNING id, payment_status AS "paymentStatus",
+         payment_verified_by AS "paymentVerifiedBy", payment_verified_at AS "paymentVerifiedAt"`,
+      [request.admin.username, id],
+    )
+    if (!rows[0]) {
+      const existing = await pool.query('SELECT payment_status FROM class_registrations WHERE id = $1', [id])
+      if (!existing.rows[0]) return response.status(404).json({ message: 'Registration not found.' })
+      if (existing.rows[0].payment_status === 'VERIFIED') {
+        return response.status(409).json({ message: 'This payment has already been verified.' })
+      }
+      return response.status(400).json({ message: 'A pending payment screenshot is required before verification.' })
+    }
+    return response.json({ registration: rows[0] })
   } catch (error) {
     return next(error)
   }
@@ -200,6 +310,17 @@ router.delete('/admin/feedback/:id', authenticateAdmin, async (request, response
   } catch (error) {
     return next(error)
   }
+})
+
+router.use((error, _request, response, next) => {
+  if (error instanceof multer.MulterError) {
+    if (error.code === 'LIMIT_FILE_SIZE') return response.status(400).json({ message: 'Payment screenshots must be 10 MB or smaller.' })
+    return response.status(400).json({ message: error.message })
+  }
+  if (error.message?.startsWith('Upload the payment screenshot')) {
+    return response.status(400).json({ message: error.message })
+  }
+  return next(error)
 })
 
 export { router as submissionsRouter }

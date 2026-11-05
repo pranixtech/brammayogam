@@ -1,11 +1,12 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import registrationPaymentQr from '../assets/class-registration-upi-qr.png'
 import { CITY_OPTIONS, findCityOption } from '../data/cities'
 import { getCountryName, getCountryOptions } from '../data/countries'
 import { submitRegistration } from '../services/submissionsApi'
 import { getUpcomingClasses, subscribeToUpcomingClasses } from '../services/classesApi'
 import { useLanguage } from '../i18n/useLanguage'
 
-const EMPTY_FORM = { fullName: '', email: '', phone: '', city: '', country: '', message: '', classId: '', consent: false }
+const EMPTY_FORM = { fullName: '', email: '', phone: '', city: '', country: '', message: '', classId: '', consent: false, paymentMethod: 'UPI' }
 
 export function RegistrationPage() {
   const { language, t } = useLanguage()
@@ -16,7 +17,64 @@ export function RegistrationPage() {
   const [classesError, setClassesError] = useState('')
   const [showSuccess, setShowSuccess] = useState(false)
   const [previewClass, setPreviewClass] = useState(null)
+  const [showPayment, setShowPayment] = useState(false)
+  const [paymentScreenshot, setPaymentScreenshot] = useState(null)
+  const [cameraOpen, setCameraOpen] = useState(false)
+  const [cameraReady, setCameraReady] = useState(false)
+  const [cameraError, setCameraError] = useState('')
+  const paymentSectionRef = useRef(null)
+  const cameraVideoRef = useRef(null)
+  const paymentPreviewUrl = useMemo(
+    () => (paymentScreenshot ? URL.createObjectURL(paymentScreenshot) : ''),
+    [paymentScreenshot],
+  )
   const countryOptions = useMemo(() => getCountryOptions(language), [language])
+
+  useEffect(() => () => {
+    if (paymentPreviewUrl) URL.revokeObjectURL(paymentPreviewUrl)
+  }, [paymentPreviewUrl])
+
+  useEffect(() => {
+    if (!cameraOpen) return undefined
+    let stream
+    let cancelled = false
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    const startCamera = async () => {
+      try {
+        if (!navigator.mediaDevices?.getUserMedia) throw new Error('Camera is not supported')
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: { ideal: 'environment' } },
+          audio: false,
+        })
+        if (cancelled) {
+          stream.getTracks().forEach((track) => track.stop())
+          return
+        }
+        const video = cameraVideoRef.current
+        if (!video) return
+        video.srcObject = stream
+        await video.play()
+        setCameraReady(true)
+      } catch {
+        setCameraError(t('forms.cameraPermissionError'))
+      }
+    }
+
+    const closeOnEscape = (event) => {
+      if (event.key === 'Escape') setCameraOpen(false)
+    }
+    window.addEventListener('keydown', closeOnEscape)
+    startCamera()
+
+    return () => {
+      cancelled = true
+      stream?.getTracks().forEach((track) => track.stop())
+      document.body.style.overflow = previousOverflow
+      window.removeEventListener('keydown', closeOnEscape)
+    }
+  }, [cameraOpen, t])
 
   useEffect(() => {
     let controller
@@ -80,15 +138,66 @@ export function RegistrationPage() {
       return
     }
 
+    if (!showPayment) {
+      setStatus({ type: '', text: '' })
+      setShowPayment(true)
+      setIsSubmitting(false)
+      window.requestAnimationFrame(() => paymentSectionRef.current?.scrollIntoView({ block: 'center' }))
+      return
+    }
+
+    if (!paymentScreenshot) {
+      setStatus({ type: 'error', text: t('forms.paymentScreenshotRequired') })
+      setIsSubmitting(false)
+      return
+    }
+
     try {
-      await submitRegistration(form)
+      await submitRegistration({ ...form, paymentScreenshot })
       setForm(EMPTY_FORM)
+      setPaymentScreenshot(null)
+      setShowPayment(false)
       setShowSuccess(true)
     } catch (error) {
       setStatus({ type: 'error', text: language === 'ta' ? t('forms.submitError') : error.message })
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  const openPaymentStep = (event) => {
+    const registrationForm = event.currentTarget.form
+    if (classes.length > 0 && !form.classId) {
+      setStatus({ type: 'error', text: t('forms.chooseClassError') })
+      return
+    }
+    if (!registrationForm?.reportValidity()) return
+    setStatus({ type: '', text: '' })
+    setShowPayment(true)
+    window.requestAnimationFrame(() => paymentSectionRef.current?.scrollIntoView({ block: 'center' }))
+  }
+
+  const openCamera = () => {
+    setCameraError('')
+    setCameraReady(false)
+    setCameraOpen(true)
+  }
+
+  const capturePhoto = () => {
+    const video = cameraVideoRef.current
+    if (!video?.videoWidth || !video.videoHeight) return
+    const canvas = document.createElement('canvas')
+    canvas.width = video.videoWidth
+    canvas.height = video.videoHeight
+    canvas.getContext('2d')?.drawImage(video, 0, 0, canvas.width, canvas.height)
+    canvas.toBlob((blob) => {
+      if (!blob) {
+        setCameraError(t('forms.cameraCaptureError'))
+        return
+      }
+      setPaymentScreenshot(new File([blob], `payment-photo-${Date.now()}.jpg`, { type: 'image/jpeg' }))
+      setCameraOpen(false)
+    }, 'image/jpeg', 0.9)
   }
 
   return (
@@ -186,10 +295,60 @@ export function RegistrationPage() {
               <input name="consent" type="checkbox" checked={form.consent} required onChange={updateField} />
               <span>{t('forms.consent')}</span>
             </label>
+            {!showPayment && (
+              <button className="submission-form__submit submission-form__full" type="button" onClick={openPaymentStep}>
+                {t('forms.continueToPayment')}
+              </button>
+            )}
+            {showPayment && (
+              <section className="registration-payment submission-form__full" ref={paymentSectionRef} aria-labelledby="registration-payment-title">
+                <div className="registration-payment__heading">
+                  <p className="section-kicker">{t('forms.paymentKicker')}</p>
+                  <h3 id="registration-payment-title">{t('forms.paymentTitle')}</h3>
+                  <p>{t('forms.paymentIntro')}</p>
+                </div>
+                <div className="registration-payment__method">
+                  <span className="registration-payment__method-check" aria-hidden="true">✓</span>
+                  <span><strong>{t('forms.upiPayment')}</strong><small>{t('forms.scanQr')}</small></span>
+                </div>
+                <figure className="registration-payment__qr">
+                  <img src={registrationPaymentQr} alt={t('forms.paymentQrAlt')} />
+                </figure>
+                <p className="registration-payment__notice">{t('forms.paymentVerificationNotice')}</p>
+                <div className="registration-payment__proof">
+                  <strong>{t('forms.paymentScreenshot')}</strong>
+                  <div className="registration-payment__proof-actions">
+                    <label className="registration-payment__source">
+                      <span aria-hidden="true">↑</span>
+                      {t('forms.uploadFromDevice')}
+                      <input
+                        name="paymentScreenshotUpload"
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        onChange={(event) => setPaymentScreenshot(event.target.files?.[0] ?? null)}
+                      />
+                    </label>
+                    <button className="registration-payment__source" type="button" onClick={openCamera}>
+                      <span aria-hidden="true">◉</span>
+                      {t('forms.takePhoto')}
+                    </button>
+                  </div>
+                  <small>{t('forms.paymentScreenshotHelp')}</small>
+                </div>
+                {paymentPreviewUrl && (
+                  <figure className="registration-payment__preview">
+                    <img src={paymentPreviewUrl} alt={t('forms.paymentScreenshotPreview')} />
+                    <figcaption>{paymentScreenshot.name}</figcaption>
+                  </figure>
+                )}
+              </section>
+            )}
             {status.text && <p className={`submission-status submission-status--${status.type} submission-form__full`} role={status.type === 'error' ? 'alert' : 'status'}>{status.text}</p>}
-            <button className="submission-form__submit submission-form__full" type="submit" disabled={isSubmitting || (classes.length > 0 && !form.classId)}>
-              {isSubmitting ? t('forms.sendingRegistration') : t('forms.submitRegistration')}
-            </button>
+            {showPayment && (
+              <button className="submission-form__submit submission-form__full" type="submit" disabled={isSubmitting || !paymentScreenshot || (classes.length > 0 && !form.classId)}>
+                {isSubmitting ? t('forms.sendingRegistration') : t('forms.submitRegistration')}
+              </button>
+            )}
             </form>
           </div>
         </div>
@@ -200,7 +359,7 @@ export function RegistrationPage() {
           <div className="registration-success__card">
             <span aria-hidden="true">✓</span>
             <h2 id="registration-success-title">{t('forms.thankYou')}</h2>
-            <p>{t('forms.contactShortly')}</p>
+            <p>{t('forms.registrationPaymentSuccess')}</p>
             <button type="button" onClick={() => setShowSuccess(false)}>{t('forms.close')}</button>
           </div>
         </div>
@@ -235,6 +394,26 @@ export function RegistrationPage() {
               >
                 {form.classId === previewClass.id ? t('forms.selectedClass') : t('forms.selectThisClass')}
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {cameraOpen && (
+        <div className="registration-camera" role="dialog" aria-modal="true" aria-labelledby="registration-camera-title">
+          <div className="registration-camera__card">
+            <div className="registration-camera__heading">
+              <h2 id="registration-camera-title">{t('forms.cameraTitle')}</h2>
+              <button type="button" aria-label={t('forms.closeCamera')} onClick={() => setCameraOpen(false)}>×</button>
+            </div>
+            <div className="registration-camera__viewport">
+              <video ref={cameraVideoRef} muted playsInline aria-label={t('forms.cameraPreview')} />
+              {!cameraReady && !cameraError && <p>{t('forms.openingCamera')}</p>}
+              {cameraError && <p className="registration-camera__error" role="alert">{cameraError}</p>}
+            </div>
+            <div className="registration-camera__actions">
+              <button type="button" onClick={() => setCameraOpen(false)}>{t('forms.cancelCamera')}</button>
+              <button type="button" disabled={!cameraReady} onClick={capturePhoto}>{t('forms.capturePhoto')}</button>
             </div>
           </div>
         </div>
