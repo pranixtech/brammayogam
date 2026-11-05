@@ -49,6 +49,16 @@ rsync -a --delete \
 
 cd "$APP_DIR"
 docker compose -f docker-compose.vps.yml up -d --build --wait --wait-timeout 180
+
+# Keep the public reverse proxy in sync with the application. Socket.IO needs
+# the WebSocket upgrade headers in this file for real-time admin notifications.
+install -m 644 deploy/nginx-brahmamfoundation.in.conf \
+  /etc/nginx/sites-available/brahmamfoundation.in.conf
+ln -sfn /etc/nginx/sites-available/brahmamfoundation.in.conf \
+  /etc/nginx/sites-enabled/brahmamfoundation.in.conf
+nginx -t
+systemctl reload nginx
+
 curl --fail --silent --show-error --retry 10 --retry-delay 2 \
   http://127.0.0.1:8080/api/health
 echo
