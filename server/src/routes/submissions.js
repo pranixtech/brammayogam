@@ -31,7 +31,7 @@ const submissionLimiter = rateLimit({
   message: { message: 'Too many submissions. Please try again later.' },
 })
 
-const undoVerificationLimiter = rateLimit({
+const protectedRegistrationActionLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 5,
   standardHeaders: 'draft-8',
@@ -321,7 +321,7 @@ router.patch('/admin/registrations/:id/verify-payment', authenticateAdmin, async
   }
 })
 
-router.patch('/admin/registrations/:id/undo-verification', authenticateAdmin, undoVerificationLimiter, async (request, response, next) => {
+router.patch('/admin/registrations/:id/undo-verification', authenticateAdmin, protectedRegistrationActionLimiter, async (request, response, next) => {
   const id = feedbackId(request.params.id)
   const password = typeof request.body?.password === 'string' ? request.body.password : ''
   if (!id) return response.status(400).json({ message: 'Choose a valid registration.' })
@@ -347,6 +347,34 @@ router.patch('/admin/registrations/:id/undo-verification', authenticateAdmin, un
       return response.status(409).json({ message: 'Only a verified payment can be returned to pending.' })
     }
     return response.json({ registration: rows[0] })
+  } catch (error) {
+    return next(error)
+  }
+})
+
+router.delete('/admin/registrations/:id', authenticateAdmin, protectedRegistrationActionLimiter, async (request, response, next) => {
+  const id = feedbackId(request.params.id)
+  const password = typeof request.body?.password === 'string' ? request.body.password : ''
+  if (!id) return response.status(400).json({ message: 'Choose a valid registration.' })
+  if (!password || password.length > 256) return response.status(400).json({ message: 'Enter your admin password.' })
+
+  try {
+    const passwordIsValid = await adminPasswordIsValid(request.admin.username, password)
+    if (!passwordIsValid) return response.status(403).json({ message: 'The admin password is incorrect.' })
+
+    const { rows } = await pool.query(
+      `DELETE FROM class_registrations
+       WHERE id = $1
+       RETURNING payment_screenshot_file_name AS "paymentScreenshotFileName"`,
+      [id],
+    )
+    if (!rows[0]) return response.status(404).json({ message: 'Registration not found.' })
+
+    const fileName = rows[0].paymentScreenshotFileName
+    if (fileName) {
+      await fs.unlink(path.join(config.registrationPaymentDirectory, fileName)).catch(() => undefined)
+    }
+    return response.status(204).end()
   } catch (error) {
     return next(error)
   }

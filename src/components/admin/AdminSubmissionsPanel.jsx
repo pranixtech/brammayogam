@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getCountryName } from '../../data/countries'
-import { getAdminRegistrations, undoRegistrationPaymentVerification, verifyRegistrationPayment } from '../../services/submissionsApi'
+import { deleteAdminRegistration, getAdminRegistrations, undoRegistrationPaymentVerification, verifyRegistrationPayment } from '../../services/submissionsApi'
 
 const PANEL = {
   title: 'Online class registrations',
@@ -35,6 +35,10 @@ export function AdminSubmissionsPanel({ kind, focusRegistrationId = '' }) {
   const [undoPassword, setUndoPassword] = useState('')
   const [isUndoing, setIsUndoing] = useState(false)
   const [undoError, setUndoError] = useState('')
+  const [deleteItem, setDeleteItem] = useState(null)
+  const [deletePassword, setDeletePassword] = useState('')
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState('')
   const [notificationTargetId, setNotificationTargetId] = useState(focusRegistrationId)
 
   useEffect(() => {
@@ -81,6 +85,24 @@ export function AdminSubmissionsPanel({ kind, focusRegistrationId = '' }) {
       window.removeEventListener('keydown', closeOnEscape)
     }
   }, [isUndoing, undoItem])
+
+  useEffect(() => {
+    if (!deleteItem) return undefined
+    const previousOverflow = document.body.style.overflow
+    const closeOnEscape = (event) => {
+      if (event.key === 'Escape' && !isDeleting) {
+        setDeleteItem(null)
+        setDeletePassword('')
+        setDeleteError('')
+      }
+    }
+    document.body.style.overflow = 'hidden'
+    window.addEventListener('keydown', closeOnEscape)
+    return () => {
+      document.body.style.overflow = previousOverflow
+      window.removeEventListener('keydown', closeOnEscape)
+    }
+  }, [deleteItem, isDeleting])
 
   const totalPages = Math.max(1, Math.ceil(total / pageSize))
   const refresh = () => {
@@ -172,6 +194,40 @@ export function AdminSubmissionsPanel({ kind, focusRegistrationId = '' }) {
       setIsUndoing(false)
     }
   }
+  const openDelete = (item) => {
+    setDeleteItem(item)
+    setDeletePassword('')
+    setDeleteError('')
+  }
+  const closeDelete = () => {
+    if (isDeleting) return
+    setDeleteItem(null)
+    setDeletePassword('')
+    setDeleteError('')
+  }
+  const deleteRegistration = async (event) => {
+    event.preventDefault()
+    if (!deleteItem || !deletePassword) return
+    setIsDeleting(true)
+    setDeleteError('')
+    setError('')
+    setMessage('')
+    try {
+      const deletedName = deleteItem.fullName
+      await deleteAdminRegistration(deleteItem.id, deletePassword)
+      setItems((current) => current.filter((entry) => entry.id !== deleteItem.id))
+      setTotal((current) => Math.max(0, current - 1))
+      setDeleteItem(null)
+      setDeletePassword('')
+      setMessage(`${deletedName}'s registration and payment proof have been deleted.`)
+      if (items.length === 1 && page > 1) setPage((current) => current - 1)
+      else setRefreshKey((current) => current + 1)
+    } catch (requestError) {
+      setDeleteError(requestError.message)
+    } finally {
+      setIsDeleting(false)
+    }
+  }
   const sortIndicator = (column) => (sortBy === column ? (sortDirection === 'asc' ? '↑' : '↓') : '↕')
 
   return (
@@ -258,13 +314,16 @@ export function AdminSubmissionsPanel({ kind, focusRegistrationId = '' }) {
                   </td>
                   <td><time dateTime={item.createdAt}>{formatDate(item.createdAt)}</time></td>
                   <td>
-                    {item.paymentStatus === 'PENDING' && item.hasPaymentScreenshot ? (
-                      <button className="admin-registration-table__verify" type="button" disabled={verifyingId === item.id} onClick={() => verifyPayment(item)}>
-                        {verifyingId === item.id ? 'Verifying…' : 'Verify'}
-                      </button>
-                    ) : item.paymentStatus === 'VERIFIED' ? (
-                      <button className="admin-registration-table__undo" type="button" onClick={() => openUndo(item)}>Undo verify</button>
-                    ) : '—'}
+                    <div className="admin-registration-table__actions">
+                      {item.paymentStatus === 'PENDING' && item.hasPaymentScreenshot ? (
+                        <button className="admin-registration-table__verify" type="button" disabled={verifyingId === item.id} onClick={() => verifyPayment(item)}>
+                          {verifyingId === item.id ? 'Verifying…' : 'Verify'}
+                        </button>
+                      ) : item.paymentStatus === 'VERIFIED' ? (
+                        <button className="admin-registration-table__undo" type="button" onClick={() => openUndo(item)}>Undo verify</button>
+                      ) : null}
+                      <button className="admin-registration-table__delete" type="button" onClick={() => openDelete(item)}>Delete</button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -295,6 +354,25 @@ export function AdminSubmissionsPanel({ kind, focusRegistrationId = '' }) {
             <div className="admin-verification-dialog__actions">
               <button type="button" onClick={closeUndo} disabled={isUndoing}>Cancel</button>
               <button type="submit" disabled={isUndoing || !undoPassword}>{isUndoing ? 'Checking…' : 'Undo verification'}</button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {deleteItem && (
+        <div className="admin-verification-dialog" role="dialog" aria-modal="true" aria-labelledby="delete-registration-title" onMouseDown={(event) => { if (event.target === event.currentTarget) closeDelete() }}>
+          <form className="admin-verification-dialog__card" onSubmit={deleteRegistration}>
+            <p className="section-kicker">Protected action</p>
+            <h2 id="delete-registration-title">Delete registration?</h2>
+            <p>This permanently deletes <strong>{deleteItem.fullName}</strong>&apos;s registration and payment proof. Enter your current admin password to continue.</p>
+            <label>
+              <span>Admin password</span>
+              <input type="password" value={deletePassword} maxLength="256" autoComplete="current-password" autoFocus required onChange={(event) => setDeletePassword(event.target.value)} />
+            </label>
+            {deleteError && <p className="admin-verification-dialog__error" role="alert">{deleteError}</p>}
+            <div className="admin-verification-dialog__actions">
+              <button type="button" onClick={closeDelete} disabled={isDeleting}>Cancel</button>
+              <button type="submit" disabled={isDeleting || !deletePassword}>{isDeleting ? 'Deleting…' : 'Delete permanently'}</button>
             </div>
           </form>
         </div>

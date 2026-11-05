@@ -169,6 +169,9 @@
 .admin-registration-table__verify:disabled { cursor: wait; opacity: 0.55; }
 .admin-registration-table__undo { min-height: 36px; padding: 0 11px; border: 1px solid #a43d2c; border-radius: 3px; background: transparent; color: #a43d2c; cursor: pointer; font-size: 9px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; }
 .admin-registration-table__undo:hover { background: #a43d2c; color: #fff; }
+.admin-registration-table__actions { display: grid; align-items: start; gap: 8px; }
+.admin-registration-table__delete { min-height: 34px; padding: 0 11px; border: 0; border-radius: 3px; background: transparent; color: #a43d2c; cursor: pointer; font-size: 9px; font-weight: 800; letter-spacing: 0.04em; text-align: left; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-transform: uppercase; }
+.admin-registration-table__delete:hover { background: #fce8e3; }
 .admin-registration-table__complete { color: #256a35; font-size: 10px; font-weight: 800; white-space: nowrap; }
 .admin-verification-dialog { position: fixed; z-index: 190; inset: 0; display: grid; padding: 20px; overflow-y: auto; background: rgba(35, 24, 20, 0.76); place-items: center; backdrop-filter: blur(9px); }
 .admin-verification-dialog__card { width: min(100%, 480px); padding: clamp(26px, 4vw, 40px); border: 1px solid var(--color-line); border-radius: 8px; background: var(--color-paper); box-shadow: 0 30px 90px rgba(22, 13, 10, 0.36); }

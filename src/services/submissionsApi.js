@@ -39,6 +39,14 @@ export function undoRegistrationPaymentVerification(id, password) {
   })
 }
 
+export function deleteAdminRegistration(id, password) {
+  return request(`/api/admin/registrations/${encodeURIComponent(id)}`, {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password }),
+  })
+}
+
 export function getAdminFeedback(signal) {
   return request('/api/admin/feedback', { signal, cache: 'no-store' })
 }
