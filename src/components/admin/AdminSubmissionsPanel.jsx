@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getCountryName } from '../../data/countries'
-import { getAdminRegistrations, verifyRegistrationPayment } from '../../services/submissionsApi'
+import { getAdminRegistrations, undoRegistrationPaymentVerification, verifyRegistrationPayment } from '../../services/submissionsApi'
 
 const PANEL = {
   title: 'Online class registrations',
@@ -25,11 +25,19 @@ export function AdminSubmissionsPanel({ kind }) {
   const [searchInput, setSearchInput] = useState('')
   const [search, setSearch] = useState('')
   const [paymentStatus, setPaymentStatus] = useState('')
+  const [dateFrom, setDateFrom] = useState('')
+  const [dateTo, setDateTo] = useState('')
+  const [sortBy, setSortBy] = useState('createdAt')
+  const [sortDirection, setSortDirection] = useState('desc')
   const [verifyingId, setVerifyingId] = useState(null)
+  const [undoItem, setUndoItem] = useState(null)
+  const [undoPassword, setUndoPassword] = useState('')
+  const [isUndoing, setIsUndoing] = useState(false)
+  const [undoError, setUndoError] = useState('')
 
   useEffect(() => {
     const controller = new AbortController()
-    getAdminRegistrations({ page, search, paymentStatus }, controller.signal)
+    getAdminRegistrations({ page, search, paymentStatus, dateFrom, dateTo, sortBy, sortDirection }, controller.signal)
       .then((payload) => {
         setItems(payload.registrations)
         setTotal(payload.total)
@@ -47,7 +55,25 @@ export function AdminSubmissionsPanel({ kind }) {
         if (!controller.signal.aborted) setIsLoading(false)
       })
     return () => controller.abort()
-  }, [page, paymentStatus, refreshKey, search])
+  }, [dateFrom, dateTo, page, paymentStatus, refreshKey, search, sortBy, sortDirection])
+
+  useEffect(() => {
+    if (!undoItem) return undefined
+    const previousOverflow = document.body.style.overflow
+    const closeOnEscape = (event) => {
+      if (event.key === 'Escape' && !isUndoing) {
+        setUndoItem(null)
+        setUndoPassword('')
+        setUndoError('')
+      }
+    }
+    document.body.style.overflow = 'hidden'
+    window.addEventListener('keydown', closeOnEscape)
+    return () => {
+      document.body.style.overflow = previousOverflow
+      window.removeEventListener('keydown', closeOnEscape)
+    }
+  }, [isUndoing, undoItem])
 
   const totalPages = Math.max(1, Math.ceil(total / pageSize))
   const refresh = () => {
@@ -68,6 +94,16 @@ export function AdminSubmissionsPanel({ kind }) {
     setSearchInput('')
     setSearch('')
     setPaymentStatus('')
+    setDateFrom('')
+    setDateTo('')
+    setSortBy('createdAt')
+    setSortDirection('desc')
+    setPage(1)
+    setIsLoading(true)
+  }
+  const changeSort = (column) => {
+    setSortDirection((current) => (sortBy === column && current === 'asc' ? 'desc' : 'asc'))
+    setSortBy(column)
     setPage(1)
     setIsLoading(true)
   }
@@ -92,6 +128,43 @@ export function AdminSubmissionsPanel({ kind }) {
       setVerifyingId(null)
     }
   }
+  const openUndo = (item) => {
+    setUndoItem(item)
+    setUndoPassword('')
+    setUndoError('')
+  }
+  const closeUndo = () => {
+    if (isUndoing) return
+    setUndoItem(null)
+    setUndoPassword('')
+    setUndoError('')
+  }
+  const undoVerification = async (event) => {
+    event.preventDefault()
+    if (!undoItem || !undoPassword) return
+    setIsUndoing(true)
+    setUndoError('')
+    setError('')
+    setMessage('')
+    try {
+      const { registration } = await undoRegistrationPaymentVerification(undoItem.id, undoPassword)
+      setItems((current) => current.map((entry) => (
+        entry.id === undoItem.id ? { ...entry, ...registration } : entry
+      )))
+      setMessage(`${undoItem.fullName}'s payment verification has been returned to pending.`)
+      setUndoItem(null)
+      setUndoPassword('')
+      if (paymentStatus === 'VERIFIED') {
+        setIsLoading(true)
+        setRefreshKey((current) => current + 1)
+      }
+    } catch (requestError) {
+      setUndoError(requestError.message)
+    } finally {
+      setIsUndoing(false)
+    }
+  }
+  const sortIndicator = (column) => (sortBy === column ? (sortDirection === 'asc' ? '↑' : '↓') : '↕')
 
   return (
     <section className="admin-submissions" aria-labelledby={`admin-${kind}-title`}>
@@ -127,7 +200,15 @@ export function AdminSubmissionsPanel({ kind }) {
             <option value="VERIFIED">Verified</option>
           </select>
         </label>
-        {(search || paymentStatus) && <button className="admin-registration-filters__clear" type="button" onClick={clearFilters}>Clear filters</button>}
+        <label>
+          <span>From date</span>
+          <input type="date" value={dateFrom} max={dateTo || undefined} onChange={(event) => { setDateFrom(event.target.value); setPage(1); setIsLoading(true) }} />
+        </label>
+        <label>
+          <span>To date</span>
+          <input type="date" value={dateTo} min={dateFrom || undefined} onChange={(event) => { setDateTo(event.target.value); setPage(1); setIsLoading(true) }} />
+        </label>
+        {(search || paymentStatus || dateFrom || dateTo || sortBy !== 'createdAt' || sortDirection !== 'desc') && <button className="admin-registration-filters__clear" type="button" onClick={clearFilters}>Clear filters</button>}
       </div>
 
       {error && <p className="admin-message admin-message--error" role="alert">{error}</p>}
@@ -139,7 +220,20 @@ export function AdminSubmissionsPanel({ kind }) {
       ) : items.length > 0 ? (
         <div className="admin-registration-table-wrap">
           <table className="admin-registration-table">
-            <thead><tr><th>ID</th><th>Registrant</th><th>Contact</th><th>Class</th><th>Location</th><th>Payment</th><th>Proof</th><th>Status</th><th>Submitted</th><th>Action</th></tr></thead>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th><button type="button" onClick={() => changeSort('fullName')}>Registrant <span>{sortIndicator('fullName')}</span></button></th>
+                <th>Contact</th>
+                <th><button type="button" onClick={() => changeSort('classTitle')}>Class <span>{sortIndicator('classTitle')}</span></button></th>
+                <th>Location</th>
+                <th>Payment</th>
+                <th>Proof</th>
+                <th><button type="button" onClick={() => changeSort('paymentStatus')}>Status <span>{sortIndicator('paymentStatus')}</span></button></th>
+                <th><button type="button" onClick={() => changeSort('createdAt')}>Submitted <span>{sortIndicator('createdAt')}</span></button></th>
+                <th>Action</th>
+              </tr>
+            </thead>
             <tbody>
               {items.map((item) => (
                 <tr key={item.id}>
@@ -152,7 +246,7 @@ export function AdminSubmissionsPanel({ kind }) {
                   <td>{item.hasPaymentScreenshot ? <a href={`/api/admin/registrations/${encodeURIComponent(item.id)}/payment-screenshot`} target="_blank" rel="noreferrer">View proof</a> : '—'}</td>
                   <td>
                     <span className={`admin-payment-status admin-payment-status--${(item.paymentStatus || 'none').toLowerCase()}`}>{item.paymentStatus || 'Not submitted'}</span>
-                    {item.paymentVerifiedAt && <small>{formatDate(item.paymentVerifiedAt)} · {item.paymentVerifiedBy}</small>}
+                    {item.paymentStatusUpdatedAt && <small>{formatDate(item.paymentStatusUpdatedAt)} · {item.paymentStatusUpdatedBy}</small>}
                   </td>
                   <td><time dateTime={item.createdAt}>{formatDate(item.createdAt)}</time></td>
                   <td>
@@ -160,7 +254,9 @@ export function AdminSubmissionsPanel({ kind }) {
                       <button className="admin-registration-table__verify" type="button" disabled={verifyingId === item.id} onClick={() => verifyPayment(item)}>
                         {verifyingId === item.id ? 'Verifying…' : 'Verify'}
                       </button>
-                    ) : item.paymentStatus === 'VERIFIED' ? <span className="admin-registration-table__complete">✓ Verified</span> : '—'}
+                    ) : item.paymentStatus === 'VERIFIED' ? (
+                      <button className="admin-registration-table__undo" type="button" onClick={() => openUndo(item)}>Undo verify</button>
+                    ) : '—'}
                   </td>
                 </tr>
               ))}
@@ -175,6 +271,25 @@ export function AdminSubmissionsPanel({ kind }) {
           <span>Page {page} of {totalPages}</span>
           <button type="button" onClick={() => changePage(page + 1)} disabled={isLoading || page >= totalPages}>Next</button>
         </nav>
+      )}
+
+      {undoItem && (
+        <div className="admin-verification-dialog" role="dialog" aria-modal="true" aria-labelledby="undo-verification-title" onMouseDown={(event) => { if (event.target === event.currentTarget) closeUndo() }}>
+          <form className="admin-verification-dialog__card" onSubmit={undoVerification}>
+            <p className="section-kicker">Protected action</p>
+            <h2 id="undo-verification-title">Undo payment verification?</h2>
+            <p>This will return <strong>{undoItem.fullName}</strong>&apos;s payment to Pending. Enter your current admin password to continue.</p>
+            <label>
+              <span>Admin password</span>
+              <input type="password" value={undoPassword} maxLength="256" autoComplete="current-password" autoFocus required onChange={(event) => setUndoPassword(event.target.value)} />
+            </label>
+            {undoError && <p className="admin-verification-dialog__error" role="alert">{undoError}</p>}
+            <div className="admin-verification-dialog__actions">
+              <button type="button" onClick={closeUndo} disabled={isUndoing}>Cancel</button>
+              <button type="submit" disabled={isUndoing || !undoPassword}>{isUndoing ? 'Checking…' : 'Undo verification'}</button>
+            </div>
+          </form>
+        </div>
       )}
     </section>
   )

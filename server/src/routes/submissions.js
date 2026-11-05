@@ -30,6 +30,41 @@ const submissionLimiter = rateLimit({
   message: { message: 'Too many submissions. Please try again later.' },
 })
 
+const undoVerificationLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 5,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+  message: { message: 'Too many password attempts. Please try again later.' },
+})
+
+function safeEqual(first, second) {
+  const firstBuffer = Buffer.from(String(first))
+  const secondBuffer = Buffer.from(String(second))
+  return firstBuffer.length === secondBuffer.length && crypto.timingSafeEqual(firstBuffer, secondBuffer)
+}
+
+function derivePasswordHash(password, salt) {
+  return new Promise((resolve, reject) => {
+    crypto.scrypt(password, salt, 64, (error, derivedKey) => {
+      if (error) reject(error)
+      else resolve(derivedKey.toString('hex'))
+    })
+  })
+}
+
+async function adminPasswordIsValid(username, password) {
+  const { rows } = await pool.query(
+    'SELECT password_hash, password_salt FROM admin_credentials WHERE lower(username) = lower($1)',
+    [username],
+  )
+  if (!rows[0]) {
+    return safeEqual(username, config.adminUsername) && safeEqual(password, config.adminPassword)
+  }
+  const candidateHash = await derivePasswordHash(String(password), rows[0].password_salt)
+  return safeEqual(candidateHash, rows[0].password_hash)
+}
+
 function textField(value, maxLength) {
   if (typeof value !== 'string') return null
   const text = value.trim()
@@ -48,6 +83,13 @@ function validPhone(value) {
 function pageFromQuery(value) {
   const page = Number(value ?? 1)
   return Number.isSafeInteger(page) && page > 0 && page <= 1_000_000 ? page : null
+}
+
+function validDateFilter(value) {
+  if (!value) return ''
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return null
+  const date = new Date(`${value}T00:00:00.000Z`)
+  return Number.isNaN(date.getTime()) || date.toISOString().slice(0, 10) !== value ? null : value
 }
 
 function feedbackId(value) {
@@ -172,8 +214,19 @@ router.get('/admin/registrations', authenticateAdmin, async (request, response, 
   const page = pageFromQuery(request.query.page)
   const search = textField(String(request.query.search ?? ''), 120)
   const paymentStatus = String(request.query.paymentStatus ?? '').trim().toUpperCase()
+  const dateFrom = validDateFilter(String(request.query.dateFrom ?? '').trim())
+  const dateTo = validDateFilter(String(request.query.dateTo ?? '').trim())
+  const sortBy = String(request.query.sortBy ?? 'createdAt')
+  const sortDirection = String(request.query.sortDirection ?? 'desc').toLowerCase()
+  const sortColumns = { createdAt: 'created_at', fullName: 'full_name', paymentStatus: 'payment_status', classTitle: 'class_title' }
   if (!page) return response.status(400).json({ message: 'Choose a valid page number.' })
   if (search === null) return response.status(400).json({ message: 'Search text is too long.' })
+  if (dateFrom === null || dateTo === null || (dateFrom && dateTo && dateFrom > dateTo)) {
+    return response.status(400).json({ message: 'Choose a valid registration date range.' })
+  }
+  if (!sortColumns[sortBy] || !['asc', 'desc'].includes(sortDirection)) {
+    return response.status(400).json({ message: 'Choose a valid table sort.' })
+  }
   if (paymentStatus && !['PENDING', 'VERIFIED'].includes(paymentStatus)) {
     return response.status(400).json({ message: 'Choose a valid payment status.' })
   }
@@ -194,7 +247,17 @@ router.get('/admin/registrations', authenticateAdmin, async (request, response, 
       values.push(paymentStatus)
       filters.push(`payment_status = $${values.length}`)
     }
+    if (dateFrom) {
+      values.push(dateFrom)
+      filters.push(`created_at >= $${values.length}::date`)
+    }
+    if (dateTo) {
+      values.push(dateTo)
+      filters.push(`created_at < ($${values.length}::date + INTERVAL '1 day')`)
+    }
     const whereClause = filters.length ? `WHERE ${filters.join(' AND ')}` : ''
+    const orderColumn = sortColumns[sortBy]
+    const orderDirection = sortDirection.toUpperCase()
     const limitParameter = values.length + 1
     const offsetParameter = values.length + 2
     const [items, count] = await Promise.all([
@@ -203,9 +266,11 @@ router.get('/admin/registrations', authenticateAdmin, async (request, response, 
           class_id AS "classId", class_title AS "classTitle", payment_method AS "paymentMethod",
           payment_status AS "paymentStatus", payment_screenshot_file_name <> '' AS "hasPaymentScreenshot",
           payment_verified_by AS "paymentVerifiedBy", payment_verified_at AS "paymentVerifiedAt",
+          payment_status_updated_by AS "paymentStatusUpdatedBy", payment_status_updated_at AS "paymentStatusUpdatedAt",
           created_at AS "createdAt"
          FROM class_registrations ${whereClause}
-         ORDER BY created_at DESC, id DESC LIMIT $${limitParameter} OFFSET $${offsetParameter}`,
+         ORDER BY ${orderColumn} ${orderDirection}, id ${orderDirection}
+         LIMIT $${limitParameter} OFFSET $${offsetParameter}`,
         [...values, PAGE_SIZE, (page - 1) * PAGE_SIZE],
       ),
       pool.query(`SELECT COUNT(*)::integer AS total FROM class_registrations ${whereClause}`, values),
@@ -224,10 +289,12 @@ router.patch('/admin/registrations/:id/verify-payment', authenticateAdmin, async
   try {
     const { rows } = await pool.query(
       `UPDATE class_registrations
-       SET payment_status = 'VERIFIED', payment_verified_by = $1, payment_verified_at = NOW()
+       SET payment_status = 'VERIFIED', payment_verified_by = $1, payment_verified_at = NOW(),
+         payment_status_updated_by = $1, payment_status_updated_at = NOW()
        WHERE id = $2 AND payment_status = 'PENDING' AND payment_screenshot_file_name <> ''
        RETURNING id, payment_status AS "paymentStatus",
-         payment_verified_by AS "paymentVerifiedBy", payment_verified_at AS "paymentVerifiedAt"`,
+         payment_verified_by AS "paymentVerifiedBy", payment_verified_at AS "paymentVerifiedAt",
+         payment_status_updated_by AS "paymentStatusUpdatedBy", payment_status_updated_at AS "paymentStatusUpdatedAt"`,
       [request.admin.username, id],
     )
     if (!rows[0]) {
@@ -237,6 +304,37 @@ router.patch('/admin/registrations/:id/verify-payment', authenticateAdmin, async
         return response.status(409).json({ message: 'This payment has already been verified.' })
       }
       return response.status(400).json({ message: 'A pending payment screenshot is required before verification.' })
+    }
+    return response.json({ registration: rows[0] })
+  } catch (error) {
+    return next(error)
+  }
+})
+
+router.patch('/admin/registrations/:id/undo-verification', authenticateAdmin, undoVerificationLimiter, async (request, response, next) => {
+  const id = feedbackId(request.params.id)
+  const password = typeof request.body?.password === 'string' ? request.body.password : ''
+  if (!id) return response.status(400).json({ message: 'Choose a valid registration.' })
+  if (!password || password.length > 256) return response.status(400).json({ message: 'Enter your admin password.' })
+
+  try {
+    const passwordIsValid = await adminPasswordIsValid(request.admin.username, password)
+    if (!passwordIsValid) return response.status(403).json({ message: 'The admin password is incorrect.' })
+
+    const { rows } = await pool.query(
+      `UPDATE class_registrations
+       SET payment_status = 'PENDING', payment_verified_by = NULL, payment_verified_at = NULL,
+         payment_status_updated_by = $1, payment_status_updated_at = NOW()
+       WHERE id = $2 AND payment_status = 'VERIFIED' AND payment_screenshot_file_name <> ''
+       RETURNING id, payment_status AS "paymentStatus",
+         payment_verified_by AS "paymentVerifiedBy", payment_verified_at AS "paymentVerifiedAt",
+         payment_status_updated_by AS "paymentStatusUpdatedBy", payment_status_updated_at AS "paymentStatusUpdatedAt"`,
+      [request.admin.username, id],
+    )
+    if (!rows[0]) {
+      const existing = await pool.query('SELECT payment_status FROM class_registrations WHERE id = $1', [id])
+      if (!existing.rows[0]) return response.status(404).json({ message: 'Registration not found.' })
+      return response.status(409).json({ message: 'Only a verified payment can be returned to pending.' })
     }
     return response.json({ registration: rows[0] })
   } catch (error) {

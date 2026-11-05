@@ -139,7 +139,7 @@
 .admin-submissions__heading .section-kicker { margin-bottom: 12px; }
 .admin-submissions__heading h2 { margin: 0; color: var(--color-wine); font-family: var(--font-display); font-size: clamp(36px, 4vw, 54px); font-weight: 400; }
 .admin-submissions__heading p:last-child { max-width: 600px; margin: 12px 0 0; color: var(--color-muted); font-family: var(--font-serif); font-size: 16px; line-height: 1.6; }
-.admin-registration-filters { display: grid; margin-top: 34px; padding: 20px; border: 1px solid var(--color-line); background: #fffdf8; grid-template-columns: minmax(280px, 1fr) minmax(180px, 240px) auto; gap: 16px; align-items: end; }
+.admin-registration-filters { display: grid; margin-top: 34px; padding: 20px; border: 1px solid var(--color-line); background: #fffdf8; grid-template-columns: minmax(280px, 2fr) minmax(170px, 1fr) repeat(2, minmax(150px, 0.8fr)) auto; gap: 16px; align-items: end; }
 .admin-registration-filters label { display: grid; color: var(--color-ink); font-size: 10px; font-weight: 800; letter-spacing: 0.08em; gap: 8px; text-transform: uppercase; }
 .admin-registration-filters__search > div { display: flex; min-width: 0; }
 .admin-registration-filters input, .admin-registration-filters select { width: 100%; min-width: 0; height: 46px; padding: 0 13px; border: 1px solid var(--color-line); background: #fff; color: var(--color-ink); font: 13px var(--font-body); text-transform: none; }
@@ -150,6 +150,9 @@
 .admin-registration-table-wrap { width: 100%; overflow-x: auto; border: 1px solid var(--color-line); background: #fffdf8; scrollbar-width: thin; }
 .admin-registration-table { width: 100%; min-width: 1280px; border-collapse: collapse; }
 .admin-registration-table th { padding: 13px 12px; border-bottom: 1px solid var(--color-line); background: #f7efe2; color: var(--color-muted); font-size: 9px; font-weight: 800; letter-spacing: 0.09em; text-align: left; text-transform: uppercase; }
+.admin-registration-table th button { display: inline-flex; padding: 0; border: 0; align-items: center; background: transparent; color: inherit; cursor: pointer; font: inherit; letter-spacing: inherit; text-transform: inherit; gap: 6px; }
+.admin-registration-table th button:hover { color: var(--color-wine); }
+.admin-registration-table th button span { color: var(--color-wine); font-size: 12px; }
 .admin-registration-table td { max-width: 210px; padding: 15px 12px; border-bottom: 1px solid rgba(120, 91, 63, 0.14); color: var(--color-ink); font-size: 12px; line-height: 1.45; vertical-align: top; overflow-wrap: anywhere; }
 .admin-registration-table tbody tr:last-child td { border-bottom: 0; }
 .admin-registration-table tbody tr:hover { background: rgba(221, 153, 52, 0.045); }
@@ -163,7 +166,21 @@
 .admin-payment-status--none { background: #eee9e4; color: #74665d; }
 .admin-registration-table__verify { min-height: 36px; padding: 0 13px; border: 0; border-radius: 3px; background: #2f7a40; color: #fff; cursor: pointer; font-size: 10px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; }
 .admin-registration-table__verify:disabled { cursor: wait; opacity: 0.55; }
+.admin-registration-table__undo { min-height: 36px; padding: 0 11px; border: 1px solid #a43d2c; border-radius: 3px; background: transparent; color: #a43d2c; cursor: pointer; font-size: 9px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; }
+.admin-registration-table__undo:hover { background: #a43d2c; color: #fff; }
 .admin-registration-table__complete { color: #256a35; font-size: 10px; font-weight: 800; white-space: nowrap; }
+.admin-verification-dialog { position: fixed; z-index: 190; inset: 0; display: grid; padding: 20px; overflow-y: auto; background: rgba(35, 24, 20, 0.76); place-items: center; backdrop-filter: blur(9px); }
+.admin-verification-dialog__card { width: min(100%, 480px); padding: clamp(26px, 4vw, 40px); border: 1px solid var(--color-line); border-radius: 8px; background: var(--color-paper); box-shadow: 0 30px 90px rgba(22, 13, 10, 0.36); }
+.admin-verification-dialog__card h2 { margin: 0; color: var(--color-wine); font-family: var(--font-display); font-size: 30px; font-weight: 500; }
+.admin-verification-dialog__card > p:not(.section-kicker):not(.admin-verification-dialog__error) { margin: 14px 0 24px; color: var(--color-muted); font-size: 14px; line-height: 1.65; }
+.admin-verification-dialog__card label { display: grid; color: var(--color-ink); font-size: 11px; font-weight: 800; letter-spacing: 0.06em; gap: 8px; text-transform: uppercase; }
+.admin-verification-dialog__card input { width: 100%; height: 48px; padding: 0 13px; border: 1px solid var(--color-line); outline: none; background: #fff; color: var(--color-ink); font: 15px var(--font-body); }
+.admin-verification-dialog__card input:focus { border-color: var(--color-saffron); box-shadow: 0 0 0 3px rgba(221, 153, 52, 0.14); }
+.admin-verification-dialog__error { margin: 14px 0 0; padding: 11px 13px; background: #fce8e3; color: #8b2f1e; font-size: 12px; line-height: 1.5; }
+.admin-verification-dialog__actions { display: flex; margin-top: 24px; justify-content: flex-end; gap: 10px; }
+.admin-verification-dialog__actions button { min-height: 44px; padding: 0 16px; border: 1px solid var(--color-line); border-radius: 3px; background: transparent; color: var(--color-ink); cursor: pointer; font-size: 10px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; }
+.admin-verification-dialog__actions button:last-child { border-color: #a43d2c; background: #a43d2c; color: #fff; }
+.admin-verification-dialog__actions button:disabled { cursor: wait; opacity: 0.55; }
 .admin-submissions__list { display: grid; gap: 18px; }
 .admin-submission-card { padding: clamp(22px, 3vw, 34px); border: 1px solid var(--color-line); background: #fffdf8; box-shadow: 0 10px 30px rgba(73, 42, 24, 0.04); overflow-wrap: anywhere; }
 .admin-submission-card header { display: flex; align-items: baseline; justify-content: space-between; gap: 15px; }
@@ -205,6 +222,7 @@
   .submission-page__intro { padding-top: 0; }
   .submission-page__motif { display: none; }
   .admin-feedback__fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .admin-registration-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 620px) {

@@ -188,6 +188,8 @@ export async function initializeDatabase() {
     ALTER TABLE class_registrations ADD COLUMN IF NOT EXISTS payment_status TEXT NOT NULL DEFAULT '';
     ALTER TABLE class_registrations ADD COLUMN IF NOT EXISTS payment_verified_by TEXT;
     ALTER TABLE class_registrations ADD COLUMN IF NOT EXISTS payment_verified_at TIMESTAMPTZ;
+    ALTER TABLE class_registrations ADD COLUMN IF NOT EXISTS payment_status_updated_by TEXT;
+    ALTER TABLE class_registrations ADD COLUMN IF NOT EXISTS payment_status_updated_at TIMESTAMPTZ;
 
     CREATE INDEX IF NOT EXISTS class_registrations_payment_status_idx
       ON class_registrations (payment_status, created_at DESC);
