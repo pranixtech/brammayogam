@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   createAdminFeedback,
   deleteAdminFeedback,
@@ -8,6 +8,14 @@ import {
 
 const EMPTY_FORM = { fullName: '', roleOrLocation: '', rating: '5', message: '' }
 
+function FeedbackMedia({ item, className = '' }) {
+  if (!item.mediaUrl) return null
+  if (item.mediaType === 'video') {
+    return <video className={className} src={item.mediaUrl} controls playsInline preload="metadata" />
+  }
+  return <audio className={className} src={item.mediaUrl} controls preload="metadata" />
+}
+
 export function AdminFeedbackManager() {
   const [items, setItems] = useState([])
   const [form, setForm] = useState(EMPTY_FORM)
@@ -15,6 +23,13 @@ export function AdminFeedbackManager() {
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
   const [status, setStatus] = useState({ type: '', text: '' })
+  const [mediaFile, setMediaFile] = useState(null)
+  const [fileInputKey, setFileInputKey] = useState(0)
+  const mediaPreviewUrl = useMemo(() => (mediaFile ? URL.createObjectURL(mediaFile) : ''), [mediaFile])
+
+  useEffect(() => () => {
+    if (mediaPreviewUrl) URL.revokeObjectURL(mediaPreviewUrl)
+  }, [mediaPreviewUrl])
 
   useEffect(() => {
     const controller = new AbortController()
@@ -36,6 +51,8 @@ export function AdminFeedbackManager() {
 
   const resetForm = () => {
     setForm(EMPTY_FORM)
+    setMediaFile(null)
+    setFileInputKey((current) => current + 1)
     setEditingId(null)
   }
 
@@ -45,8 +62,8 @@ export function AdminFeedbackManager() {
     setStatus({ type: '', text: '' })
     try {
       const payload = editingId
-        ? await updateAdminFeedback(editingId, form)
-        : await createAdminFeedback(form)
+        ? await updateAdminFeedback(editingId, { ...form, media: mediaFile })
+        : await createAdminFeedback({ ...form, media: mediaFile })
       setItems((current) => editingId
         ? current.map((item) => item.id === editingId ? payload.feedback : item)
         : [payload.feedback, ...current])
@@ -61,6 +78,7 @@ export function AdminFeedbackManager() {
 
   const startEditing = (item) => {
     setEditingId(item.id)
+    setMediaFile(null)
     setForm({
       fullName: item.fullName,
       roleOrLocation: item.roleOrLocation,
@@ -112,9 +130,30 @@ export function AdminFeedbackManager() {
             </select>
           </label>
           <label className="admin-feedback__message">
-            <span>Feedback *</span>
-            <textarea name="message" value={form.message} minLength="5" maxLength="2000" rows="5" required onChange={updateField} />
+            <span>Caption <small>(optional)</small></span>
+            <textarea name="message" value={form.message} maxLength="2000" rows="4" placeholder="Add a short caption for this feedback." onChange={updateField} />
           </label>
+          <label className="admin-feedback__media">
+            <span>{editingId ? 'Replace audio or video' : 'Feedback audio or video *'}</span>
+            <input
+              key={fileInputKey}
+              type="file"
+              accept="video/mp4,video/webm,audio/mpeg,audio/mp4,audio/wav,audio/x-wav,audio/ogg,audio/webm"
+              required={!editingId}
+              onChange={(event) => setMediaFile(event.target.files?.[0] ?? null)}
+            />
+            <small>MP4, WebM, MP3, M4A, WAV or OGG · maximum 100 MB.</small>
+          </label>
+          {(mediaPreviewUrl || (editingId && items.find((item) => item.id === editingId)?.mediaUrl)) && (
+            <div className="admin-feedback__preview">
+              <strong>{mediaFile ? 'Selected media preview' : 'Current media'}</strong>
+              <FeedbackMedia
+                item={mediaFile
+                  ? { mediaUrl: mediaPreviewUrl, mediaType: mediaFile.type.startsWith('video/') ? 'video' : 'audio' }
+                  : items.find((item) => item.id === editingId)}
+              />
+            </div>
+          )}
         </div>
 
         {status.text && <p className={`admin-message admin-message--${status.type}`} role={status.type === 'error' ? 'alert' : 'status'}>{status.text}</p>}
@@ -141,7 +180,8 @@ export function AdminFeedbackManager() {
                   </div>
                   <span className="admin-submission-card__rating">{'★'.repeat(item.rating)}{'☆'.repeat(5 - item.rating)}</span>
                 </header>
-                <p className="admin-submission-card__message">{item.message}</p>
+                <FeedbackMedia item={item} className="admin-feedback__published-media" />
+                {item.message && <p className="admin-submission-card__message">{item.message}</p>}
                 <div className="admin-feedback__actions">
                   <button type="button" onClick={() => startEditing(item)}>Edit</button>
                   <button type="button" onClick={() => handleDelete(item)}>Delete</button>

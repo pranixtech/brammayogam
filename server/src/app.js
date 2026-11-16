@@ -16,6 +16,7 @@ import { adsRouter } from './routes/ads.js'
 import { classesRouter } from './routes/classes.js'
 import { contributionsRouter } from './routes/contributions.js'
 import { donationsRouter } from './routes/donations.js'
+import { deekshaRouter } from './routes/deeksha.js'
 import { quotesRouter } from './routes/quotes.js'
 import { submissionsRouter } from './routes/submissions.js'
 
@@ -220,6 +221,7 @@ export async function createApp() {
   app.use('/api', classesRouter)
   app.use('/api', contributionsRouter)
   app.use('/api', donationsRouter)
+  app.use('/api', deekshaRouter)
   app.use('/api', quotesRouter)
   app.use('/api', submissionsRouter)
 

@@ -7,6 +7,7 @@ import { ComingSoonPage } from '../pages/ComingSoonPage'
 import { AdminPage } from '../pages/AdminPage'
 import { BioPage } from '../pages/BioPage'
 import { FeedbackPage } from '../pages/FeedbackPage'
+import { DeekshaPage } from '../pages/DeekshaPage'
 import { HomePage } from '../pages/HomePage'
 import { PhotosPage } from '../pages/PhotosPage'
 import { RegistrationPage } from '../pages/RegistrationPage'
@@ -58,7 +59,7 @@ export default function App() {
           <Route path="/class" element={<ComingSoonPage titleKey="class" action={{ href: '/registration', labelKey: 'comingSoon.register' }} />} />
           <Route path="/registration" element={<RegistrationPage />} />
           <Route path="/feedback" element={<FeedbackPage />} />
-          <Route path="/deeksha" element={<ComingSoonPage titleKey="deeksha" />} />
+          <Route path="/deeksha" element={<DeekshaPage />} />
           <Route path="/book" element={<ComingSoonPage titleKey="book" />} />
           <Route path="/photos" element={<PhotosPage />} />
           <Route path="/videos" element={<VideosPage />} />

@@ -9,6 +9,7 @@ import { AdminClassesManager } from '../components/admin/AdminClassesManager'
 import { AdminQuotesManager } from '../components/admin/AdminQuotesManager'
 import { AdminSubmissionsPanel } from '../components/admin/AdminSubmissionsPanel'
 import { AdminFeedbackManager } from '../components/admin/AdminFeedbackManager'
+import { AdminDeekshaManager } from '../components/admin/AdminDeekshaManager'
 import { MainLogo } from '../components/common/MainLogo'
 import {
   createHomeVideo,
@@ -357,6 +358,14 @@ function AdminDashboard({ admin, onLogout }) {
           </button>
           <button
             type="button"
+            className={activeManager === 'deeksha' ? 'is-active' : ''}
+            aria-pressed={activeManager === 'deeksha'}
+            onClick={() => setActiveManager('deeksha')}
+          >
+            Deeksha
+          </button>
+          <button
+            type="button"
             className={activeManager === 'feedback' ? 'is-active' : ''}
             aria-pressed={activeManager === 'feedback'}
             onClick={() => setActiveManager('feedback')}
@@ -506,6 +515,7 @@ function AdminDashboard({ admin, onLogout }) {
         {activeManager === 'classes' && <AdminClassesManager />}
 
         {activeManager === 'registrations' && <AdminSubmissionsPanel kind="registrations" focusRegistrationId={focusedRegistrationId} key={focusedRegistrationId || 'registrations'} />}
+        {activeManager === 'deeksha' && <AdminDeekshaManager />}
         {activeManager === 'feedback' && <AdminFeedbackManager />}
       </section>
     </div>

@@ -43,7 +43,13 @@ export function FeedbackPage() {
               <div className="feedback-card__rating" aria-label={`${item.rating} / 5`}>
                 <span aria-hidden="true">{'★'.repeat(item.rating)}{'☆'.repeat(5 - item.rating)}</span>
               </div>
-              <blockquote>“{item.message}”</blockquote>
+              {item.mediaType === 'video' && item.mediaUrl && (
+                <video className="feedback-card__media" src={item.mediaUrl} controls playsInline preload="metadata" />
+              )}
+              {item.mediaType === 'audio' && item.mediaUrl && (
+                <audio className="feedback-card__media" src={item.mediaUrl} controls preload="metadata" />
+              )}
+              {item.message && <blockquote>“{item.message}”</blockquote>}
               <footer>
                 <strong>{item.fullName}</strong>
                 {item.roleOrLocation && <span>{item.roleOrLocation}</span>}

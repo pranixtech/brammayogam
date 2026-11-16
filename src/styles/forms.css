@@ -142,6 +142,9 @@
 .feedback-list { display: grid; width: min(100%, 1120px); margin-inline: auto; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
 .feedback-card { display: flex; min-width: 0; padding: clamp(26px, 4vw, 42px); border: 1px solid var(--color-line); background: #fffdf8; box-shadow: 0 16px 50px rgba(73, 42, 24, 0.06); flex-direction: column; overflow-wrap: anywhere; }
 .feedback-card__rating { color: var(--color-saffron); font-size: 17px; letter-spacing: 0.14em; }
+.feedback-card__media { display: block; width: 100%; margin: 22px 0 4px; border-radius: 4px; background: #2d211c; }
+.feedback-card video.feedback-card__media { max-height: 460px; object-fit: contain; }
+.feedback-card audio.feedback-card__media { min-height: 48px; background: transparent; }
 .feedback-card blockquote { margin: 22px 0 28px; color: #5d4b41; font-family: var(--font-serif); font-size: clamp(17px, 1.6vw, 21px); line-height: 1.75; white-space: pre-wrap; }
 .feedback-card footer { margin-top: auto; padding-top: 20px; border-top: 1px solid var(--color-line); }
 .feedback-card footer strong,
@@ -247,6 +250,14 @@
 .admin-feedback__fields select:focus,
 .admin-feedback__fields textarea:focus { border-color: var(--color-saffron); box-shadow: 0 0 0 3px rgba(221, 153, 52, 0.12); }
 .admin-feedback__message { grid-column: 1 / -1; }
+.admin-feedback__media { grid-column: 1 / -1; }
+.admin-feedback__media input[type='file'] { padding: 10px 12px; }
+.admin-feedback__preview { display: grid; grid-column: 1 / -1; padding: 16px; border: 1px solid var(--color-line); background: #f7efe2; gap: 12px; }
+.admin-feedback__preview > strong { color: var(--color-muted); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; }
+.admin-feedback__preview video { width: min(100%, 620px); max-height: 420px; background: #2d211c; object-fit: contain; }
+.admin-feedback__preview audio { width: min(100%, 620px); }
+.admin-feedback__published-media { display: block; width: min(100%, 620px); margin-top: 20px; }
+.admin-feedback__published-media:is(video) { max-height: 420px; background: #2d211c; object-fit: contain; }
 .admin-feedback__published { margin-top: 60px; }
 .admin-feedback__byline { margin: 6px 0 0; color: var(--color-muted); font-size: 12px; }
 .admin-feedback__actions { display: flex; margin-top: 20px; justify-content: flex-end; gap: 10px; }

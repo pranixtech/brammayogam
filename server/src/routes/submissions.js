@@ -13,6 +13,16 @@ import { notifyNewRegistration } from '../realtime.js'
 const router = Router()
 const PAGE_SIZE = 20
 const allowedPaymentImages = new Set(['image/jpeg', 'image/png', 'image/webp'])
+const feedbackMediaTypes = {
+  'video/mp4': { type: 'video', extension: '.mp4' },
+  'video/webm': { type: 'video', extension: '.webm' },
+  'audio/mpeg': { type: 'audio', extension: '.mp3' },
+  'audio/mp4': { type: 'audio', extension: '.m4a' },
+  'audio/wav': { type: 'audio', extension: '.wav' },
+  'audio/x-wav': { type: 'audio', extension: '.wav' },
+  'audio/ogg': { type: 'audio', extension: '.ogg' },
+  'audio/webm': { type: 'audio', extension: '.weba' },
+}
 
 const paymentScreenshotUpload = multer({
   storage: multer.memoryStorage(),
@@ -20,6 +30,20 @@ const paymentScreenshotUpload = multer({
   fileFilter: (_request, file, callback) => {
     const allowed = allowedPaymentImages.has(file.mimetype)
     callback(allowed ? null : new Error('Upload the payment screenshot as a JPG, PNG or WebP image.'), allowed)
+  },
+})
+
+const feedbackMediaUpload = multer({
+  storage: multer.diskStorage({
+    destination: config.uploadDirectory,
+    filename: (_request, file, callback) => {
+      callback(null, `feedback-${crypto.randomUUID()}${feedbackMediaTypes[file.mimetype].extension}`)
+    },
+  }),
+  limits: { fileSize: config.maxActivityUploadBytes, files: 1 },
+  fileFilter: (_request, file, callback) => {
+    const accepted = Boolean(feedbackMediaTypes[file.mimetype])
+    callback(accepted ? null : new Error('Upload feedback as an MP4, WebM, MP3, M4A, WAV or OGG file.'), accepted)
   },
 })
 
@@ -101,17 +125,49 @@ function feedbackId(value) {
 function publishedFeedbackFields(body) {
   const fullName = textField(body?.fullName, 120)
   const roleOrLocation = textField(body?.roleOrLocation ?? '', 160)
-  const message = textField(body?.message, 2000)
+  const message = textField(body?.message ?? '', 2000)
   const rating = Number(body?.rating ?? 5)
 
-  if (!fullName || roleOrLocation === null || !message || message.length < 5) return null
+  if (!fullName || roleOrLocation === null || message === null) return null
   if (!Number.isInteger(rating) || rating < 1 || rating > 5) return null
   return { fullName, roleOrLocation, message, rating }
 }
 
 const publishedFeedbackColumns = `
   id, full_name AS "fullName", role_or_location AS "roleOrLocation",
-  rating, message, created_at AS "createdAt", updated_at AS "updatedAt"`
+  rating, message, media_type AS "mediaType",
+  CASE WHEN file_name <> '' THEN '/uploads/' || file_name ELSE NULL END AS "mediaUrl",
+  original_name AS "originalName", mime_type AS "mimeType", file_size AS "fileSize",
+  created_at AS "createdAt", updated_at AS "updatedAt"`
+
+const publicFeedbackColumns = `
+  id, full_name AS "fullName", role_or_location AS "roleOrLocation",
+  rating, message, media_type AS "mediaType",
+  CASE WHEN file_name <> '' THEN '/uploads/' || file_name ELSE NULL END AS "mediaUrl",
+  created_at AS "createdAt", updated_at AS "updatedAt"`
+
+async function validFeedbackMedia(file) {
+  const handle = await fs.open(file.path, 'r')
+  try {
+    const header = Buffer.alloc(16)
+    const { bytesRead } = await handle.read(header, 0, header.length, 0)
+    if (file.mimetype === 'video/mp4' || file.mimetype === 'audio/mp4') {
+      return bytesRead >= 12 && header.toString('ascii', 4, 8) === 'ftyp'
+    }
+    if (file.mimetype === 'video/webm' || file.mimetype === 'audio/webm') {
+      return bytesRead >= 4 && header.subarray(0, 4).equals(Buffer.from([0x1a, 0x45, 0xdf, 0xa3]))
+    }
+    if (file.mimetype === 'audio/mpeg') {
+      return bytesRead >= 3 && (header.toString('ascii', 0, 3) === 'ID3' || (header[0] === 0xff && (header[1] & 0xe0) === 0xe0))
+    }
+    if (file.mimetype === 'audio/wav' || file.mimetype === 'audio/x-wav') {
+      return bytesRead >= 12 && header.toString('ascii', 0, 4) === 'RIFF' && header.toString('ascii', 8, 12) === 'WAVE'
+    }
+    return file.mimetype === 'audio/ogg' && bytesRead >= 4 && header.toString('ascii', 0, 4) === 'OggS'
+  } finally {
+    await handle.close()
+  }
+}
 
 router.post('/registrations', submissionLimiter, paymentScreenshotUpload.single('paymentScreenshot'), async (request, response, next) => {
   const fullName = textField(request.body?.fullName, 120)
@@ -204,7 +260,7 @@ router.get('/admin/registrations/:id/payment-screenshot', authenticateAdmin, asy
 router.get('/feedback', async (_request, response, next) => {
   try {
     const { rows } = await pool.query(
-      `SELECT ${publishedFeedbackColumns}
+      `SELECT ${publicFeedbackColumns}
        FROM published_feedback ORDER BY created_at DESC, id DESC`,
     )
     response.set('Cache-Control', 'no-store')
@@ -427,44 +483,84 @@ router.get('/admin/feedback', authenticateAdmin, async (_request, response, next
   }
 })
 
-router.post('/admin/feedback', authenticateAdmin, async (request, response, next) => {
+router.post('/admin/feedback', authenticateAdmin, feedbackMediaUpload.single('media'), async (request, response, next) => {
   const fields = publishedFeedbackFields(request.body)
+  const file = request.file
   if (!fields) {
-    return response.status(400).json({ message: 'Enter a name, a message of at least five characters, and a rating from 1 to 5.' })
+    if (file) await fs.unlink(file.path).catch(() => undefined)
+    return response.status(400).json({ message: 'Enter a name and a rating from 1 to 5.' })
+  }
+  if (!file) return response.status(400).json({ message: 'Choose an audio or video feedback file.' })
+  if (!(await validFeedbackMedia(file))) {
+    await fs.unlink(file.path).catch(() => undefined)
+    return response.status(400).json({ message: 'The selected feedback file is not a valid supported audio or video file.' })
   }
 
   try {
+    const media = feedbackMediaTypes[file.mimetype]
     const { rows } = await pool.query(
-      `INSERT INTO published_feedback (full_name, role_or_location, rating, message)
-       VALUES ($1, $2, $3, $4)
+      `INSERT INTO published_feedback
+        (full_name, role_or_location, rating, message, media_type, file_name, original_name, mime_type, file_size)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
        RETURNING ${publishedFeedbackColumns}`,
-      [fields.fullName, fields.roleOrLocation, fields.rating, fields.message],
+      [fields.fullName, fields.roleOrLocation, fields.rating, fields.message, media.type, file.filename, file.originalname, file.mimetype, file.size],
     )
     return response.status(201).json({ feedback: rows[0] })
   } catch (error) {
+    await fs.unlink(file.path).catch(() => undefined)
     return next(error)
   }
 })
 
-router.put('/admin/feedback/:id', authenticateAdmin, async (request, response, next) => {
+router.put('/admin/feedback/:id', authenticateAdmin, feedbackMediaUpload.single('media'), async (request, response, next) => {
   const id = feedbackId(request.params.id)
   const fields = publishedFeedbackFields(request.body)
-  if (!id) return response.status(400).json({ message: 'Choose a valid feedback entry.' })
+  const file = request.file
+  if (!id) {
+    if (file) await fs.unlink(file.path).catch(() => undefined)
+    return response.status(400).json({ message: 'Choose a valid feedback entry.' })
+  }
   if (!fields) {
-    return response.status(400).json({ message: 'Enter a name, a message of at least five characters, and a rating from 1 to 5.' })
+    if (file) await fs.unlink(file.path).catch(() => undefined)
+    return response.status(400).json({ message: 'Enter a name and a rating from 1 to 5.' })
+  }
+  if (file && !(await validFeedbackMedia(file))) {
+    await fs.unlink(file.path).catch(() => undefined)
+    return response.status(400).json({ message: 'The selected feedback file is not a valid supported audio or video file.' })
   }
 
   try {
-    const { rows } = await pool.query(
-      `UPDATE published_feedback
-       SET full_name = $1, role_or_location = $2, rating = $3, message = $4, updated_at = NOW()
-       WHERE id = $5
-       RETURNING ${publishedFeedbackColumns}`,
-      [fields.fullName, fields.roleOrLocation, fields.rating, fields.message, id],
-    )
+    const existing = await pool.query('SELECT file_name FROM published_feedback WHERE id = $1', [id])
+    if (!existing.rows[0]) {
+      if (file) await fs.unlink(file.path).catch(() => undefined)
+      return response.status(404).json({ message: 'Feedback entry not found.' })
+    }
+    let result
+    if (file) {
+      const media = feedbackMediaTypes[file.mimetype]
+      result = await pool.query(
+        `UPDATE published_feedback
+         SET full_name = $1, role_or_location = $2, rating = $3, message = $4,
+           media_type = $5, file_name = $6, original_name = $7, mime_type = $8, file_size = $9, updated_at = NOW()
+         WHERE id = $10
+         RETURNING ${publishedFeedbackColumns}`,
+        [fields.fullName, fields.roleOrLocation, fields.rating, fields.message, media.type, file.filename, file.originalname, file.mimetype, file.size, id],
+      )
+      if (existing.rows[0].file_name) await fs.unlink(path.join(config.uploadDirectory, existing.rows[0].file_name)).catch(() => undefined)
+    } else {
+      result = await pool.query(
+        `UPDATE published_feedback
+         SET full_name = $1, role_or_location = $2, rating = $3, message = $4, updated_at = NOW()
+         WHERE id = $5
+         RETURNING ${publishedFeedbackColumns}`,
+        [fields.fullName, fields.roleOrLocation, fields.rating, fields.message, id],
+      )
+    }
+    const { rows } = result
     if (!rows[0]) return response.status(404).json({ message: 'Feedback entry not found.' })
     return response.json({ feedback: rows[0] })
   } catch (error) {
+    if (file) await fs.unlink(file.path).catch(() => undefined)
     return next(error)
   }
 })
@@ -474,8 +570,9 @@ router.delete('/admin/feedback/:id', authenticateAdmin, async (request, response
   if (!id) return response.status(400).json({ message: 'Choose a valid feedback entry.' })
 
   try {
-    const result = await pool.query('DELETE FROM published_feedback WHERE id = $1', [id])
-    if (result.rowCount === 0) return response.status(404).json({ message: 'Feedback entry not found.' })
+    const { rows } = await pool.query('DELETE FROM published_feedback WHERE id = $1 RETURNING file_name', [id])
+    if (!rows[0]) return response.status(404).json({ message: 'Feedback entry not found.' })
+    if (rows[0].file_name) await fs.unlink(path.join(config.uploadDirectory, rows[0].file_name)).catch(() => undefined)
     return response.status(204).end()
   } catch (error) {
     return next(error)
@@ -484,12 +581,13 @@ router.delete('/admin/feedback/:id', authenticateAdmin, async (request, response
 
 router.use((error, _request, response, next) => {
   if (error instanceof multer.MulterError) {
-    if (error.code === 'LIMIT_FILE_SIZE') return response.status(400).json({ message: 'Payment screenshots must be 10 MB or smaller.' })
+    if (error.code === 'LIMIT_FILE_SIZE') return response.status(400).json({ message: 'The selected upload is larger than the allowed file-size limit.' })
     return response.status(400).json({ message: error.message })
   }
   if (error.message?.startsWith('Upload the payment screenshot')) {
     return response.status(400).json({ message: error.message })
   }
+  if (error.message?.startsWith('Upload feedback as')) return response.status(400).json({ message: error.message })
   return next(error)
 })
 

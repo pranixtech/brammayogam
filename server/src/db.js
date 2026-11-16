@@ -1,5 +1,6 @@
 import pg from 'pg'
 import { config } from './config.js'
+import { deekshaProgramSeeds } from './data/deekshaPrograms.js'
 
 const { Pool } = pg
 
@@ -232,8 +233,46 @@ export async function initializeDatabase() {
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
 
+    ALTER TABLE published_feedback ADD COLUMN IF NOT EXISTS media_type TEXT NOT NULL DEFAULT '';
+    ALTER TABLE published_feedback ADD COLUMN IF NOT EXISTS file_name TEXT NOT NULL DEFAULT '';
+    ALTER TABLE published_feedback ADD COLUMN IF NOT EXISTS original_name TEXT NOT NULL DEFAULT '';
+    ALTER TABLE published_feedback ADD COLUMN IF NOT EXISTS mime_type TEXT NOT NULL DEFAULT '';
+    ALTER TABLE published_feedback ADD COLUMN IF NOT EXISTS file_size BIGINT NOT NULL DEFAULT 0;
+
     CREATE INDEX IF NOT EXISTS published_feedback_created_idx
       ON published_feedback (created_at DESC, id DESC);
+
+    CREATE TABLE IF NOT EXISTS deeksha_programs (
+      id BIGSERIAL PRIMARY KEY,
+      seed_key TEXT UNIQUE,
+      title TEXT NOT NULL,
+      subtitle TEXT NOT NULL DEFAULT '',
+      description TEXT NOT NULL DEFAULT '',
+      benefits JSONB NOT NULL DEFAULT '[]'::jsonb,
+      sort_order INTEGER NOT NULL DEFAULT 0,
+      is_published BOOLEAN NOT NULL DEFAULT TRUE,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    CREATE INDEX IF NOT EXISTS deeksha_programs_public_idx
+      ON deeksha_programs (is_published, sort_order, id);
+
+    CREATE TABLE IF NOT EXISTS deeksha_submissions (
+      id BIGSERIAL PRIMARY KEY,
+      full_name TEXT NOT NULL,
+      email TEXT NOT NULL DEFAULT '',
+      phone TEXT NOT NULL,
+      city TEXT NOT NULL DEFAULT '',
+      country TEXT NOT NULL DEFAULT '',
+      message TEXT NOT NULL DEFAULT '',
+      selected_programs JSONB NOT NULL,
+      consent_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    CREATE INDEX IF NOT EXISTS deeksha_submissions_created_idx
+      ON deeksha_submissions (created_at DESC, id DESC);
 
     CREATE TABLE IF NOT EXISTS admin_credentials (
       username TEXT PRIMARY KEY,
@@ -255,6 +294,16 @@ export async function initializeDatabase() {
            description = EXCLUDED.description,
            sort_order = EXCLUDED.sort_order`,
       [id, label, description, sortOrder],
+    )
+  }
+
+  for (const [index, program] of deekshaProgramSeeds.entries()) {
+    await pool.query(
+      `INSERT INTO deeksha_programs
+        (seed_key, title, subtitle, description, benefits, sort_order, is_published)
+       VALUES ($1, $2, $3, $4, $5::jsonb, $6, TRUE)
+       ON CONFLICT (seed_key) DO NOTHING`,
+      [program.key, program.title, program.subtitle, program.description, JSON.stringify(program.benefits), index + 1],
     )
   }
 }

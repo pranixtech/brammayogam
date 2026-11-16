@@ -64,18 +64,26 @@ export function getAdminFeedback(signal) {
 }
 
 export function createAdminFeedback(details) {
+  const formData = new FormData()
+  Object.entries(details).forEach(([key, value]) => {
+    if (value === null || value === undefined) return
+    formData.append(key, value instanceof File ? value : String(value))
+  })
   return request('/api/admin/feedback', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(details),
+    body: formData,
   })
 }
 
 export function updateAdminFeedback(id, details) {
+  const formData = new FormData()
+  Object.entries(details).forEach(([key, value]) => {
+    if (value === null || value === undefined) return
+    formData.append(key, value instanceof File ? value : String(value))
+  })
   return request(`/api/admin/feedback/${id}`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(details),
+    body: formData,
   })
 }
 
