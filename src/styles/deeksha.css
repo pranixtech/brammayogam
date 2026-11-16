@@ -69,10 +69,48 @@
 .admin-deeksha-table ul { margin: 0; padding-left: 17px; }
 
 @media (max-width: 760px) {
+  .admin-deeksha { min-width: 0; gap: 34px; }
+  .admin-deeksha > section { min-width: 0; }
+  .admin-deeksha__editor { min-width: 0; padding: 20px 16px; }
+  .admin-deeksha__editor .admin-upload__heading { width: 100%; margin-bottom: 22px; }
+  .admin-deeksha__editor .admin-upload__heading > div { min-width: 0; }
+  .admin-deeksha__editor .admin-upload__heading h2 { font-size: 28px; line-height: 1.2; overflow-wrap: anywhere; }
+  .admin-deeksha__editor .admin-upload__heading .admin-button,
+  .admin-deeksha__editor > .admin-button--primary { width: 100%; }
   .deeksha-program-grid, .deeksha-contact__fields, .admin-deeksha__fields, .admin-deeksha__program-grid { grid-template-columns: 1fr; }
   .deeksha-contact__message, .deeksha-contact__consent, .admin-deeksha__fields label.is-wide { grid-column: 1; }
+  .admin-deeksha__fields { margin-top: 20px; gap: 16px; }
+  .admin-deeksha__fields input:not([type='checkbox']) { height: 46px; }
+  .admin-deeksha__fields textarea { max-width: 100%; }
+  .admin-deeksha__published { min-height: 46px; align-self: auto; }
+  .admin-deeksha .admin-photo-list__heading { align-items: flex-start; flex-direction: column; gap: 6px; }
+  .admin-deeksha .admin-photo-list__heading h2 { font-size: 27px; line-height: 1.2; }
   .admin-deeksha__program { flex-direction: column; }
-  .admin-deeksha__program-actions { width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .admin-deeksha__search { flex-wrap: wrap; }
+  .admin-deeksha__program > div:first-child { min-width: 0; }
+  .admin-deeksha__program h3, .admin-deeksha__program p { overflow-wrap: anywhere; }
+  .admin-deeksha__program-actions { width: 100%; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); }
+  .admin-deeksha__program-actions button { width: 100%; min-height: 42px; }
+  .admin-deeksha__search { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
   .admin-deeksha__search input { width: 100%; }
+  .admin-deeksha__search input { grid-column: 1 / -1; }
+  .admin-deeksha__search button { width: 100%; padding-inline: 10px; }
+  .admin-deeksha-table-wrap { overflow: visible; border: 0; background: transparent; }
+  .admin-deeksha-table { display: block; min-width: 0; background: transparent; }
+  .admin-deeksha-table thead { display: none; }
+  .admin-deeksha-table tbody { display: grid; gap: 16px; }
+  .admin-deeksha-table tr { display: grid; overflow: hidden; border: 1px solid var(--color-line); border-radius: 5px; background: #fffdf8; box-shadow: 0 10px 30px rgba(73, 42, 24, 0.05); }
+  .admin-deeksha-table td { display: grid; width: 100%; max-width: none; padding: 12px 14px; border-bottom: 1px solid rgba(120, 91, 63, 0.14); grid-template-columns: minmax(105px, 0.35fr) minmax(0, 1fr); gap: 12px; overflow-wrap: anywhere; }
+  .admin-deeksha-table td:last-child { border-bottom: 0; }
+  .admin-deeksha-table td::before { content: attr(data-label); color: var(--color-muted); font-size: 9px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+  .admin-deeksha-table td > * { min-width: 0; }
+  .admin-deeksha-table td a { overflow-wrap: anywhere; }
+  .admin-deeksha-table td ul { margin: 0; padding-left: 16px; }
+}
+
+@media (max-width: 420px) {
+  .admin-deeksha__editor { margin-inline: -4px; padding-inline: 14px; }
+  .admin-deeksha__program { padding: 16px; }
+  .admin-deeksha__search { grid-template-columns: 1fr; }
+  .admin-deeksha__search input { grid-column: 1; }
+  .admin-deeksha-table td { grid-template-columns: 1fr; gap: 6px; }
 }

@@ -165,12 +165,12 @@ export function AdminDeekshaManager() {
               <thead><tr><th>ID / Date</th><th>Name</th><th>Contact</th><th>Location</th><th>Selected Deeksha</th><th>Message</th></tr></thead>
               <tbody>{submissions.map((submission) => (
                 <tr key={submission.id}>
-                  <td><strong>#{submission.id}</strong><small>{formatDate(submission.createdAt)}</small></td>
-                  <td><strong>{submission.fullName}</strong></td>
-                  <td>{submission.email && <a href={`mailto:${submission.email}`}>{submission.email}</a>}<a href={`tel:${submission.phone.replace(/[^\d+]/g, '')}`}>{submission.phone}</a></td>
-                  <td>{submission.city || '—'}<small>{getCountryName(submission.country)}</small></td>
-                  <td><ul>{submission.selectedPrograms.map((program) => <li key={`${submission.id}-${program.id}`}>{program.title}</li>)}</ul></td>
-                  <td>{submission.message || '—'}</td>
+                  <td data-label="ID / Date"><div><strong>#{submission.id}</strong><small>{formatDate(submission.createdAt)}</small></div></td>
+                  <td data-label="Name"><div><strong>{submission.fullName}</strong></div></td>
+                  <td data-label="Contact"><div>{submission.email && <a href={`mailto:${submission.email}`}>{submission.email}</a>}<a href={`tel:${submission.phone.replace(/[^\d+]/g, '')}`}>{submission.phone}</a></div></td>
+                  <td data-label="Location"><div>{submission.city || '—'}<small>{getCountryName(submission.country)}</small></div></td>
+                  <td data-label="Selected Deeksha"><div><ul>{submission.selectedPrograms.map((program) => <li key={`${submission.id}-${program.id}`}>{program.title}</li>)}</ul></div></td>
+                  <td data-label="Message"><div>{submission.message || '—'}</div></td>
                 </tr>
               ))}</tbody>
             </table>
