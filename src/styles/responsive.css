@@ -1,4 +1,7 @@
-@media (max-width: 1680px) {
+/* The translated navigation contains many long labels. Keep the compact
+   header on normal desktops and browser-zoomed screens; expose the full
+   navigation only when an ultrawide viewport has enough real space. */
+@media (max-width: 2200px) {
   .site-header { height: 78px; padding-inline: 22px; }
   body.menu-open .site-header {
     background: rgba(251, 247, 237, 0.995);
