@@ -157,6 +157,18 @@
 .admin-submissions__heading .section-kicker { margin-bottom: 12px; }
 .admin-submissions__heading h2 { margin: 0; color: var(--color-wine); font-family: var(--font-display); font-size: clamp(36px, 4vw, 54px); font-weight: 400; }
 .admin-submissions__heading p:last-child { max-width: 600px; margin: 12px 0 0; color: var(--color-muted); font-family: var(--font-serif); font-size: 16px; line-height: 1.6; }
+.admin-whatsapp-template { margin-top: 32px; padding: clamp(20px, 3vw, 30px); border: 1px solid var(--color-line); background: #fffdf8; }
+.admin-whatsapp-template__heading { display: flex; margin-bottom: 14px; align-items: flex-start; justify-content: space-between; gap: 20px; }
+.admin-whatsapp-template__heading .section-kicker { margin: 0 0 7px; }
+.admin-whatsapp-template__heading h3 { margin: 0; color: var(--color-wine); font-family: var(--font-display); font-size: 30px; font-weight: 500; }
+.admin-whatsapp-template__help { margin: 0 0 16px; color: var(--color-muted); font-size: 11px; line-height: 1.7; }
+.admin-whatsapp-template__help code { display: inline-block; margin: 2px 3px; padding: 2px 6px; border-radius: 3px; background: #f3e8d7; color: var(--color-wine); font-size: 10px; }
+.admin-whatsapp-template .quill { background: #fff; }
+.admin-whatsapp-template .ql-toolbar.ql-snow { border-color: var(--color-line); font-family: var(--font-body); }
+.admin-whatsapp-template .ql-container.ql-snow { min-height: 180px; border-color: var(--color-line); color: var(--color-ink); font-family: var(--font-body); font-size: 14px; }
+.admin-whatsapp-template .ql-editor { min-height: 180px; line-height: 1.65; }
+.admin-whatsapp-template__loading { display: grid; min-height: 180px; border: 1px solid var(--color-line); background: #fff; color: var(--color-muted); font-size: 12px; place-items: center; }
+.admin-whatsapp-template > .admin-message { margin: 14px 0 0; }
 .admin-registration-filters { display: grid; margin-top: 34px; padding: 20px; border: 1px solid var(--color-line); background: #fffdf8; grid-template-columns: minmax(280px, 2fr) minmax(170px, 1fr) repeat(2, minmax(150px, 0.8fr)) auto; gap: 16px; align-items: end; }
 .admin-registration-filters label { display: grid; color: var(--color-ink); font-size: 10px; font-weight: 800; letter-spacing: 0.08em; gap: 8px; text-transform: uppercase; }
 .admin-registration-filters__search > div { display: flex; min-width: 0; }
@@ -185,6 +197,8 @@
 .admin-payment-status--none { background: #eee9e4; color: #74665d; }
 .admin-registration-table__verify { min-height: 36px; padding: 0 13px; border: 0; border-radius: 3px; background: #2f7a40; color: #fff; cursor: pointer; font-size: 10px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; }
 .admin-registration-table__verify:disabled { cursor: wait; opacity: 0.55; }
+.admin-registration-table__share { min-height: 36px; padding: 0 11px; border: 0; border-radius: 3px; background: #1f8f4d; color: #fff; cursor: pointer; font-size: 9px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; }
+.admin-registration-table__share:hover { background: #176f3b; }
 .admin-registration-table__undo { min-height: 36px; padding: 0 11px; border: 1px solid #a43d2c; border-radius: 3px; background: transparent; color: #a43d2c; cursor: pointer; font-size: 9px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; }
 .admin-registration-table__undo:hover { background: #a43d2c; color: #fff; }
 .admin-registration-table__actions { display: grid; align-items: start; gap: 8px; }
@@ -267,6 +281,8 @@
   .admin-main-tabs button { min-width: 0; min-height: 48px; padding: 8px; font-size: 10px; letter-spacing: 0.06em; white-space: normal; }
   .admin-main-tabs button:last-child { grid-column: 1 / -1; }
   .admin-submissions__heading { flex-direction: column; }
+  .admin-whatsapp-template__heading { align-items: stretch; flex-direction: column; }
+  .admin-whatsapp-template__heading .admin-button { width: 100%; }
   .admin-registration-filters { grid-template-columns: 1fr; padding: 16px; }
   .admin-registration-filters__clear { width: 100%; }
   .admin-registration-table { min-width: 1180px; }

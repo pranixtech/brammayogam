@@ -163,6 +163,20 @@ export async function initializeDatabase() {
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
 
+    CREATE TABLE IF NOT EXISTS registration_share_settings (
+      id SMALLINT PRIMARY KEY CHECK (id = 1),
+      template_html TEXT NOT NULL,
+      updated_by TEXT,
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    INSERT INTO registration_share_settings (id, template_html)
+    VALUES (
+      1,
+      '<p>Hello {name},</p><p>Your registration for <strong>{class}</strong> has been verified successfully.</p><p>Registration ID: {registrationId}</p><p>Thank you,<br>Brahmam Foundation</p>'
+    )
+    ON CONFLICT (id) DO NOTHING;
+
     CREATE UNIQUE INDEX IF NOT EXISTS donations_utr_unique_idx ON donations (LOWER(utr_number));
     CREATE INDEX IF NOT EXISTS donations_status_idx ON donations (status);
     CREATE INDEX IF NOT EXISTS donations_created_idx ON donations (created_at DESC);

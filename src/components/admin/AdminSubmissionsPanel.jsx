@@ -1,11 +1,69 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
+import 'react-quill-new/dist/quill.snow.css'
 import { getCountryName } from '../../data/countries'
-import { deleteAdminRegistration, getAdminRegistrations, undoRegistrationPaymentVerification, verifyRegistrationPayment } from '../../services/submissionsApi'
+import {
+  deleteAdminRegistration,
+  getAdminRegistrations,
+  getRegistrationShareTemplate,
+  undoRegistrationPaymentVerification,
+  updateRegistrationShareTemplate,
+  verifyRegistrationPayment,
+} from '../../services/submissionsApi'
 
 const PANEL = {
   title: 'Online class registrations',
   description: 'Search registrations, review payment proof and maintain verification status.',
   empty: 'No online class registrations match these filters.',
+}
+
+const ReactQuill = lazy(() => import('react-quill-new'))
+
+const TEMPLATE_MODULES = {
+  toolbar: [
+    ['bold', 'italic', 'underline'],
+    [{ list: 'ordered' }, { list: 'bullet' }],
+    ['clean'],
+  ],
+}
+
+const TEMPLATE_FORMATS = ['bold', 'italic', 'underline', 'list']
+
+function htmlToWhatsAppText(html) {
+  const preparedHtml = String(html ?? '')
+    .replace(/<(strong|b)>/gi, '*')
+    .replace(/<\/(strong|b)>/gi, '*')
+    .replace(/<(em|i)>/gi, '_')
+    .replace(/<\/(em|i)>/gi, '_')
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/p>/gi, '\n')
+    .replace(/<li[^>]*>/gi, '• ')
+    .replace(/<\/li>/gi, '\n')
+  const documentFragment = new DOMParser().parseFromString(preparedHtml, 'text/html')
+  return (documentFragment.body.textContent || '').replace(/\u00a0/g, ' ').replace(/\n{3,}/g, '\n\n').trim()
+}
+
+function whatsAppPhone(value) {
+  let digits = String(value ?? '').replace(/\D/g, '')
+  if (digits.startsWith('0')) digits = digits.slice(1)
+  if (digits.length === 10) digits = `91${digits}`
+  return digits
+}
+
+function registrationMessage(templateHtml, item) {
+  const replacements = {
+    name: item.fullName || '',
+    class: item.classTitle || 'Online class',
+    registrationId: `#${item.id}`,
+    city: item.city || '',
+    country: getCountryName(item.country) || '',
+    paymentMethod: item.paymentMethod || '',
+    phone: item.phone || '',
+    email: item.email || '',
+  }
+  return Object.entries(replacements).reduce(
+    (message, [key, value]) => message.replaceAll(`{${key}}`, value),
+    htmlToWhatsAppText(templateHtml),
+  )
 }
 
 function formatDate(value) {
@@ -40,6 +98,26 @@ export function AdminSubmissionsPanel({ kind, focusRegistrationId = '' }) {
   const [isDeleting, setIsDeleting] = useState(false)
   const [deleteError, setDeleteError] = useState('')
   const [notificationTargetId, setNotificationTargetId] = useState(focusRegistrationId)
+  const [shareTemplate, setShareTemplate] = useState('')
+  const [isTemplateLoading, setIsTemplateLoading] = useState(true)
+  const [isTemplateSaving, setIsTemplateSaving] = useState(false)
+  const [templateMessage, setTemplateMessage] = useState({ type: '', text: '' })
+
+  useEffect(() => {
+    const controller = new AbortController()
+    getRegistrationShareTemplate(controller.signal)
+      .then(({ template }) => {
+        setShareTemplate(template.templateHtml)
+        setTemplateMessage({ type: '', text: '' })
+      })
+      .catch((requestError) => {
+        if (requestError.name !== 'AbortError') setTemplateMessage({ type: 'error', text: requestError.message })
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setIsTemplateLoading(false)
+      })
+    return () => controller.abort()
+  }, [])
 
   useEffect(() => {
     const controller = new AbortController()
@@ -229,6 +307,32 @@ export function AdminSubmissionsPanel({ kind, focusRegistrationId = '' }) {
     }
   }
   const sortIndicator = (column) => (sortBy === column ? (sortDirection === 'asc' ? '↑' : '↓') : '↕')
+  const saveShareTemplate = async () => {
+    if (!htmlToWhatsAppText(shareTemplate)) {
+      setTemplateMessage({ type: 'error', text: 'Enter a WhatsApp message template.' })
+      return
+    }
+    setIsTemplateSaving(true)
+    setTemplateMessage({ type: '', text: '' })
+    try {
+      const { template } = await updateRegistrationShareTemplate(shareTemplate)
+      setShareTemplate(template.templateHtml)
+      setTemplateMessage({ type: 'success', text: 'WhatsApp message template saved.' })
+    } catch (requestError) {
+      setTemplateMessage({ type: 'error', text: requestError.message })
+    } finally {
+      setIsTemplateSaving(false)
+    }
+  }
+  const shareOnWhatsApp = (item) => {
+    const phone = whatsAppPhone(item.phone)
+    const messageText = registrationMessage(shareTemplate, item)
+    if (!phone || !messageText) {
+      setTemplateMessage({ type: 'error', text: 'A valid WhatsApp number and message template are required.' })
+      return
+    }
+    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(messageText)}`, '_blank', 'noopener,noreferrer')
+  }
 
   return (
     <section className="admin-submissions" aria-labelledby={`admin-${kind}-title`}>
@@ -240,6 +344,33 @@ export function AdminSubmissionsPanel({ kind, focusRegistrationId = '' }) {
         </div>
         <button className="admin-button admin-button--quiet" type="button" onClick={refresh} disabled={isLoading}>Refresh</button>
       </div>
+
+      <section className="admin-whatsapp-template" aria-labelledby="registration-whatsapp-template-title">
+        <div className="admin-whatsapp-template__heading">
+          <div>
+            <p className="section-kicker">Verified registration message</p>
+            <h3 id="registration-whatsapp-template-title">WhatsApp Template</h3>
+          </div>
+          <button className="admin-button admin-button--primary" type="button" disabled={isTemplateLoading || isTemplateSaving} onClick={saveShareTemplate}>
+            {isTemplateSaving ? 'Saving…' : 'Save template'}
+          </button>
+        </div>
+        <p className="admin-whatsapp-template__help">
+          Available placeholders: <code>{'{name}'}</code>, <code>{'{class}'}</code>, <code>{'{registrationId}'}</code>, <code>{'{city}'}</code>, <code>{'{country}'}</code>, <code>{'{paymentMethod}'}</code>, <code>{'{phone}'}</code>, <code>{'{email}'}</code>
+        </p>
+        <Suspense fallback={<div className="admin-whatsapp-template__loading" role="status">Loading editor…</div>}>
+          <ReactQuill
+            theme="snow"
+            value={shareTemplate}
+            modules={TEMPLATE_MODULES}
+            formats={TEMPLATE_FORMATS}
+            readOnly={isTemplateLoading}
+            placeholder={isTemplateLoading ? 'Loading template…' : 'Create the WhatsApp message sent after verification.'}
+            onChange={setShareTemplate}
+          />
+        </Suspense>
+        {templateMessage.text && <p className={`admin-message admin-message--${templateMessage.type}`} role={templateMessage.type === 'error' ? 'alert' : 'status'}>{templateMessage.text}</p>}
+      </section>
 
       <div className="admin-registration-filters">
         <form className="admin-registration-filters__search" role="search" onSubmit={applySearch}>
@@ -320,7 +451,10 @@ export function AdminSubmissionsPanel({ kind, focusRegistrationId = '' }) {
                           {verifyingId === item.id ? 'Verifying…' : 'Verify'}
                         </button>
                       ) : item.paymentStatus === 'VERIFIED' ? (
-                        <button className="admin-registration-table__undo" type="button" onClick={() => openUndo(item)}>Undo verify</button>
+                        <>
+                          <button className="admin-registration-table__share" type="button" onClick={() => shareOnWhatsApp(item)}>Share to WhatsApp</button>
+                          <button className="admin-registration-table__undo" type="button" onClick={() => openUndo(item)}>Undo verify</button>
+                        </>
                       ) : null}
                       <button className="admin-registration-table__delete" type="button" onClick={() => openDelete(item)}>Delete</button>
                     </div>

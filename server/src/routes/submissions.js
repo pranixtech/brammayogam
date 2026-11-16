@@ -292,6 +292,40 @@ router.get('/admin/registrations', authenticateAdmin, async (request, response, 
   }
 })
 
+router.get('/admin/registrations/share-template', authenticateAdmin, async (_request, response, next) => {
+  try {
+    const { rows } = await pool.query(
+      'SELECT template_html AS "templateHtml", updated_by AS "updatedBy", updated_at AS "updatedAt" FROM registration_share_settings WHERE id = 1',
+    )
+    response.set('Cache-Control', 'no-store')
+    return response.json({ template: rows[0] })
+  } catch (error) {
+    return next(error)
+  }
+})
+
+router.put('/admin/registrations/share-template', authenticateAdmin, async (request, response, next) => {
+  const templateHtml = typeof request.body?.templateHtml === 'string' ? request.body.templateHtml.trim() : ''
+  const plainText = templateHtml.replace(/<[^>]*>/g, ' ').replace(/&nbsp;/gi, ' ').replace(/\s+/g, ' ').trim()
+  const unsafeHtml = /<(script|iframe|object|embed|style|link|meta)\b|\son\w+\s*=|javascript\s*:/i.test(templateHtml)
+  if (!plainText) return response.status(400).json({ message: 'Enter a WhatsApp message template.' })
+  if (templateHtml.length > 10000) return response.status(400).json({ message: 'The WhatsApp message template is too long.' })
+  if (unsafeHtml) return response.status(400).json({ message: 'The WhatsApp message template contains unsupported content.' })
+
+  try {
+    const { rows } = await pool.query(
+      `UPDATE registration_share_settings
+       SET template_html = $1, updated_by = $2, updated_at = NOW()
+       WHERE id = 1
+       RETURNING template_html AS "templateHtml", updated_by AS "updatedBy", updated_at AS "updatedAt"`,
+      [templateHtml, request.admin.username],
+    )
+    return response.json({ template: rows[0] })
+  } catch (error) {
+    return next(error)
+  }
+})
+
 router.patch('/admin/registrations/:id/verify-payment', authenticateAdmin, async (request, response, next) => {
   const id = feedbackId(request.params.id)
   if (!id) return response.status(400).json({ message: 'Choose a valid registration.' })

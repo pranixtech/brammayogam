@@ -31,6 +31,18 @@ export function verifyRegistrationPayment(id) {
   return request(`/api/admin/registrations/${encodeURIComponent(id)}/verify-payment`, { method: 'PATCH' })
 }
 
+export function getRegistrationShareTemplate(signal) {
+  return request('/api/admin/registrations/share-template', { signal, cache: 'no-store' })
+}
+
+export function updateRegistrationShareTemplate(templateHtml) {
+  return request('/api/admin/registrations/share-template', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ templateHtml }),
+  })
+}
+
 export function undoRegistrationPaymentVerification(id, password) {
   return request(`/api/admin/registrations/${encodeURIComponent(id)}/undo-verification`, {
     method: 'PATCH',
