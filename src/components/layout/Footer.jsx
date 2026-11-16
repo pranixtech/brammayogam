@@ -1,4 +1,5 @@
 import { Brand } from '../common/Brand'
+import { Link } from 'react-router-dom'
 
 export function Footer() {
   return (
@@ -34,6 +35,15 @@ export function Footer() {
             <span>Tamil Nadu, India.</span>
           </address>
         </section>
+
+        <nav className="site-footer__policies" aria-labelledby="footer-policies-title">
+          <h2 id="footer-policies-title">Important Links</h2>
+          <ul>
+            <li><Link to="/privacy-policy">Privacy Policy</Link></li>
+            <li><Link to="/terms-and-conditions">Terms &amp; Conditions</Link></li>
+            <li><Link to="/refund-and-cancellation-policy">Refund &amp; Cancellation Policy</Link></li>
+          </ul>
+        </nav>
       </div>
 
       <div className="site-footer__bottom">

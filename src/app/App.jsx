@@ -12,11 +12,19 @@ import { PhotosPage } from '../pages/PhotosPage'
 import { RegistrationPage } from '../pages/RegistrationPage'
 import { VideosPage } from '../pages/VideosPage'
 import { YogamPage } from '../pages/YogamPage'
+import { LegalPage } from '../pages/LegalPage'
+import { privacyPolicy, refundPolicy, termsAndConditions } from '../data/legalPolicies'
 import { useLanguage } from '../i18n/useLanguage'
 
 const PAGE_TITLE_KEYS = {
   '/class': 'class', '/registration': 'registration', '/feedback': 'feedback', '/deeksha': 'deeksha',
   '/book': 'book', '/photos': 'photos', '/videos': 'videos', '/yogam': 'yogam', '/bio': 'bio',
+}
+
+const LEGAL_PAGE_TITLES = {
+  '/privacy-policy': 'Privacy Policy',
+  '/terms-and-conditions': 'Terms & Conditions',
+  '/refund-and-cancellation-policy': 'Refund & Cancellation Policy',
 }
 
 export default function App() {
@@ -27,6 +35,7 @@ export default function App() {
   useEffect(() => {
     if (isAdminPage) document.title = 'Admin | Brahmam Foundation'
     else if (pathname === '/') document.title = language === 'ta' ? 'பிரம்மம் அறக்கட்டளை | அகப்பயணப் பாதை' : 'Brahmam Foundation | The Inward Path'
+    else if (LEGAL_PAGE_TITLES[pathname]) document.title = `${LEGAL_PAGE_TITLES[pathname]} | Brahmam Foundation`
     else document.title = `${t(`navigation.${PAGE_TITLE_KEYS[pathname]}`)} | ${language === 'ta' ? 'பிரம்மம் அறக்கட்டளை' : 'Brahmam Foundation'}`
 
     if (hash) {
@@ -54,6 +63,9 @@ export default function App() {
           <Route path="/photos" element={<PhotosPage />} />
           <Route path="/videos" element={<VideosPage />} />
           <Route path="/yogam" element={<YogamPage />} />
+          <Route path="/privacy-policy" element={<LegalPage policy={privacyPolicy} />} />
+          <Route path="/terms-and-conditions" element={<LegalPage policy={termsAndConditions} />} />
+          <Route path="/refund-and-cancellation-policy" element={<LegalPage policy={refundPolicy} />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

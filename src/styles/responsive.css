@@ -148,6 +148,9 @@
 
   .site-footer__inner { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .site-footer__identity { grid-column: 1 / -1; }
+  .legal-page__layout { grid-template-columns: 1fr; }
+  .legal-page__toc { position: static; }
+  .legal-page__toc ol { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 28px; }
 
   .section-heading, .teachings-section { grid-template-columns: 1fr; }
   .section-heading { gap: 30px; }
@@ -275,6 +278,12 @@
   .site-footer__brand { margin-bottom: 28px; }
   .site-footer h2 { margin-bottom: 20px; }
   .site-footer__bottom p { text-align: left; }
+  .legal-page { padding-top: 128px; }
+  .legal-page__toc ol { grid-template-columns: 1fr; }
+  .legal-page__section { padding-left: 36px; }
+  .legal-page__content p,
+  .legal-page__content li { font-size: 14px; }
+  .legal-page__contact dl div { grid-template-columns: 1fr; gap: 5px; }
   .whatsapp-fab {
     right: max(16px, env(safe-area-inset-right));
     bottom: calc(env(safe-area-inset-bottom) + 2.5in);
