@@ -40,13 +40,27 @@
 .registration-payment__heading .section-kicker { margin-bottom: 8px; }
 .registration-payment__heading h3 { margin: 0; color: var(--color-wine); font-family: var(--font-display); font-size: clamp(24px, 3vw, 34px); font-weight: 500; line-height: 1.2; }
 .registration-payment__heading > p:last-child { margin: 10px 0 0; color: var(--color-muted); font-size: 13px; font-weight: 400; letter-spacing: 0; line-height: 1.65; }
+.registration-payment__tabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 5px; border: 1px solid var(--color-line); border-radius: 8px; background: #f4eadb; gap: 5px; }
+.registration-payment__tabs button { min-height: 48px; padding: 8px 12px; border: 0; border-radius: 5px; background: transparent; color: var(--color-muted); cursor: pointer; font-size: 12px; font-weight: 800; }
+.registration-payment__tabs button.is-active { background: #fffdf8; color: var(--color-wine); box-shadow: 0 7px 24px rgba(73, 42, 24, 0.12); }
+.registration-payment__upi { display: grid; gap: 22px; }
 .registration-payment__method { display: flex; padding: 15px 17px; border: 1px solid var(--color-saffron); border-radius: 7px; align-items: center; background: #fff; color: var(--color-ink); gap: 13px; }
 .registration-payment__method-check { display: grid; width: 30px; height: 30px; flex: 0 0 auto; border-radius: 50%; background: var(--color-saffron); color: #fff; font-size: 15px; place-items: center; }
 .registration-payment__method strong, .registration-payment__method small { display: block; }
 .registration-payment__method strong { font-size: 14px; }
 .registration-payment__method small { margin-top: 3px; color: var(--color-muted); font-size: 11px; font-weight: 500; letter-spacing: 0; line-height: 1.45; }
-.registration-payment__qr { width: min(100%, 360px); margin: 0 auto; overflow: hidden; border: 1px solid rgba(80, 59, 47, 0.12); border-radius: 10px; background: #fff; box-shadow: 0 16px 45px rgba(73, 42, 24, 0.1); }
+.registration-payment__qr { position: relative; width: min(100%, 360px); margin: 0 auto; overflow: hidden; border: 1px solid rgba(80, 59, 47, 0.12); border-radius: 10px; background: #fff; box-shadow: 0 16px 45px rgba(73, 42, 24, 0.1); }
 .registration-payment__qr img { display: block; width: 100%; height: auto; }
+.registration-payment__number { position: absolute; top: 85%; left: 50%; margin: 8px 0 0; color: #1f1f1f; font-size: clamp(13px, 2vw, 18px); font-weight: 800; letter-spacing: 0.08em; text-align: center; transform: translate(-50%, -50%); white-space: nowrap; }
+.registration-payment__bank { display: grid; padding: clamp(18px, 3vw, 26px); border: 1px solid var(--color-line); border-radius: 9px; background: #fffdf8; gap: 20px; }
+.registration-payment__bank h4 { margin: 0; color: var(--color-wine); font-size: 18px; }
+.registration-payment__bank > div > p { margin: 7px 0 0; color: var(--color-muted); font-size: 12px; font-weight: 400; line-height: 1.6; }
+.registration-payment__bank dl { display: grid; margin: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--color-line); }
+.registration-payment__bank dl > div { min-width: 0; padding: 15px; background: #fffdf8; }
+.registration-payment__bank dt { margin-bottom: 6px; color: var(--color-muted); font-size: 9px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+.registration-payment__bank dd { margin: 0; color: var(--color-ink); font-size: 13px; font-weight: 700; line-height: 1.5; overflow-wrap: anywhere; }
+.registration-payment__settings { margin: 0; padding: 14px; border-radius: 6px; background: #f4eadb; color: var(--color-muted); font-size: 12px; text-align: center; }
+.registration-payment__settings.is-error { background: #fff0ed; color: #963a2c; }
 .registration-payment__notice { margin: 0; padding: 13px 15px; border-left: 3px solid var(--color-saffron); background: rgba(221, 153, 52, 0.09); color: #6a574c; font-size: 12px; line-height: 1.6; }
 .registration-payment__proof { display: grid; gap: 10px; }
 .registration-payment__proof > strong { color: var(--color-ink); font-size: 12px; letter-spacing: 0.045em; }
@@ -60,6 +74,10 @@
 .registration-payment__preview { display: grid; width: min(100%, 320px); margin: 0; overflow: hidden; border: 1px solid var(--color-line); border-radius: 7px; background: #fff; }
 .registration-payment__preview img { display: block; width: 100%; max-height: 360px; object-fit: contain; }
 .registration-payment__preview figcaption { padding: 10px 12px; border-top: 1px solid var(--color-line); color: var(--color-muted); font-size: 11px; overflow-wrap: anywhere; }
+
+@media (max-width: 620px) {
+  .registration-payment__bank dl { grid-template-columns: 1fr; }
+}
 
 .registration-camera { position: fixed; z-index: 170; inset: 0; display: grid; padding: 18px; overflow-y: auto; background: rgba(25, 17, 14, 0.82); place-items: center; backdrop-filter: blur(10px); }
 .registration-camera__card { width: min(100%, 620px); overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 12px; background: var(--color-paper); box-shadow: 0 30px 100px rgba(20, 12, 8, 0.52); }

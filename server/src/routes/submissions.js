@@ -137,8 +137,8 @@ router.post('/registrations', submissionLimiter, paymentScreenshotUpload.single(
       return response.status(400).json({ message: 'Please agree to be contacted about online classes.' })
     }
   }
-  if (paymentMethod !== 'UPI') {
-    return response.status(400).json({ message: 'Choose the available UPI payment method.' })
+  if (!['UPI', 'BANK_TRANSFER'].includes(paymentMethod)) {
+    return response.status(400).json({ message: 'Choose UPI or Bank Transfer as the payment method.' })
   }
   if (!paymentScreenshot) {
     return response.status(400).json({ message: 'Upload your payment screenshot before submitting the registration.' })

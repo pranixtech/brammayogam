@@ -55,6 +55,7 @@ export function Header({ forceSolid = false }) {
   }, [isMenuOpen])
 
   return (
+    <>
     <header className={`site-header${isScrolled || forceSolid ? ' site-header--scrolled' : ''}`}>
       <Brand onClick={closeMenu} />
 
@@ -96,57 +97,6 @@ export function Header({ forceSolid = false }) {
       </nav>
 
       <div className="site-header__actions">
-        <div className="header-language" ref={languageRef}>
-          <button
-            className="header-language__trigger"
-            type="button"
-            aria-label={t('language.label')}
-            aria-haspopup="menu"
-            aria-expanded={isLanguageOpen}
-            onClick={() => setIsLanguageOpen((current) => !current)}
-          >
-            <svg
-              aria-hidden="true"
-              className="header-language__icon"
-              viewBox="0 0 24 24"
-            >
-              <circle cx="12" cy="12" r="9" />
-              <path d="M3 12h18M12 3c2.4 2.45 3.65 5.45 3.65 9S14.4 18.55 12 21M12 3c-2.4 2.45-3.65 5.45-3.65 9S9.6 18.55 12 21" />
-            </svg>
-          </button>
-
-          {isLanguageOpen && (
-            <div className="header-language__popover" role="menu" aria-label={t('language.label')}>
-              <button
-                type="button"
-                role="menuitemradio"
-                aria-checked={language === 'en'}
-                className={language === 'en' ? 'is-active' : undefined}
-                onClick={() => {
-                  setLanguage('en')
-                  setIsLanguageOpen(false)
-                }}
-              >
-                <span lang="en">{t('language.english')}</span>
-                <span aria-hidden="true">{language === 'en' ? '✓' : ''}</span>
-              </button>
-              <button
-                type="button"
-                role="menuitemradio"
-                aria-checked={language === 'ta'}
-                className={language === 'ta' ? 'is-active' : undefined}
-                onClick={() => {
-                  setLanguage('ta')
-                  setIsLanguageOpen(false)
-                }}
-              >
-                <span lang="ta">{t('language.tamil')}</span>
-                <span aria-hidden="true">{language === 'ta' ? '✓' : ''}</span>
-              </button>
-            </div>
-          )}
-        </div>
-
         <button
           className={`menu-button${isMenuOpen ? ' menu-button--open' : ''}`}
           type="button"
@@ -163,5 +113,54 @@ export function Header({ forceSolid = false }) {
         </button>
       </div>
     </header>
+
+    <div className="header-language" ref={languageRef}>
+      <button
+        className="header-language__trigger"
+        type="button"
+        aria-label={t('language.label')}
+        aria-haspopup="menu"
+        aria-expanded={isLanguageOpen}
+        onClick={() => setIsLanguageOpen((current) => !current)}
+      >
+        <span className="header-language__flag" aria-hidden="true">{language === 'en' ? '🇬🇧' : '🇮🇳'}</span>
+        <span className="header-language__code" aria-hidden="true">{language === 'en' ? 'EN' : 'தமிழ்'}</span>
+        <svg aria-hidden="true" className="header-language__chevron" viewBox="0 0 12 8">
+          <path d="m1 1 5 5 5-5" />
+        </svg>
+      </button>
+
+      {isLanguageOpen && (
+        <div className="header-language__popover" role="menu" aria-label={t('language.label')}>
+          <button
+            type="button"
+            role="menuitemradio"
+            aria-checked={language === 'en'}
+            className={language === 'en' ? 'is-active' : undefined}
+            onClick={() => {
+              setLanguage('en')
+              setIsLanguageOpen(false)
+            }}
+          >
+            <span className="header-language__option-label" lang="en"><span aria-hidden="true">🇬🇧</span>{t('language.english')}</span>
+            <span aria-hidden="true">{language === 'en' ? '✓' : ''}</span>
+          </button>
+          <button
+            type="button"
+            role="menuitemradio"
+            aria-checked={language === 'ta'}
+            className={language === 'ta' ? 'is-active' : undefined}
+            onClick={() => {
+              setLanguage('ta')
+              setIsLanguageOpen(false)
+            }}
+          >
+            <span className="header-language__option-label" lang="ta"><span aria-hidden="true">🇮🇳</span>{t('language.tamil')}</span>
+            <span aria-hidden="true">{language === 'ta' ? '✓' : ''}</span>
+          </button>
+        </div>
+      )}
+    </div>
+    </>
   )
 }

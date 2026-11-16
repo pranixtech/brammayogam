@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useLanguage } from '../../i18n/useLanguage'
+import registrationPaymentQr from '../../assets/class-registration-upi-qr.png'
 import {
   getDonationSettings,
   submitDonation,
@@ -20,7 +21,6 @@ export function DonationPayment() {
   const [method, setMethod] = useState('UPI')
   const [amount, setAmount] = useState('500')
   const [customAmount, setCustomAmount] = useState(false)
-  const [qrDataUrl, setQrDataUrl] = useState('')
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [form, setForm] = useState(EMPTY_FORM)
   const [status, setStatus] = useState({ type: '', text: '' })
@@ -51,16 +51,6 @@ export function DonationPayment() {
     const unsubscribe = subscribeToDonationSettings(loadSettings)
     return () => { controller?.abort(); unsubscribe() }
   }, [t])
-
-  useEffect(() => {
-    let active = true
-    if (!upiLink) return undefined
-    import('qrcode')
-      .then(({ default: QRCode }) => QRCode.toDataURL(upiLink, { width: 360, margin: 2, errorCorrectionLevel: 'M', color: { dark: '#3b211b', light: '#fffdf8' } }))
-      .then((url) => { if (active) setQrDataUrl(url) })
-      .catch(() => { if (active) setQrDataUrl('') })
-    return () => { active = false }
-  }, [upiLink])
 
   useEffect(() => {
     if (!isOpen) {
@@ -163,7 +153,12 @@ export function DonationPayment() {
 
                 {!settings ? <p className="donation-payment__notice">{t('donation.loading')}</p> : method === 'UPI' ? (
                   <section className="donation-upi" role="tabpanel">
-                    <div className="donation-upi__qr">{upiLink && qrDataUrl ? <img src={qrDataUrl} alt={t('donation.qrAlt')} /> : <div className="donation-upi__qr-placeholder">QR</div>}</div>
+                    <div className="donation-upi__qr-block">
+                      <div className="donation-upi__qr">
+                        <img src={registrationPaymentQr} alt={t('donation.qrAlt')} />
+                        <p className="donation-upi__number">7904705601</p>
+                      </div>
+                    </div>
                     <div className="donation-upi__details">
                       <h4>{settings.organizationName}</h4>
                       <p>{t('donation.scanQr')}</p>

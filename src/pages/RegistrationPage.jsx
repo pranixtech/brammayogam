@@ -4,6 +4,7 @@ import { CITY_OPTIONS, findCityOption } from '../data/cities'
 import { getCountryName, getCountryOptions } from '../data/countries'
 import { submitRegistration } from '../services/submissionsApi'
 import { getUpcomingClasses, subscribeToUpcomingClasses } from '../services/classesApi'
+import { getDonationSettings, subscribeToDonationSettings } from '../services/donationsApi'
 import { useLanguage } from '../i18n/useLanguage'
 
 const EMPTY_FORM = { fullName: '', email: '', phone: '', city: '', country: '', message: '', classId: '', consent: false, paymentMethod: 'UPI' }
@@ -18,6 +19,8 @@ export function RegistrationPage() {
   const [showSuccess, setShowSuccess] = useState(false)
   const [previewClass, setPreviewClass] = useState(null)
   const [showPayment, setShowPayment] = useState(false)
+  const [paymentSettings, setPaymentSettings] = useState(null)
+  const [paymentSettingsError, setPaymentSettingsError] = useState('')
   const [paymentScreenshot, setPaymentScreenshot] = useState(null)
   const [cameraOpen, setCameraOpen] = useState(false)
   const [cameraReady, setCameraReady] = useState(false)
@@ -92,6 +95,28 @@ export function RegistrationPage() {
     }
     loadClasses()
     const unsubscribe = subscribeToUpcomingClasses(loadClasses)
+    return () => {
+      controller?.abort()
+      unsubscribe()
+    }
+  }, [t])
+
+  useEffect(() => {
+    let controller
+    const loadPaymentSettings = () => {
+      controller?.abort()
+      controller = new AbortController()
+      getDonationSettings(controller.signal)
+        .then(({ settings }) => {
+          setPaymentSettings(settings)
+          setPaymentSettingsError('')
+        })
+        .catch((error) => {
+          if (error.name !== 'AbortError') setPaymentSettingsError(t('forms.paymentSettingsError'))
+        })
+    }
+    loadPaymentSettings()
+    const unsubscribe = subscribeToDonationSettings(loadPaymentSettings)
     return () => {
       controller?.abort()
       unsubscribe()
@@ -307,13 +332,53 @@ export function RegistrationPage() {
                   <h3 id="registration-payment-title">{t('forms.paymentTitle')}</h3>
                   <p>{t('forms.paymentIntro')}</p>
                 </div>
-                <div className="registration-payment__method">
-                  <span className="registration-payment__method-check" aria-hidden="true">✓</span>
-                  <span><strong>{t('forms.upiPayment')}</strong><small>{t('forms.scanQr')}</small></span>
+                <div className="registration-payment__tabs" role="tablist" aria-label={t('forms.choosePaymentMethod')}>
+                  <button
+                    className={form.paymentMethod === 'UPI' ? 'is-active' : ''}
+                    type="button"
+                    role="tab"
+                    aria-selected={form.paymentMethod === 'UPI'}
+                    onClick={() => setForm((current) => ({ ...current, paymentMethod: 'UPI' }))}
+                  >
+                    {t('forms.upiPayment')}
+                  </button>
+                  <button
+                    className={form.paymentMethod === 'BANK_TRANSFER' ? 'is-active' : ''}
+                    type="button"
+                    role="tab"
+                    aria-selected={form.paymentMethod === 'BANK_TRANSFER'}
+                    onClick={() => setForm((current) => ({ ...current, paymentMethod: 'BANK_TRANSFER' }))}
+                  >
+                    {t('forms.bankTransferPayment')}
+                  </button>
                 </div>
-                <figure className="registration-payment__qr">
-                  <img src={registrationPaymentQr} alt={t('forms.paymentQrAlt')} />
-                </figure>
+                {form.paymentMethod === 'UPI' ? (
+                  <div className="registration-payment__upi" role="tabpanel">
+                    <div className="registration-payment__method">
+                      <span className="registration-payment__method-check" aria-hidden="true">✓</span>
+                      <span><strong>{t('forms.upiPayment')}</strong><small>{t('forms.scanQr')}</small></span>
+                    </div>
+                    <figure className="registration-payment__qr">
+                      <img src={registrationPaymentQr} alt={t('forms.paymentQrAlt')} />
+                      <p className="registration-payment__number">7904705601</p>
+                    </figure>
+                  </div>
+                ) : paymentSettings ? (
+                  <section className="registration-payment__bank" role="tabpanel" aria-labelledby="registration-bank-title">
+                    <div>
+                      <h4 id="registration-bank-title">{t('forms.bankTransferPayment')}</h4>
+                      <p>{t('forms.bankTransferHelp')}</p>
+                    </div>
+                    <dl>
+                      <div><dt>{t('forms.accountName')}</dt><dd>{paymentSettings.accountName}</dd></div>
+                      <div><dt>{t('forms.bankName')}</dt><dd>{paymentSettings.bankName}</dd></div>
+                      <div><dt>{t('forms.accountNumber')}</dt><dd>{paymentSettings.accountNumber}</dd></div>
+                      <div><dt>{t('forms.ifsc')}</dt><dd>{paymentSettings.ifsc}</dd></div>
+                      <div><dt>{t('forms.branch')}</dt><dd>{paymentSettings.branch}</dd></div>
+                      {paymentSettings.accountType && <div><dt>{t('forms.accountType')}</dt><dd>{paymentSettings.accountType}</dd></div>}
+                    </dl>
+                  </section>
+                ) : <p className={`registration-payment__settings${paymentSettingsError ? ' is-error' : ''}`}>{paymentSettingsError || t('forms.loadingPaymentDetails')}</p>}
                 <p className="registration-payment__notice">{t('forms.paymentVerificationNotice')}</p>
                 <div className="registration-payment__proof">
                   <strong>{t('forms.paymentScreenshot')}</strong>
