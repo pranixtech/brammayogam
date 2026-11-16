@@ -26,6 +26,15 @@ export function updateDonationSettings(settings) {
   })
 }
 
+export function uploadDonationQr(file) {
+  const formData = new FormData()
+  formData.append('qrImage', file)
+  return request('/api/admin/donation-settings/qr', {
+    method: 'POST',
+    body: formData,
+  })
+}
+
 export function notifyDonationSettingsUpdated() {
   window.dispatchEvent(new Event(SETTINGS_UPDATED_EVENT))
 }

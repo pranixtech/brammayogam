@@ -1,16 +1,8 @@
 import { useEffect, useState } from 'react'
 import {
   getAdminDonations,
-  getAdminDonationSettings,
-  notifyDonationSettingsUpdated,
-  updateDonationSettings,
   updateDonationStatus,
 } from '../../services/donationsApi'
-
-const EMPTY_SETTINGS = {
-  organizationName: '', upiId: '', bankName: '', accountName: '',
-  accountNumber: '', ifsc: '', branch: '', accountType: '',
-}
 
 const formatMoney = (amount) => new Intl.NumberFormat('en-IN', {
   style: 'currency', currency: 'INR', maximumFractionDigits: 2,
@@ -21,26 +13,14 @@ const formatDate = (value) => value ? new Intl.DateTimeFormat('en-IN', {
 }).format(new Date(value)) : '—'
 
 export function AdminDonationsManager() {
-  const [settings, setSettings] = useState(EMPTY_SETTINGS)
   const [donations, setDonations] = useState([])
   const [filters, setFilters] = useState({ status: '', paymentMethod: '', search: '' })
   const [appliedSearch, setAppliedSearch] = useState('')
   const [message, setMessage] = useState({ type: '', text: '' })
-  const [isSaving, setIsSaving] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [updatingId, setUpdatingId] = useState('')
   const statusFilter = filters.status
   const paymentMethodFilter = filters.paymentMethod
-
-  useEffect(() => {
-    const controller = new AbortController()
-    getAdminDonationSettings(controller.signal)
-      .then(({ settings: nextSettings }) => setSettings(nextSettings))
-      .catch((error) => {
-        if (error.name !== 'AbortError') setMessage({ type: 'error', text: error.message })
-      })
-    return () => controller.abort()
-  }, [])
 
   useEffect(() => {
     const controller = new AbortController()
@@ -54,27 +34,6 @@ export function AdminDonationsManager() {
       })
     return () => controller.abort()
   }, [statusFilter, paymentMethodFilter, appliedSearch])
-
-  const updateSetting = (event) => {
-    const { name, value } = event.target
-    setSettings((current) => ({ ...current, [name]: value }))
-  }
-
-  const saveSettings = async (event) => {
-    event.preventDefault()
-    setIsSaving(true)
-    setMessage({ type: '', text: '' })
-    try {
-      const payload = await updateDonationSettings(settings)
-      setSettings(payload.settings)
-      notifyDonationSettingsUpdated()
-      setMessage({ type: 'success', text: 'Donation payment settings saved.' })
-    } catch (error) {
-      setMessage({ type: 'error', text: error.message })
-    } finally {
-      setIsSaving(false)
-    }
-  }
 
   const changeStatus = async (donation, status) => {
     const action = status === 'VERIFIED' ? 'verify' : 'reject'
@@ -94,24 +53,6 @@ export function AdminDonationsManager() {
 
   return (
     <div className="admin-donations">
-      <form className="admin-upload admin-donation-settings" onSubmit={saveSettings}>
-        <div className="admin-upload__heading">
-          <div><p className="section-kicker">Direct payment configuration</p><h2>Donation Settings</h2></div>
-          <p>These details appear in the public UPI and bank-transfer donation panel.</p>
-        </div>
-        <div className="admin-donation-settings__grid">
-          <label><span>Organization name</span><input name="organizationName" value={settings.organizationName} maxLength={160} required onChange={updateSetting} /></label>
-          <label><span>UPI ID</span><input name="upiId" value={settings.upiId} maxLength={160} required onChange={updateSetting} /></label>
-          <label><span>Account name</span><input name="accountName" value={settings.accountName} maxLength={160} required onChange={updateSetting} /></label>
-          <label><span>Bank name</span><input name="bankName" value={settings.bankName} maxLength={160} required onChange={updateSetting} /></label>
-          <label><span>Account number</span><input name="accountNumber" value={settings.accountNumber} maxLength={34} required onChange={updateSetting} /></label>
-          <label><span>IFSC</span><input name="ifsc" value={settings.ifsc} maxLength={20} required onChange={updateSetting} /></label>
-          <label><span>Branch</span><input name="branch" value={settings.branch} maxLength={160} required onChange={updateSetting} /></label>
-          <label><span>Account type</span><input name="accountType" value={settings.accountType} maxLength={80} placeholder="Savings / Current" onChange={updateSetting} /></label>
-        </div>
-        <button className="admin-button admin-button--primary" type="submit" disabled={isSaving}>{isSaving ? 'Saving…' : 'Save donation settings'}</button>
-      </form>
-
       {message.text && <p className={`admin-message admin-message--${message.type}`} role="status">{message.text}</p>}
 
       <section className="admin-donation-history" aria-labelledby="donation-history-title">

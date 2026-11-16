@@ -139,6 +139,8 @@ export async function initializeDatabase() {
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
 
+    ALTER TABLE donation_settings ADD COLUMN IF NOT EXISTS qr_file_name TEXT NOT NULL DEFAULT '';
+
     INSERT INTO donation_settings
       (id, organization_name, upi_id, bank_name, account_name, account_number, ifsc, branch, account_type)
     VALUES

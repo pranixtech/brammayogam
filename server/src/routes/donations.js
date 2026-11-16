@@ -1,11 +1,26 @@
+import crypto from 'node:crypto'
+import fs from 'node:fs/promises'
+import path from 'node:path'
 import { Router } from 'express'
 import rateLimit from 'express-rate-limit'
+import multer from 'multer'
+import sharp from 'sharp'
+import { config } from '../config.js'
 import { pool } from '../db.js'
 import { authenticateAdmin } from '../middleware/authenticateAdmin.js'
 
 const router = Router()
 const PAYMENT_METHODS = new Set(['UPI', 'BANK_TRANSFER'])
 const DONATION_STATUSES = new Set(['PENDING', 'VERIFIED', 'REJECTED'])
+const QR_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp'])
+const qrUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: config.maxUploadBytes, files: 1 },
+  fileFilter: (_request, file, callback) => {
+    const accepted = QR_MIME_TYPES.has(file.mimetype)
+    callback(accepted ? null : new Error('Only JPG, PNG and WebP QR images are allowed.'), accepted)
+  },
+})
 
 const submissionLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
@@ -52,6 +67,7 @@ function toSettings(row) {
     ifsc: row.ifsc,
     branch: row.branch,
     accountType: row.account_type,
+    qrImage: row.qr_file_name ? `/uploads/${row.qr_file_name}` : null,
   }
 }
 
@@ -76,7 +92,7 @@ function toDonation(row) {
 router.get('/donation-settings', async (_request, response, next) => {
   try {
     const { rows } = await pool.query(
-      `SELECT organization_name, upi_id, bank_name, account_name, account_number, ifsc, branch, account_type
+      `SELECT organization_name, upi_id, bank_name, account_name, account_number, ifsc, branch, account_type, qr_file_name
        FROM donation_settings WHERE id = 1`,
     )
     response.set('Cache-Control', 'no-store, no-cache, must-revalidate')
@@ -123,7 +139,7 @@ router.post('/donations', submissionLimiter, async (request, response, next) => 
 router.get('/admin/donation-settings', authenticateAdmin, async (_request, response, next) => {
   try {
     const { rows } = await pool.query(
-      `SELECT organization_name, upi_id, bank_name, account_name, account_number, ifsc, branch, account_type
+      `SELECT organization_name, upi_id, bank_name, account_name, account_number, ifsc, branch, account_type, qr_file_name
        FROM donation_settings WHERE id = 1`,
     )
     return response.json({ settings: toSettings(rows[0]) })
@@ -156,11 +172,44 @@ router.put('/admin/donation-settings', authenticateAdmin, async (request, respon
            account_number = $5, ifsc = $6, branch = $7, account_type = $8,
            updated_by = $9, updated_at = NOW()
        WHERE id = 1
-       RETURNING organization_name, upi_id, bank_name, account_name, account_number, ifsc, branch, account_type`,
+       RETURNING organization_name, upi_id, bank_name, account_name, account_number, ifsc, branch, account_type, qr_file_name`,
       [organizationName, upiId, bankName, accountName, accountNumber, ifsc, branch, accountType, request.admin.username],
     )
     return response.json({ settings: toSettings(rows[0]) })
   } catch (error) {
+    return next(error)
+  }
+})
+
+router.post('/admin/donation-settings/qr', authenticateAdmin, qrUpload.single('qrImage'), async (request, response, next) => {
+  if (!request.file) return response.status(400).json({ message: 'Choose a QR image to upload.' })
+
+  const fileName = `payment-qr-${crypto.randomUUID()}.webp`
+  const outputPath = path.join(config.uploadDirectory, fileName)
+  try {
+    await sharp(request.file.buffer, { failOn: 'error', limitInputPixels: 40_000_000 })
+      .rotate()
+      .resize({ width: 1200, height: 2000, fit: 'inside', withoutEnlargement: true })
+      .webp({ quality: 92 })
+      .toFile(outputPath)
+  } catch {
+    return response.status(400).json({ message: 'The QR image could not be read. Upload a valid JPG, PNG or WebP image.' })
+  }
+
+  try {
+    const existing = await pool.query('SELECT qr_file_name FROM donation_settings WHERE id = 1')
+    const { rows } = await pool.query(
+      `UPDATE donation_settings
+       SET qr_file_name = $1, updated_by = $2, updated_at = NOW()
+       WHERE id = 1
+       RETURNING organization_name, upi_id, bank_name, account_name, account_number, ifsc, branch, account_type, qr_file_name`,
+      [fileName, request.admin.username],
+    )
+    const previousFileName = existing.rows[0]?.qr_file_name
+    if (previousFileName) await fs.unlink(path.join(config.uploadDirectory, previousFileName)).catch(() => undefined)
+    return response.json({ settings: toSettings(rows[0]) })
+  } catch (error) {
+    await fs.unlink(outputPath).catch(() => undefined)
     return next(error)
   }
 })

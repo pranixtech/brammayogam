@@ -4,6 +4,7 @@ import { AdminActivitiesManager } from '../components/admin/AdminActivitiesManag
 import { AdminAdsManager } from '../components/admin/AdminAdsManager'
 import { AdminContributionsManager } from '../components/admin/AdminContributionsManager'
 import { AdminDonationsManager } from '../components/admin/AdminDonationsManager'
+import { AdminBankDetailsManager } from '../components/admin/AdminBankDetailsManager'
 import { AdminClassesManager } from '../components/admin/AdminClassesManager'
 import { AdminQuotesManager } from '../components/admin/AdminQuotesManager'
 import { AdminSubmissionsPanel } from '../components/admin/AdminSubmissionsPanel'
@@ -332,6 +333,14 @@ function AdminDashboard({ admin, onLogout }) {
           </button>
           <button
             type="button"
+            className={activeManager === 'bank-details' ? 'is-active' : ''}
+            aria-pressed={activeManager === 'bank-details'}
+            onClick={() => setActiveManager('bank-details')}
+          >
+            Bank Details
+          </button>
+          <button
+            type="button"
             className={activeManager === 'classes' ? 'is-active' : ''}
             aria-pressed={activeManager === 'classes'}
             onClick={() => setActiveManager('classes')}
@@ -493,6 +502,7 @@ function AdminDashboard({ admin, onLogout }) {
         {activeManager === 'activities' && <AdminActivitiesManager />}
         {activeManager === 'contributions' && <AdminContributionsManager />}
         {activeManager === 'donations' && <AdminDonationsManager />}
+        {activeManager === 'bank-details' && <AdminBankDetailsManager />}
         {activeManager === 'classes' && <AdminClassesManager />}
 
         {activeManager === 'registrations' && <AdminSubmissionsPanel kind="registrations" focusRegistrationId={focusedRegistrationId} key={focusedRegistrationId || 'registrations'} />}

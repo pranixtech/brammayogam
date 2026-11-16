@@ -359,7 +359,7 @@ export function RegistrationPage() {
                       <span><strong>{t('forms.upiPayment')}</strong><small>{t('forms.scanQr')}</small></span>
                     </div>
                     <figure className="registration-payment__qr">
-                      <img src={registrationPaymentQr} alt={t('forms.paymentQrAlt')} />
+                      <img src={paymentSettings?.qrImage || registrationPaymentQr} alt={t('forms.paymentQrAlt')} />
                       <p className="registration-payment__number">7904705601</p>
                     </figure>
                   </div>

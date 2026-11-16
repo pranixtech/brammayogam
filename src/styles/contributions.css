@@ -69,6 +69,14 @@
 .admin-donation-settings__grid { display: grid; margin-bottom: 24px; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 .admin-donation-settings__grid label { display: grid; gap: 7px; color: var(--color-ink); font-size: 11px; font-weight: 800; }
 .admin-donation-settings__grid input { height: 48px; padding: 0 14px; border: 1px solid var(--color-line); border-radius: 4px; background: #fff; font-size: 14px; }
+.admin-bank-details { display: grid; gap: 28px; }
+.admin-payment-qr__layout { display: grid; grid-template-columns: minmax(220px, 320px) minmax(260px, 1fr); gap: clamp(22px, 4vw, 44px); align-items: center; }
+.admin-payment-qr__preview { display: grid; min-height: 260px; overflow: hidden; border: 1px solid var(--color-line); border-radius: 9px; background: #fff; color: var(--color-muted); place-items: center; }
+.admin-payment-qr__preview img { display: block; width: 100%; max-height: 460px; object-fit: contain; }
+.admin-payment-qr__preview span { max-width: 220px; padding: 28px; font-size: 12px; line-height: 1.65; text-align: center; }
+.admin-payment-qr__controls { display: grid; justify-items: start; gap: 14px; }
+.admin-payment-qr__controls .admin-file-picker { width: min(100%, 460px); }
+.admin-payment-qr__controls small { max-width: 520px; color: var(--color-muted); font-size: 11px; line-height: 1.6; }
 .admin-donation-history { margin-top: 44px; }
 .admin-donation-filters { display: grid; margin-bottom: 22px; grid-template-columns: minmax(240px, 1fr) repeat(2, minmax(150px, auto)) auto auto; gap: 10px; }
 .admin-donation-filters input, .admin-donation-filters select { min-height: 46px; padding: 0 12px; border: 1px solid var(--color-line); border-radius: 4px; background: #fff; }
@@ -99,6 +107,8 @@
   .donation-confirmation__actions { flex-direction: column-reverse; }
   .donation-confirmation__actions button { width: 100%; }
   .admin-donation-filters { grid-template-columns: 1fr; }
+  .admin-payment-qr__layout { grid-template-columns: 1fr; }
+  .admin-payment-qr__preview { width: min(100%, 320px); }
 }
 
 .contribution-section__inner {

@@ -155,7 +155,7 @@ export function DonationPayment() {
                   <section className="donation-upi" role="tabpanel">
                     <div className="donation-upi__qr-block">
                       <div className="donation-upi__qr">
-                        <img src={registrationPaymentQr} alt={t('donation.qrAlt')} />
+                        <img src={settings.qrImage || registrationPaymentQr} alt={t('donation.qrAlt')} />
                         <p className="donation-upi__number">7904705601</p>
                       </div>
                     </div>
