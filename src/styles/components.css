@@ -155,13 +155,13 @@
   display: grid;
   width: 58px;
   height: 58px;
-  border: 2px solid currentColor;
+  border: 0;
   border-radius: 50%;
-  background: #fffdf8;
-  color: var(--color-muted);
+  background: transparent;
   box-shadow: 0 12px 30px rgba(70, 49, 33, 0.2);
   place-items: center;
   transition: transform var(--transition-fast), background-color var(--transition-fast), box-shadow var(--transition-fast);
+  overflow: hidden;
 }
 
 .whatsapp-fab::before {
@@ -174,10 +174,8 @@
   animation: whatsapp-pulse 2.4s ease-out infinite;
 }
 
-.whatsapp-fab svg { width: 34px; height: 34px; }
-.whatsapp-fab__bubble { fill: currentColor; }
-.whatsapp-fab__phone { fill: #fffdf8; transform: translate(-1.5px, -1.4px) scale(0.78); transform-origin: center; }
-.whatsapp-fab:hover { background: #fff; box-shadow: 0 16px 34px rgba(70, 49, 33, 0.28); transform: translateY(-4px) scale(1.03); }
+.whatsapp-fab img { display: block; width: 100%; height: 100%; border-radius: inherit; object-fit: cover; }
+.whatsapp-fab:hover { box-shadow: 0 16px 34px rgba(70, 49, 33, 0.28); transform: translateY(-4px) scale(1.03); }
 .whatsapp-fab:focus-visible { outline: 3px solid var(--color-wine); outline-offset: 4px; }
 
 @keyframes whatsapp-pulse {
