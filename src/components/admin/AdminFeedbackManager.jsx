@@ -138,11 +138,11 @@ export function AdminFeedbackManager() {
             <input
               key={fileInputKey}
               type="file"
-              accept="video/mp4,video/webm,audio/mpeg,audio/mp4,audio/wav,audio/x-wav,audio/ogg,audio/webm"
+              accept="video/mp4,video/webm,audio/mpeg,audio/mp4,audio/wav,audio/x-wav,audio/ogg,audio/webm,audio/amr,audio/x-amr,.amr"
               required={!editingId}
               onChange={(event) => setMediaFile(event.target.files?.[0] ?? null)}
             />
-            <small>MP4, WebM, MP3, M4A, WAV or OGG · maximum 100 MB.</small>
+            <small>MP4, WebM, MP3, M4A, WAV, OGG or AMR · maximum 100 MB.</small>
           </label>
           {(mediaPreviewUrl || (editingId && items.find((item) => item.id === editingId)?.mediaUrl)) && (
             <div className="admin-feedback__preview">

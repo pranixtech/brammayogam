@@ -22,6 +22,8 @@ const feedbackMediaTypes = {
   'audio/x-wav': { type: 'audio', extension: '.wav' },
   'audio/ogg': { type: 'audio', extension: '.ogg' },
   'audio/webm': { type: 'audio', extension: '.weba' },
+  'audio/amr': { type: 'audio', extension: '.amr' },
+  'audio/x-amr': { type: 'audio', extension: '.amr' },
 }
 
 const paymentScreenshotUpload = multer({
@@ -43,7 +45,7 @@ const feedbackMediaUpload = multer({
   limits: { fileSize: config.maxActivityUploadBytes, files: 1 },
   fileFilter: (_request, file, callback) => {
     const accepted = Boolean(feedbackMediaTypes[file.mimetype])
-    callback(accepted ? null : new Error('Upload feedback as an MP4, WebM, MP3, M4A, WAV or OGG file.'), accepted)
+    callback(accepted ? null : new Error('Upload feedback as an MP4, WebM, MP3, M4A, WAV, OGG or AMR file.'), accepted)
   },
 })
 
@@ -162,6 +164,9 @@ async function validFeedbackMedia(file) {
     }
     if (file.mimetype === 'audio/wav' || file.mimetype === 'audio/x-wav') {
       return bytesRead >= 12 && header.toString('ascii', 0, 4) === 'RIFF' && header.toString('ascii', 8, 12) === 'WAVE'
+    }
+    if (file.mimetype === 'audio/amr' || file.mimetype === 'audio/x-amr') {
+      return bytesRead >= 6 && (header.toString('ascii', 0, 6) === '#!AMR\n' || header.toString('ascii', 0, 8) === '#!AMR-WB')
     }
     return file.mimetype === 'audio/ogg' && bytesRead >= 4 && header.toString('ascii', 0, 4) === 'OggS'
   } finally {
