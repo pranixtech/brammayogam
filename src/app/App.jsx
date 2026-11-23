@@ -3,6 +3,7 @@ import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { Footer } from '../components/layout/Footer'
 import { Header } from '../components/layout/Header'
 import { WhatsAppButton } from '../components/common/WhatsAppButton'
+import { RequireUser } from '../components/common/RequireUser'
 import { ComingSoonPage } from '../pages/ComingSoonPage'
 import { AdminPage } from '../pages/AdminPage'
 import { BioPage } from '../pages/BioPage'
@@ -14,6 +15,8 @@ import { RegistrationPage } from '../pages/RegistrationPage'
 import { VideosPage } from '../pages/VideosPage'
 import { YogamPage } from '../pages/YogamPage'
 import { LegalPage } from '../pages/LegalPage'
+import { UserAuthPage } from '../pages/UserAuthPage'
+import { UserDashboardPage } from '../pages/UserDashboardPage'
 import { privacyPolicy, refundPolicy, termsAndConditions } from '../data/legalPolicies'
 import { useLanguage } from '../i18n/useLanguage'
 
@@ -28,6 +31,13 @@ const LEGAL_PAGE_TITLES = {
   '/refund-and-cancellation-policy': 'Refund & Cancellation Policy',
 }
 
+const AUTH_PAGE_TITLES = {
+  '/login': 'Login',
+  '/register': 'Create account',
+  '/reset-password': 'Set password',
+  '/dashboard': 'My dashboard',
+}
+
 export default function App() {
   const { hash, pathname } = useLocation()
   const { language, t } = useLanguage()
@@ -37,6 +47,7 @@ export default function App() {
     if (isAdminPage) document.title = 'Admin | Brahmam Foundation'
     else if (pathname === '/') document.title = language === 'ta' ? 'பிரம்மம் அறக்கட்டளை | அகப்பயணப் பாதை' : 'Brahmam Foundation | The Inward Path'
     else if (LEGAL_PAGE_TITLES[pathname]) document.title = `${LEGAL_PAGE_TITLES[pathname]} | Brahmam Foundation`
+    else if (AUTH_PAGE_TITLES[pathname]) document.title = `${AUTH_PAGE_TITLES[pathname]} | Brahmam Foundation`
     else document.title = `${t(`navigation.${PAGE_TITLE_KEYS[pathname]}`)} | ${language === 'ta' ? 'பிரம்மம் அறக்கட்டளை' : 'Brahmam Foundation'}`
 
     if (hash) {
@@ -57,9 +68,13 @@ export default function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/bio" element={<BioPage />} />
           <Route path="/class" element={<ComingSoonPage titleKey="class" action={{ href: '/registration', labelKey: 'comingSoon.register' }} />} />
-          <Route path="/registration" element={<RegistrationPage />} />
+          <Route path="/registration" element={<RequireUser><RegistrationPage /></RequireUser>} />
+          <Route path="/login" element={<UserAuthPage mode="login" />} />
+          <Route path="/register" element={<UserAuthPage mode="register" />} />
+          <Route path="/reset-password" element={<UserAuthPage mode="reset" />} />
+          <Route path="/dashboard" element={<UserDashboardPage />} />
           <Route path="/feedback" element={<FeedbackPage />} />
-          <Route path="/deeksha" element={<DeekshaPage />} />
+          <Route path="/deeksha" element={<RequireUser><DeekshaPage /></RequireUser>} />
           <Route path="/book" element={<ComingSoonPage titleKey="book" />} />
           <Route path="/photos" element={<PhotosPage />} />
           <Route path="/videos" element={<VideosPage />} />

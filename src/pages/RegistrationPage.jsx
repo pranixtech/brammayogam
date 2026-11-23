@@ -6,6 +6,7 @@ import { submitRegistration } from '../services/submissionsApi'
 import { getUpcomingClasses, subscribeToUpcomingClasses } from '../services/classesApi'
 import { getDonationSettings, subscribeToDonationSettings } from '../services/donationsApi'
 import { useLanguage } from '../i18n/useLanguage'
+import { getUserDashboard } from '../services/userDashboardApi'
 
 const EMPTY_FORM = { fullName: '', email: '', phone: '', city: '', country: '', message: '', classId: '', consent: false, paymentMethod: 'UPI' }
 
@@ -32,6 +33,21 @@ export function RegistrationPage() {
     [paymentScreenshot],
   )
   const countryOptions = useMemo(() => getCountryOptions(language), [language])
+
+  useEffect(() => {
+    const controller = new AbortController()
+    getUserDashboard(controller.signal).then(({ user }) => {
+      setForm((current) => ({
+        ...current,
+        fullName: user.fullName,
+        email: user.email || '',
+        phone: user.phone || '',
+        city: current.city || user.city || '',
+        country: current.country || user.country || '',
+      }))
+    }).catch(() => undefined)
+    return () => controller.abort()
+  }, [])
 
   useEffect(() => () => {
     if (paymentPreviewUrl) URL.revokeObjectURL(paymentPreviewUrl)
@@ -179,7 +195,7 @@ export function RegistrationPage() {
 
     try {
       await submitRegistration({ ...form, paymentScreenshot })
-      setForm(EMPTY_FORM)
+      setForm((current) => ({ ...EMPTY_FORM, fullName: current.fullName, email: current.email, phone: current.phone, city: current.city, country: current.country }))
       setPaymentScreenshot(null)
       setShowPayment(false)
       setShowSuccess(true)
@@ -277,15 +293,15 @@ export function RegistrationPage() {
             <form className="submission-form" onSubmit={handleSubmit}>
             <label>
               <span>{t('forms.fullName')}</span>
-              <input name="fullName" value={form.fullName} maxLength="120" autoComplete="name" required onChange={updateField} />
+              <input name="fullName" value={form.fullName} maxLength="120" autoComplete="name" required readOnly />
             </label>
             <label>
               <span>{t('forms.email')} *</span>
-              <input name="email" type="email" value={form.email} maxLength="254" autoComplete="email" required onChange={updateField} />
+              <input name="email" type="email" value={form.email} maxLength="254" autoComplete="email" required readOnly />
             </label>
             <label>
               <span>{t('forms.phone')}</span>
-              <input name="phone" type="tel" value={form.phone} maxLength="30" autoComplete="tel" required onChange={updateField} />
+              <input name="phone" type="tel" value={form.phone} maxLength="30" autoComplete="tel" required readOnly />
             </label>
             <label>
               <span>{t('forms.city')}</span>

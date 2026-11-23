@@ -1,9 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { Brand } from '../common/Brand'
 import { SocialLinks } from '../common/SocialLinks'
 import { NAVIGATION_ITEMS } from '../../data/siteContent'
 import { useScrollThreshold } from '../../hooks/useScrollThreshold'
 import { useLanguage } from '../../i18n/useLanguage'
+import { getUserSession } from '../../services/userAuthApi'
+
+function avatarLetters(name) {
+  return Array.from(String(name ?? '').trim()).slice(0, 2).join('').toLocaleUpperCase() || 'U'
+}
 
 const NAVIGATION_KEYS = {
   '/#journey': 'journey', '/bio': 'bio', '/#quotes': 'quotes', '/#contribution': 'contribution', '/#teachings': 'teachings',
@@ -14,10 +20,29 @@ const NAVIGATION_KEYS = {
 export function Header({ forceSolid = false }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isLanguageOpen, setIsLanguageOpen] = useState(false)
+  const [user, setUser] = useState(null)
+  const { pathname } = useLocation()
   const navigationRef = useRef(null)
   const languageRef = useRef(null)
   const { language, setLanguage, t } = useLanguage()
   const isScrolled = useScrollThreshold()
+
+  useEffect(() => {
+    let active = true
+    let requestNumber = 0
+    const refreshSession = () => {
+      const currentRequest = ++requestNumber
+      getUserSession()
+        .then(({ user: account }) => { if (active && currentRequest === requestNumber) setUser(account) })
+        .catch(() => { if (active && currentRequest === requestNumber) setUser(null) })
+    }
+    refreshSession()
+    window.addEventListener('brahmam:auth-changed', refreshSession)
+    return () => {
+      active = false
+      window.removeEventListener('brahmam:auth-changed', refreshSession)
+    }
+  }, [pathname])
   const closeMenu = () => {
     setIsMenuOpen(false)
     navigationRef.current?.querySelectorAll('details[open]').forEach((item) => {
@@ -97,6 +122,11 @@ export function Header({ forceSolid = false }) {
       </nav>
 
       <div className="site-header__actions">
+        {user ? (
+          <Link className="header-avatar" to="/dashboard" onClick={closeMenu} title={`Dashboard for ${user.fullName}`} aria-label={`${user.fullName}, open your dashboard`}>
+            {avatarLetters(user.fullName)}
+          </Link>
+        ) : <Link className="header-login" to="/login" onClick={closeMenu}>Login</Link>}
         <button
           className={`menu-button${isMenuOpen ? ' menu-button--open' : ''}`}
           type="button"

@@ -49,6 +49,20 @@ PostgreSQL data, including class registrations and feedback, and uploaded media 
 
 The Annathanam section accepts direct UPI and bank-transfer donations without a payment gateway. Configure the organization UPI ID and bank account details in **Admin → Donations**. Donation confirmations are stored as `PENDING`; an authenticated admin must compare the submitted UTR with the bank transaction before marking it `VERIFIED` or `REJECTED`. The application never stores UPI PINs, bank-login credentials or card details.
 
+## OTP configuration
+
+User registration uses a six-digit OTP. Indian WhatsApp numbers are delivered through BlackSMS WhatsApp OTP; users outside India use BlackSMS Email OTP. Add the following server-only values to `.env` before starting Docker:
+
+```env
+BLACKSMS_API_KEY=your-blacksms-api-key
+BLACKSMS_SENDER_ID=your-whatsapp-sender-id
+BLACKSMS_WHATSAPP_ROUTE=1
+BLACKSMS_EMAIL_SENDER_ID=
+BLACKSMS_EMAIL_TEMPLATE_ID=0
+```
+
+`BLACKSMS_EMAIL_SENDER_ID` is optional when BlackSMS is configured to auto-select its connected SMTP or Gmail sender. Never use a `VITE_` or `PUBLIC_` prefix for these values: they must remain server-only.
+
 ## Production deployment
 
 Pushes to `main` automatically deploy through `.github/workflows/deploy-production.yml`.

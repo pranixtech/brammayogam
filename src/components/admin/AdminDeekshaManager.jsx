@@ -9,7 +9,7 @@ import {
 } from '../../services/deekshaApi'
 
 const EMPTY_FORM = {
-  title: '', subtitle: '', description: '', benefitsText: '', sortOrder: '0', isPublished: true,
+  title: '', subtitle: '', description: '', meetingUrl: '', benefitsText: '', sortOrder: '0', isPublished: true,
 }
 
 function formatDate(value) {
@@ -67,6 +67,7 @@ export function AdminDeekshaManager() {
       subtitle: form.subtitle,
       description: form.description,
       benefits: form.benefitsText.split('\n').map((item) => item.trim()).filter(Boolean),
+      meetingUrl: form.meetingUrl,
       sortOrder: Number(form.sortOrder),
       isPublished: form.isPublished,
     }
@@ -95,6 +96,7 @@ export function AdminDeekshaManager() {
       title: program.title,
       subtitle: program.subtitle,
       description: program.description,
+      meetingUrl: program.meetingUrl || '',
       benefitsText: (program.benefits || []).join('\n'),
       sortOrder: String(program.sortOrder),
       isPublished: program.isPublished,
@@ -125,6 +127,7 @@ export function AdminDeekshaManager() {
         <div className="admin-deeksha__fields">
           <label><span>Program title *</span><input name="title" value={form.title} maxLength="160" required onChange={updateField} /></label>
           <label><span>Subtitle</span><input name="subtitle" value={form.subtitle} maxLength="240" onChange={updateField} /></label>
+          <label><span>Zoom / Google Meet link <small>optional, shown only in the signed-in user dashboard</small></span><input name="meetingUrl" type="url" value={form.meetingUrl} placeholder="https://meet.google.com/..." onChange={updateField} /></label>
           <label className="is-wide"><span>Description</span><textarea name="description" value={form.description} maxLength="2000" rows="4" onChange={updateField} /></label>
           <label className="is-wide"><span>Benefits <small>one benefit per line</small></span><textarea name="benefitsText" value={form.benefitsText} rows="10" onChange={updateField} /></label>
           <label><span>Display order</span><input type="number" name="sortOrder" value={form.sortOrder} min="0" max="10000" required onChange={updateField} /></label>
@@ -141,7 +144,7 @@ export function AdminDeekshaManager() {
           <div className="admin-deeksha__program-grid">
             {programs.map((program) => (
               <article className="admin-deeksha__program" key={program.id}>
-                <div><span>{program.isPublished ? 'Published' : 'Hidden'} · Order {program.sortOrder}</span><h3>{program.title}</h3><p>{program.subtitle}</p></div>
+                <div><span>{program.isPublished ? 'Published' : 'Hidden'} · Order {program.sortOrder}</span><h3>{program.title}</h3><p>{program.subtitle}</p>{program.meetingUrl && <small>Meeting link configured</small>}</div>
                 <div className="admin-deeksha__program-actions">
                   <button type="button" onClick={() => editProgram(program)}>Edit</button>
                   {!program.isBuiltIn && <button type="button" onClick={() => removeProgram(program)}>Delete</button>}
@@ -166,7 +169,7 @@ export function AdminDeekshaManager() {
               <tbody>{submissions.map((submission) => (
                 <tr key={submission.id}>
                   <td data-label="ID / Date"><div><strong>#{submission.id}</strong><small>{formatDate(submission.createdAt)}</small></div></td>
-                  <td data-label="Name"><div><strong>{submission.fullName}</strong></div></td>
+                  <td data-label="Name"><div><strong>{submission.fullName}</strong>{submission.userId && <small>Account #{submission.userId}</small>}</div></td>
                   <td data-label="Contact"><div>{submission.email && <a href={`mailto:${submission.email}`}>{submission.email}</a>}<a href={`tel:${submission.phone.replace(/[^\d+]/g, '')}`}>{submission.phone}</a></div></td>
                   <td data-label="Location"><div>{submission.city || '—'}<small>{getCountryName(submission.country)}</small></div></td>
                   <td data-label="Selected Deeksha"><div><ul>{submission.selectedPrograms.map((program) => <li key={`${submission.id}-${program.id}`}>{program.title}</li>)}</ul></div></td>

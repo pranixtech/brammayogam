@@ -3,6 +3,7 @@ import { CITY_OPTIONS, findCityOption } from '../data/cities'
 import { getCountryName, getCountryOptions } from '../data/countries'
 import { getDeekshaPrograms, submitDeekshaSelection } from '../services/deekshaApi'
 import { useLanguage } from '../i18n/useLanguage'
+import { getUserDashboard } from '../services/userDashboardApi'
 
 const EMPTY_FORM = {
   fullName: '', email: '', phone: '', city: '', country: '', message: '', consent: false,
@@ -17,6 +18,21 @@ export function DeekshaPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [status, setStatus] = useState({ type: '', text: '' })
   const countryOptions = useMemo(() => getCountryOptions(language), [language])
+
+  useEffect(() => {
+    const controller = new AbortController()
+    getUserDashboard(controller.signal).then(({ user }) => {
+      setForm((current) => ({
+        ...current,
+        fullName: user.fullName,
+        email: user.email || '',
+        phone: user.phone || '',
+        city: current.city || user.city || '',
+        country: current.country || user.country || '',
+      }))
+    }).catch(() => undefined)
+    return () => controller.abort()
+  }, [])
 
   useEffect(() => {
     const controller = new AbortController()
@@ -67,7 +83,7 @@ export function DeekshaPage() {
     setStatus({ type: '', text: '' })
     try {
       await submitDeekshaSelection({ ...form, programIds: selectedIds })
-      setForm(EMPTY_FORM)
+      setForm((current) => ({ ...EMPTY_FORM, fullName: current.fullName, email: current.email, phone: current.phone, city: current.city, country: current.country }))
       setSelectedIds([])
       setStatus({ type: 'success', text: 'Thank you. Your Deeksha selection has been submitted successfully. Our team will contact you shortly.' })
     } catch (error) {
@@ -126,9 +142,9 @@ export function DeekshaPage() {
               <p>Our team will contact you regarding your selected Deeksha programs.</p>
             </div>
             <div className="deeksha-contact__fields">
-              <label><span>Full name *</span><input name="fullName" value={form.fullName} maxLength="120" required onChange={updateField} /></label>
-              <label><span>Email address</span><input type="email" name="email" value={form.email} maxLength="254" onChange={updateField} /></label>
-              <label><span>Phone / WhatsApp *</span><input type="tel" name="phone" value={form.phone} maxLength="30" required onChange={updateField} /></label>
+              <label><span>Full name *</span><input name="fullName" value={form.fullName} maxLength="120" required readOnly /></label>
+              <label><span>Email address</span><input type="email" name="email" value={form.email} maxLength="254" readOnly /></label>
+              <label><span>Phone / WhatsApp *</span><input type="tel" name="phone" value={form.phone} maxLength="30" required readOnly /></label>
               <label>
                 <span>City</span>
                 <input name="city" value={form.city} list="deeksha-city-options" maxLength="100" onChange={updateCity} />

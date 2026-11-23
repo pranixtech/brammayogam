@@ -1,14 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   deleteUpcomingClass,
-  getUpcomingClasses,
+  getAdminUpcomingClasses,
   notifyUpcomingClassesUpdated,
+  updateUpcomingClassMeetingLink,
   uploadUpcomingClass,
 } from '../../services/classesApi'
 
 export function AdminClassesManager() {
   const [classes, setClasses] = useState([])
   const [title, setTitle] = useState('')
+  const [meetingUrl, setMeetingUrl] = useState('')
+  const [meetingLinks, setMeetingLinks] = useState({})
   const [file, setFile] = useState(null)
   const [message, setMessage] = useState({ type: '', text: '' })
   const [isLoading, setIsLoading] = useState(true)
@@ -18,8 +21,11 @@ export function AdminClassesManager() {
 
   useEffect(() => {
     const controller = new AbortController()
-    getUpcomingClasses(controller.signal)
-      .then((payload) => setClasses(payload.classes))
+    getAdminUpcomingClasses(controller.signal)
+      .then((payload) => {
+        setClasses(payload.classes)
+        setMeetingLinks(Object.fromEntries(payload.classes.map((item) => [item.id, item.meetingUrl || ''])))
+      })
       .catch((error) => {
         if (error.name !== 'AbortError') setMessage({ type: 'error', text: error.message })
       })
@@ -40,13 +46,16 @@ export function AdminClassesManager() {
     if (!file || !title.trim() || classes.length >= 10) return
     const formData = new FormData()
     formData.append('title', title.trim())
+    formData.append('meetingUrl', meetingUrl.trim())
     formData.append('image', file)
     setIsUploading(true)
     setMessage({ type: '', text: '' })
     try {
       const { upcomingClass } = await uploadUpcomingClass(formData)
       setClasses((current) => [upcomingClass, ...current])
+      setMeetingLinks((current) => ({ ...current, [upcomingClass.id]: upcomingClass.meetingUrl || '' }))
       setTitle('')
+      setMeetingUrl('')
       setFile(null)
       if (fileInput.current) fileInput.current.value = ''
       notifyUpcomingClassesUpdated()
@@ -55,6 +64,18 @@ export function AdminClassesManager() {
       setMessage({ type: 'error', text: error.message })
     } finally {
       setIsUploading(false)
+    }
+  }
+
+  const saveMeetingLink = async (item) => {
+    setMessage({ type: '', text: '' })
+    try {
+      const { upcomingClass } = await updateUpcomingClassMeetingLink(item.id, meetingLinks[item.id] ?? '')
+      setClasses((current) => current.map((entry) => entry.id === item.id ? upcomingClass : entry))
+      setMeetingLinks((current) => ({ ...current, [item.id]: upcomingClass.meetingUrl || '' }))
+      setMessage({ type: 'success', text: `Meeting link saved for ${item.title}.` })
+    } catch (error) {
+      setMessage({ type: 'error', text: error.message })
     }
   }
 
@@ -88,6 +109,10 @@ export function AdminClassesManager() {
             <span>Class title</span>
             <input value={title} maxLength={120} required placeholder="e.g. Online meditation class" onChange={(event) => setTitle(event.target.value)} />
           </label>
+          <label className="admin-activities__field">
+            <span>Zoom / Google Meet link <small>(optional)</small></span>
+            <input value={meetingUrl} inputMode="url" placeholder="https://meet.google.com/..." onChange={(event) => setMeetingUrl(event.target.value)} />
+          </label>
           <label className="admin-activities__field admin-activities__file">
             <span>Class image</span>
             <input ref={fileInput} type="file" accept="image/jpeg,image/png,image/webp" required onChange={(event) => setFile(event.target.files?.[0] ?? null)} />
@@ -117,7 +142,17 @@ export function AdminClassesManager() {
             {classes.map((item) => (
               <article className="admin-classes__card" key={item.id}>
                 <img src={item.image} alt="" loading="lazy" />
-                <div><strong>{item.title}</strong><button type="button" onClick={() => handleDelete(item)}>Delete</button></div>
+                <div>
+                  <strong>{item.title}</strong>
+                  <label className="admin-classes__meeting-link">
+                    <span>Zoom / Google Meet link</span>
+                    <input value={meetingLinks[item.id] ?? ''} placeholder="Not set" onChange={(event) => setMeetingLinks((current) => ({ ...current, [item.id]: event.target.value }))} />
+                  </label>
+                  <div className="admin-classes__actions">
+                    <button type="button" onClick={() => saveMeetingLink(item)}>Save link</button>
+                    <button type="button" onClick={() => handleDelete(item)}>Delete</button>
+                  </div>
+                </div>
               </article>
             ))}
           </div>

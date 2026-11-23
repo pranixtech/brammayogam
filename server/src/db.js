@@ -85,6 +85,7 @@ export async function initializeDatabase() {
     CREATE TABLE IF NOT EXISTS upcoming_classes (
       id BIGSERIAL PRIMARY KEY,
       title TEXT NOT NULL,
+      meeting_url TEXT NOT NULL DEFAULT '',
       file_name TEXT NOT NULL UNIQUE,
       original_name TEXT NOT NULL,
       file_size BIGINT NOT NULL,
@@ -248,6 +249,7 @@ export async function initializeDatabase() {
       title TEXT NOT NULL,
       subtitle TEXT NOT NULL DEFAULT '',
       description TEXT NOT NULL DEFAULT '',
+      meeting_url TEXT NOT NULL DEFAULT '',
       benefits JSONB NOT NULL DEFAULT '[]'::jsonb,
       sort_order INTEGER NOT NULL DEFAULT 0,
       is_published BOOLEAN NOT NULL DEFAULT TRUE,
@@ -273,6 +275,69 @@ export async function initializeDatabase() {
 
     CREATE INDEX IF NOT EXISTS deeksha_submissions_created_idx
       ON deeksha_submissions (created_at DESC, id DESC);
+
+    CREATE TABLE IF NOT EXISTS user_accounts (
+      id BIGSERIAL PRIMARY KEY,
+      full_name TEXT NOT NULL,
+      phone TEXT UNIQUE,
+      email TEXT,
+      city TEXT,
+      country TEXT,
+      password_hash TEXT,
+      password_salt TEXT,
+      phone_verified_at TIMESTAMPTZ,
+      email_verified_at TIMESTAMPTZ,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    ALTER TABLE class_registrations ADD COLUMN IF NOT EXISTS user_id BIGINT REFERENCES user_accounts(id) ON DELETE SET NULL;
+    ALTER TABLE deeksha_submissions ADD COLUMN IF NOT EXISTS user_id BIGINT REFERENCES user_accounts(id) ON DELETE SET NULL;
+    CREATE INDEX IF NOT EXISTS class_registrations_user_created_idx ON class_registrations (user_id, created_at DESC);
+    CREATE INDEX IF NOT EXISTS deeksha_submissions_user_created_idx ON deeksha_submissions (user_id, created_at DESC);
+
+    CREATE TABLE IF NOT EXISTS user_otp_challenges (
+      id UUID PRIMARY KEY,
+      phone TEXT,
+      email TEXT,
+      city TEXT,
+      country TEXT,
+      password_hash TEXT,
+      password_salt TEXT,
+      delivery_channel TEXT NOT NULL DEFAULT 'WHATSAPP' CHECK (delivery_channel IN ('WHATSAPP', 'EMAIL')),
+      purpose TEXT NOT NULL CHECK (purpose IN ('LOGIN', 'REGISTER')),
+      full_name TEXT NOT NULL DEFAULT '',
+      otp_hash TEXT NOT NULL,
+      attempts INTEGER NOT NULL DEFAULT 0,
+      expires_at TIMESTAMPTZ NOT NULL,
+      consumed_at TIMESTAMPTZ,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    CREATE INDEX IF NOT EXISTS user_otp_challenges_phone_idx
+      ON user_otp_challenges (phone, created_at DESC);
+    CREATE INDEX IF NOT EXISTS user_otp_challenges_expiry_idx
+      ON user_otp_challenges (expires_at);
+    ALTER TABLE user_accounts ADD COLUMN IF NOT EXISTS email TEXT;
+    ALTER TABLE user_accounts ADD COLUMN IF NOT EXISTS email_verified_at TIMESTAMPTZ;
+    ALTER TABLE user_accounts ADD COLUMN IF NOT EXISTS city TEXT;
+    ALTER TABLE user_accounts ADD COLUMN IF NOT EXISTS country TEXT;
+    ALTER TABLE user_accounts ADD COLUMN IF NOT EXISTS password_hash TEXT;
+    ALTER TABLE user_accounts ADD COLUMN IF NOT EXISTS password_salt TEXT;
+    ALTER TABLE user_accounts ALTER COLUMN phone DROP NOT NULL;
+    ALTER TABLE user_accounts ALTER COLUMN phone_verified_at DROP NOT NULL;
+    ALTER TABLE user_accounts ALTER COLUMN phone_verified_at DROP DEFAULT;
+    ALTER TABLE user_otp_challenges ADD COLUMN IF NOT EXISTS email TEXT;
+    ALTER TABLE user_otp_challenges ADD COLUMN IF NOT EXISTS city TEXT;
+    ALTER TABLE user_otp_challenges ADD COLUMN IF NOT EXISTS country TEXT;
+    ALTER TABLE user_otp_challenges ADD COLUMN IF NOT EXISTS password_hash TEXT;
+    ALTER TABLE user_otp_challenges ADD COLUMN IF NOT EXISTS password_salt TEXT;
+    ALTER TABLE user_otp_challenges ALTER COLUMN phone DROP NOT NULL;
+    ALTER TABLE user_otp_challenges ADD COLUMN IF NOT EXISTS delivery_channel TEXT NOT NULL DEFAULT 'WHATSAPP';
+    ALTER TABLE upcoming_classes ADD COLUMN IF NOT EXISTS meeting_url TEXT NOT NULL DEFAULT '';
+    ALTER TABLE deeksha_programs ADD COLUMN IF NOT EXISTS meeting_url TEXT NOT NULL DEFAULT '';
+    CREATE UNIQUE INDEX IF NOT EXISTS user_accounts_email_lower_unique_idx
+      ON user_accounts (lower(email)) WHERE email IS NOT NULL;
 
     CREATE TABLE IF NOT EXISTS admin_credentials (
       username TEXT PRIMARY KEY,

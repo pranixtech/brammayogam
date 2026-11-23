@@ -22,6 +22,11 @@ export const config = {
     ?? path.join(process.env.UPLOAD_DIR ?? path.join(serverRoot, 'uploads'), 'registration-payments'),
   maxUploadBytes: numberFromEnvironment('MAX_UPLOAD_BYTES', 10 * 1024 * 1024),
   maxActivityUploadBytes: numberFromEnvironment('MAX_ACTIVITY_UPLOAD_BYTES', 100 * 1024 * 1024),
+  blackSmsApiKey: process.env.BLACKSMS_API_KEY ?? '',
+  blackSmsSenderId: process.env.BLACKSMS_SENDER_ID ?? '',
+  blackSmsWhatsAppRoute: numberFromEnvironment('BLACKSMS_WHATSAPP_ROUTE', 1),
+  blackSmsEmailSenderId: process.env.BLACKSMS_EMAIL_SENDER_ID ?? '',
+  blackSmsEmailTemplateId: numberFromEnvironment('BLACKSMS_EMAIL_TEMPLATE_ID', 0),
 }
 
 export function assertProductionConfiguration() {

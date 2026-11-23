@@ -35,9 +35,13 @@
 .admin-classes__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
 .admin-classes__card { overflow: hidden; border: 1px solid var(--color-line); background: #fffdf8; }
 .admin-classes__card img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
-.admin-classes__card > div { display: flex; min-height: 64px; padding: 14px 16px; align-items: center; justify-content: space-between; gap: 12px; }
+.admin-classes__card > div { display: grid; min-height: 64px; padding: 14px 16px; gap: 12px; }
 .admin-classes__card strong { color: var(--color-ink); font-size: 14px; line-height: 1.4; }
 .admin-classes__card button { padding: 7px 10px; border: 1px solid rgba(164, 61, 44, 0.28); border-radius: 3px; background: transparent; color: #a43d2c; cursor: pointer; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+.admin-classes__meeting-link { display: grid; gap: 6px; color: var(--color-muted); font-size: 9px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; }
+.admin-classes__meeting-link input { width: 100%; min-width: 0; height: 38px; padding: 0 9px; border: 1px solid var(--color-line); background: #fff; color: var(--color-ink); font: 12px var(--font-body); letter-spacing: normal; text-transform: none; }
+.admin-classes__actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.admin-classes__actions button:first-child { border-color: rgba(118, 101, 91, 0.4); color: var(--color-wine); }
 .admin-class-preview { display: grid; max-width: 520px; margin: 0 0 22px; overflow: hidden; border: 1px solid var(--color-line); border-radius: 4px; background: #f7efe2; }
 .admin-class-preview img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
 .admin-class-preview figcaption { display: flex; padding: 12px 14px; align-items: center; justify-content: space-between; gap: 12px; }

@@ -19,6 +19,8 @@ import { donationsRouter } from './routes/donations.js'
 import { deekshaRouter } from './routes/deeksha.js'
 import { quotesRouter } from './routes/quotes.js'
 import { submissionsRouter } from './routes/submissions.js'
+import { userAuthRouter } from './routes/userAuth.js'
+import { userDashboardRouter } from './routes/userDashboard.js'
 
 const allowedMimeTypes = new Set(['image/jpeg', 'image/png', 'image/webp'])
 const upload = multer({
@@ -224,6 +226,8 @@ export async function createApp() {
   app.use('/api', deekshaRouter)
   app.use('/api', quotesRouter)
   app.use('/api', submissionsRouter)
+  app.use('/api', userAuthRouter)
+  app.use('/api', userDashboardRouter)
 
   app.get('/api/health', async (_request, response, next) => {
     try {

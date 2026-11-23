@@ -7,12 +7,24 @@ export function getUpcomingClasses(signal) {
   return request('/api/upcoming-classes', { signal, cache: 'no-store' })
 }
 
+export function getAdminUpcomingClasses(signal) {
+  return request('/api/admin/upcoming-classes', { signal, cache: 'no-store' })
+}
+
 export function uploadUpcomingClass(formData) {
   return request('/api/admin/upcoming-classes', { method: 'POST', body: formData })
 }
 
 export function deleteUpcomingClass(id) {
   return request(`/api/admin/upcoming-classes/${encodeURIComponent(id)}`, { method: 'DELETE' })
+}
+
+export function updateUpcomingClassMeetingLink(id, meetingUrl) {
+  return request(`/api/admin/upcoming-classes/${encodeURIComponent(id)}/meeting-link`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ meetingUrl }),
+  })
 }
 
 export function notifyUpcomingClassesUpdated() {

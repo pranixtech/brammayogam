@@ -12,6 +12,8 @@ import './styles/activities.css'
 import './styles/contributions.css'
 import './styles/forms.css'
 import './styles/deeksha.css'
+import './styles/auth.css'
+import './styles/userDashboard.css'
 import './styles/responsive.css'
 
 createRoot(document.getElementById('root')).render(

@@ -433,7 +433,7 @@ export function AdminSubmissionsPanel({ kind, focusRegistrationId = '' }) {
               {items.map((item) => (
                 <tr className={String(item.id) === notificationTargetId ? 'is-notification-target' : undefined} id={`admin-registration-${item.id}`} key={item.id}>
                   <td>#{item.id}</td>
-                  <td><strong>{item.fullName}</strong>{item.message && <small title={item.message}>{item.message}</small>}</td>
+                  <td><strong>{item.fullName}</strong>{item.userId && <small>Account #{item.userId}</small>}{item.message && <small title={item.message}>{item.message}</small>}</td>
                   <td><a href={`mailto:${item.email}`}>{item.email}</a><a href={`tel:${item.phone.replace(/[^\d+]/g, '')}`}>{item.phone}</a></td>
                   <td>{item.classTitle || 'General enquiry'}</td>
                   <td>{item.city || '—'}<small>{getCountryName(item.country)}</small></td>

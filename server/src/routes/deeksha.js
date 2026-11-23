@@ -2,6 +2,7 @@ import { Router } from 'express'
 import rateLimit from 'express-rate-limit'
 import { pool } from '../db.js'
 import { authenticateAdmin } from '../middleware/authenticateAdmin.js'
+import { authenticateUser } from '../middleware/authenticateUser.js'
 
 const router = Router()
 const submissionLimiter = rateLimit({
@@ -12,10 +13,12 @@ const submissionLimiter = rateLimit({
   message: { message: 'Too many Deeksha submissions. Please try again later.' },
 })
 
-const programColumns = `
+const publicProgramColumns = `
   id, title, subtitle, description, benefits, sort_order AS "sortOrder",
   is_published AS "isPublished", seed_key IS NOT NULL AS "isBuiltIn",
   created_at AS "createdAt", updated_at AS "updatedAt"`
+
+const adminProgramColumns = `${publicProgramColumns}, meeting_url AS "meetingUrl"`
 
 function cleanText(value, maxLength) {
   if (typeof value !== 'string') return null
@@ -36,14 +39,30 @@ function cleanProgram(body) {
   const benefits = rawBenefits.map((item) => cleanText(item, 500)).filter(Boolean).slice(0, 30)
   const sortOrder = Number(body?.sortOrder ?? 0)
   const isPublished = body?.isPublished === true
+  const meetingUrl = cleanMeetingUrl(body?.meetingUrl)
   if (!title || subtitle === null || description === null || !Number.isInteger(sortOrder) || sortOrder < 0 || sortOrder > 10000) return null
-  return { title, subtitle, description, benefits, sortOrder, isPublished }
+  if (meetingUrl === null) return null
+  return { title, subtitle, description, benefits, sortOrder, isPublished, meetingUrl }
+}
+
+function cleanMeetingUrl(value) {
+  const url = String(value ?? '').trim()
+  if (!url) return ''
+  try {
+    const parsed = new URL(url)
+    const host = parsed.hostname.toLowerCase()
+    const isZoom = host === 'zoom.us' || host.endsWith('.zoom.us')
+    const isGoogleMeet = host === 'meet.google.com'
+    return parsed.protocol === 'https:' && (isZoom || isGoogleMeet) ? parsed.toString() : null
+  } catch {
+    return null
+  }
 }
 
 router.get('/deeksha-programs', async (_request, response, next) => {
   try {
     const { rows } = await pool.query(
-      `SELECT ${programColumns} FROM deeksha_programs
+      `SELECT ${publicProgramColumns} FROM deeksha_programs
        WHERE is_published = TRUE ORDER BY sort_order ASC, id ASC`,
     )
     response.set('Cache-Control', 'no-store')
@@ -53,10 +72,14 @@ router.get('/deeksha-programs', async (_request, response, next) => {
   }
 })
 
-router.post('/deeksha-submissions', submissionLimiter, async (request, response, next) => {
-  const fullName = cleanText(request.body?.fullName, 120)
-  const email = cleanText(request.body?.email ?? '', 254)?.toLowerCase()
-  const phone = cleanText(request.body?.phone, 30)
+router.post('/deeksha-submissions', authenticateUser, submissionLimiter, async (request, response, next) => {
+  const accountResult = await pool.query('SELECT full_name, email, phone FROM user_accounts WHERE id = $1', [request.user.id]).catch(next)
+  if (!accountResult) return
+  const account = accountResult.rows[0]
+  if (!account) return response.status(401).json({ message: 'User account not found. Please log in again.' })
+  const fullName = account.full_name
+  const email = account.email || ''
+  const phone = account.phone ? `+${account.phone}` : ''
   const city = cleanText(request.body?.city ?? '', 100)
   const country = String(request.body?.country ?? '').trim().toUpperCase()
   const message = cleanText(request.body?.message ?? '', 1000)
@@ -83,10 +106,10 @@ router.post('/deeksha-submissions', submissionLimiter, async (request, response,
     const snapshot = programs.map((program) => ({ id: String(program.id), title: program.title }))
     const { rows } = await pool.query(
       `INSERT INTO deeksha_submissions
-        (full_name, email, phone, city, country, message, selected_programs)
-       VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb)
+        (full_name, email, phone, city, country, message, selected_programs, user_id)
+       VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8)
        RETURNING id, created_at AS "createdAt"`,
-      [fullName, email, phone, city, country, message, JSON.stringify(snapshot)],
+      [fullName, email, phone, city, country, message, JSON.stringify(snapshot), request.user.id],
     )
     return response.status(201).json({ submission: rows[0] })
   } catch (error) {
@@ -96,7 +119,7 @@ router.post('/deeksha-submissions', submissionLimiter, async (request, response,
 
 router.get('/admin/deeksha-programs', authenticateAdmin, async (_request, response, next) => {
   try {
-    const { rows } = await pool.query(`SELECT ${programColumns} FROM deeksha_programs ORDER BY sort_order ASC, id ASC`)
+    const { rows } = await pool.query(`SELECT ${adminProgramColumns} FROM deeksha_programs ORDER BY sort_order ASC, id ASC`)
     response.set('Cache-Control', 'no-store')
     return response.json({ programs: rows })
   } catch (error) {
@@ -110,10 +133,10 @@ router.post('/admin/deeksha-programs', authenticateAdmin, async (request, respon
   try {
     const { rows } = await pool.query(
       `INSERT INTO deeksha_programs
-        (title, subtitle, description, benefits, sort_order, is_published)
-       VALUES ($1, $2, $3, $4::jsonb, $5, $6)
-       RETURNING ${programColumns}`,
-      [fields.title, fields.subtitle, fields.description, JSON.stringify(fields.benefits), fields.sortOrder, fields.isPublished],
+        (title, subtitle, description, meeting_url, benefits, sort_order, is_published)
+       VALUES ($1, $2, $3, $4, $5::jsonb, $6, $7)
+       RETURNING ${adminProgramColumns}`,
+      [fields.title, fields.subtitle, fields.description, fields.meetingUrl, JSON.stringify(fields.benefits), fields.sortOrder, fields.isPublished],
     )
     return response.status(201).json({ program: rows[0] })
   } catch (error) {
@@ -129,11 +152,11 @@ router.put('/admin/deeksha-programs/:id', authenticateAdmin, async (request, res
   try {
     const { rows } = await pool.query(
       `UPDATE deeksha_programs
-       SET title = $1, subtitle = $2, description = $3, benefits = $4::jsonb,
-         sort_order = $5, is_published = $6, updated_at = NOW()
-       WHERE id = $7
-       RETURNING ${programColumns}`,
-      [fields.title, fields.subtitle, fields.description, JSON.stringify(fields.benefits), fields.sortOrder, fields.isPublished, id],
+       SET title = $1, subtitle = $2, description = $3, meeting_url = $4, benefits = $5::jsonb,
+         sort_order = $6, is_published = $7, updated_at = NOW()
+       WHERE id = $8
+       RETURNING ${adminProgramColumns}`,
+      [fields.title, fields.subtitle, fields.description, fields.meetingUrl, JSON.stringify(fields.benefits), fields.sortOrder, fields.isPublished, id],
     )
     if (!rows[0]) return response.status(404).json({ message: 'Deeksha program not found.' })
     return response.json({ program: rows[0] })
@@ -165,7 +188,7 @@ router.get('/admin/deeksha-submissions', authenticateAdmin, async (request, resp
   }
   try {
     const { rows } = await pool.query(
-      `SELECT id, full_name AS "fullName", email, phone, city, country, message,
+      `SELECT id, user_id AS "userId", full_name AS "fullName", email, phone, city, country, message,
         selected_programs AS "selectedPrograms", created_at AS "createdAt"
        FROM deeksha_submissions ${whereClause}
        ORDER BY created_at DESC, id DESC LIMIT 500`,
